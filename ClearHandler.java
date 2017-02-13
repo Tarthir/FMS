@@ -10,6 +10,8 @@ import java.io.IOException;
  */
 
 public class ClearHandler implements HttpHandler {
+
+    public ClearHandler(){}
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 

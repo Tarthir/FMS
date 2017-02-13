@@ -1,0 +1,32 @@
+package functionObjects;
+
+/**
+ * Created by tyler on 2/13/2017.
+ * Contains the info needed to login to the application
+ */
+
+public class LoginRequest {
+    String userName;
+    String passWord;
+
+    public LoginRequest(String userName, String passWord) {
+        this.userName = userName;
+        this.passWord = passWord;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassWord() {
+        return passWord;
+    }
+
+    public void setPassWord(String passWord) {
+        this.passWord = passWord;
+    }
+}

@@ -10,6 +10,11 @@ import java.io.IOException;
  */
 
 public class RegisterHandler implements HttpHandler{
+    private String request;
+
+    public RegisterHandler(String request){
+        this.request = request;
+    }
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 

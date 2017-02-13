@@ -10,6 +10,8 @@ import java.io.IOException;
  */
 
 public class FillHandler implements HttpHandler {
+    public FillHandler() {}
+
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 

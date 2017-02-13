@@ -5,4 +5,6 @@ package dataAccess;
  */
 
 public class AuthTokenDao {
+    public AuthTokenDao() {
+    }
 }

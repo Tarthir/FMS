@@ -10,6 +10,16 @@ import java.io.IOException;
  */
 
 public class PersonHandler implements HttpHandler {
+    int userID;
+    int eventID;
+    public PersonHandler(int userID) {
+        this.userID = userID;
+    }
+    public PersonHandler(int userID, int eventID) {
+        this.userID = userID;
+        this.eventID=eventID;
+    }
+
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 

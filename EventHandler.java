@@ -10,6 +10,15 @@ import java.io.IOException;
  */
 
 public class EventHandler implements HttpHandler {
+    int userID,eventID;
+    public EventHandler(int userID, int eventID) {
+        this.userID = userID;
+        this.eventID = eventID;
+    }
+    public EventHandler(int userID) {
+        this.userID = userID;
+    }
+
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 

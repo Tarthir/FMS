@@ -9,6 +9,11 @@ import java.io.IOException;
  * Created by tyler on 2/13/2017.
  */
 public class LoginHandler implements HttpHandler {
+    private String request;
+    public LoginHandler(String request) {
+        this.request = request;
+    }
+
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 
