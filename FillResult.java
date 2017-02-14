@@ -6,8 +6,11 @@ package functionObjects;
  */
 
 public class FillResult {
+    /**The Num of persons to fill our database with*/
     private int numOfPersons;
+    /**The num of events to fill our database with*/
     private int numOfEvents;
+    /**The result of filling the database*/
     private String result;
 
     public FillResult(int numOfPersons, int numOfEvents) {
@@ -15,23 +18,15 @@ public class FillResult {
         this.numOfEvents = numOfEvents;
         result +="Successfully added " + this.numOfPersons + " people and " + this.numOfEvents + " events.";
     }
-
+    /**@RETURN The Num of persons to fill our database with*/
     public int getNumOfPersons() {
         return numOfPersons;
     }
-
-    public void setNumOfPersons(int numOfPersons) {
-        this.numOfPersons = numOfPersons;
-    }
-
+    /**@RETURN The num of events to fill our database with*/
     public int getNumOfEvents() {
         return numOfEvents;
     }
-
-    public void setNumOfEvents(int numOfEvents) {
-        this.numOfEvents = numOfEvents;
-    }
-
+    /**@RETURN The result of filling the database*/
     public String getResult() {
         return result;
     }

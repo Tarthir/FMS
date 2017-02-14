@@ -29,25 +29,23 @@ public interface IServer {
     /***
      * A method to get a user's ancestor's info
      *
-     * @PARAM userID, the ID for a specific user
-     * @PARAM personID, the ID for a specific ancestor
+     * @PARAM request, the info needed to make a request on the database for a specific ancestor
      * @Return the result, a person object; successful or not of the getPerson attempt
      */
-    Person getPerson(int userID, int personID);
+    Person getPerson(PersonRequest request);
 
     /***
      * A method to get all of a users ancestor's
      *
-     * @PARAM userID, the ID for a specific user
+     * @PARAM request, the info needed to make a request on the database for all ancestors
      * @Return the array of people related to the User
      */
-    Person[] getPeople(int userID);
+    Person[] getPeople(PeopleRequest request);
 
     /***
      * A method to get a specific event
      *
-     * @PARAM userID, the ID for a specific user
-     * @PARAM eventID, the ID for a specific event
+     * @PARAM request, the info needed to make a request on a particular event of a particular person of a user
      * @Return the result, an event object; successful or not of the getEvent Attempt attempt
      */
     EventResult getEvent(EventRequest request);
@@ -55,7 +53,7 @@ public interface IServer {
     /***
      * A method to get all of a user's ancestor's events
      *
-     * @PARAM userID, the ID for a specific user
+     * @PARAM request, the info needed to make a request on the database for all events of a user's ancestor
      * @Return the result, an event object array; successful or not of the getEvents Attempt attempt
      */
     EventResult getEvents(EventsRequest request);
@@ -72,7 +70,7 @@ public interface IServer {
      */
     FillResult fill(FillRequest request);
     /***
-     *Calls a method to fill the datbase with new Data
+     *Calls a method to fill the database with new Data
      * @Param request, A object which contains the info needs to load up a database
      * @Return the result, an loadResult object; successful or not of the load attempt
      */

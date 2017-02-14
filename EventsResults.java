@@ -9,26 +9,22 @@ import models.Person;
  */
 
 public class EventsResults {
+    /**The person array*/
     private Person[] people;
+    /**The events array*/
     private Event[] events;
 
     public EventsResults(Person[] people, Event[] events) {
         this.people = people;
         this.events = events;
     }
+
+    /**@RETURN The people array*/
     public Person[] getPeople() {
         return people;
     }
-
-    public void setPeople(Person[] people) {
-        this.people = people;
-    }
-
+    /**@RETURN The events array*/
     public Event[] getEvents() {
         return events;
-    }
-
-    public void setEvents(Event[] events) {
-        this.events = events;
     }
 }

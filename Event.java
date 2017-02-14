@@ -2,6 +2,7 @@ package models;
 
 /**
  * Created by tyler on 2/10/2017.
+ * This object is an Event, IE: marriage, birth.
  */
 
 public class Event {
@@ -27,52 +28,28 @@ public class Event {
         this.eventType = eventType;
         this.year = year;
     }
-
+    /**@RETURN get the eventID of this event*/
     public String getEventID() {
         return eventID;
     }
-
-    public void setEventID(String eventID) {
-        this.eventID = eventID;
-    }
-
+    /**@RETURN get the descendant related to this event*/
     public User getDescendant() {
         return descendant;
     }
-
-    public void setDescendant(User descendant) {
-        this.descendant = descendant;
-    }
-
+    /**@RETURN get the person related to this event*/
     public Person getPerson() {
         return person;
     }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
+    /**@RETURN get the location of this event*/
     public Location getLocation() {
         return location;
     }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
+    /**@RETURN get the eventType of this event*/
     public String getEventType() {
         return eventType;
     }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
-
+    /**@RETURN get the year of this event*/
     public String getYear() {
         return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
     }
 }

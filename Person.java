@@ -1,6 +1,7 @@
 package models;
 /**
  * Created by tyler on 2/10/2017.
+ * This class holds the information for a person
  */
 
 public class Person {
@@ -9,7 +10,7 @@ public class Person {
      * */
     private String ID;
     /**
-     * The user to which this person belongs
+     * The user object of the user to which this person belongs
      */
     private User descendant;
     /**
@@ -21,19 +22,19 @@ public class Person {
      * */
     private String lName;
     /**
-     * The gender of the person, "male" or "female"
+     * The gender of the person, "m" or "f"
      * */
     private String gender;
     /**
-     * This persons Father. May be null
+     * This persons Father(Person obj). May be null
      * */
     Person father;
     /**
-     * The mother of this person. May be null
+     * The mother(Person obj) of this person. May be null
      * */
     Person mother;
     /**
-     * The spouse of this person. May be null
+     * The spouse(Person obj) of this person. May be null
      * */
     Person spouse;
 
@@ -48,68 +49,36 @@ public class Person {
         this.mother = mother;
         this.spouse = spouse;
     }
-
+    /**@RETRUN the personID */
     public String getID() {
         return ID;
     }
-
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-
+    /**@RETRUN the user that is related to this person*/
     public User getDescendant() {
         return descendant;
     }
-
-    public void setDescendant(User descendant) {
-        this.descendant = descendant;
-    }
-
+    /**@RETRUN the first name of this person*/
     public String getfName() {
         return fName;
     }
-
-    public void setfName(String fName) {
-        this.fName = fName;
-    }
-
+    /**@RETRUN the last name of this person*/
     public String getlName() {
         return lName;
     }
-
-    public void setlName(String lName) {
-        this.lName = lName;
-    }
-
+    /**@RETRUN the gender of this person*/
     public String getGender() {
         return gender;
     }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
+    /**@RETRUN the father of this person*/
     public Person getFather() {
         return father;
     }
-
-    public void setFather(Person father) {
-        father = father;
-    }
-
+    /**@RETRUN the mother of this person*/
     public Person getMother() {
         return mother;
     }
-
-    public void setMother(Person mother) {
-        mother = mother;
-    }
-
+    /**@RETRUN the spouse of this person*/
     public Person getSpouse() {
         return spouse;
-    }
-
-    public void setSpouse(Person spouse) {
-        spouse = spouse;
     }
 }

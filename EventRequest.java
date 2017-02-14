@@ -6,17 +6,13 @@ package functionObjects;
  */
 
 public class EventRequest {
-    int userID, eventID;
+    /**The userID of this Event Request*/
+    int eventID;
 
-    public EventRequest(int userID, int eventID) {
-        this.userID = userID;
+    public EventRequest(int eventID) {
         this.eventID = eventID;
     }
-
-    public int getUserID() {
-        return userID;
-    }
-
+    /**@RETURN the eventID of this Event Request*/
     public int getEventID() {
         return eventID;
     }

@@ -27,6 +27,7 @@ public class LoadRequest {
     public Person[][] getPersons() {
         return persons;
     }
+
     public Event[] getEvents() {
         return events;
     }

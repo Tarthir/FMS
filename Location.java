@@ -2,6 +2,7 @@ package models;
 
 /**
  * Created by tyler on 2/10/2017.
+ * This holds the information of locations in the world related to events of a users ancestors
  */
 
 public class Location {
@@ -20,36 +21,20 @@ public class Location {
         this.country = country;
         this.latitude = latitude;
     }
-
+    /**@RETURN the city related to this location*/
     public String getCity() {
         return city;
     }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
+    /**@RETURN the country related to this location*/
     public String getCountry() {
         return country;
     }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
+    /**@RETURN the latitude related to this location*/
     public Double getLatitude() {
         return latitude;
     }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
+    /**@RETURN the longitude related to this location*/
     public Double getLongitude() {
         return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
     }
 }

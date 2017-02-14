@@ -6,6 +6,7 @@ package models;
  */
 
 public class AuthToken {
+    /**The authorization token allowing us to access the app*/
     private String authToken;
 
     public AuthToken(String authToken) {

@@ -6,12 +6,13 @@ package functionObjects;
  */
 
 public class LoadResult {
+    /**The result of the attempt to load data*/
     private String resultMessage;
 
     public LoadResult(String resultMessage) {
         resultMessage = this.resultMessage;
     }
-
+    /**@RETURN The result of the attempt to load data*/
     public String getResultMessage() {
         return resultMessage;
     }

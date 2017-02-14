@@ -1,27 +1,49 @@
-package server;
+package handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 
+import functionObjects.PeopleRequest;
+import functionObjects.PersonRequest;
+
 /**
  * Created by tyler on 2/13/2017.
+ * Handles multiple people or one person requests and sends appropriate info to the correct service routines
  */
 
 public class PersonHandler implements HttpHandler {
-    int userID;
-    int eventID;
-    public PersonHandler(int userID) {
-        this.userID = userID;
-    }
-    public PersonHandler(int userID, int eventID) {
-        this.userID = userID;
-        this.eventID=eventID;
+    /**
+     * A single person request
+     */
+    PersonRequest person;
+    /***
+     * A request for multiple people
+     */
+    PeopleRequest people;
+
+    public PersonHandler(PersonRequest person) {this.person = person;}
+
+    public PersonHandler(PeopleRequest people) {
+        this.people = people;
     }
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 
+    }
+    /**
+     * @RETURN A single person request
+     */
+    public PersonRequest getPerson() {
+        return person;
+    }
+    /***
+     * @RETURN
+     * A request for multiple people
+     */
+    public PeopleRequest getPeople() {
+        return people;
     }
 }

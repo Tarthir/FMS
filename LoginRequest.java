@@ -6,27 +6,21 @@ package functionObjects;
  */
 
 public class LoginRequest {
+    /**The username of this loginrequest*/
     String userName;
+    /**The password of this loginrequest*/
     String passWord;
 
     public LoginRequest(String userName, String passWord) {
         this.userName = userName;
         this.passWord = passWord;
     }
-
+    /**@RETURN The userName of this loginrequest*/
     public String getUserName() {
         return userName;
     }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
+    /**@RETURN The password of this loginrequest*/
     public String getPassWord() {
         return passWord;
-    }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
     }
 }

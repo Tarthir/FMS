@@ -17,6 +17,7 @@ public class EventDao {
      *
      * @PARAM userID, the ID for a specific user
      * @PARAM eventID, the ID for a specific event
+     * @RETURN gets the result of attempting to get a specific event
      */
     EventResult getEvent(EventRequest request){
         return null;
@@ -26,6 +27,7 @@ public class EventDao {
      * A method to get all of a user's ancestor's events
      *
      * @PARAM userID, the ID for a specific user
+     * @RETURN gets the result of attempting to get all the users ancestor's events
      */
     EventResult getEvents(EventsRequest request){
         return null;

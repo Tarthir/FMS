@@ -6,9 +6,12 @@ package functionObjects;
  */
 
 public class LoginResult {
-    private String authToken;// Non-empty auth token string
-    private String userName; // User name passed in with request
-    private String personID;// Non-empty string containing the Person ID of the user’s generated Person object
+    /** Non-empty auth token string*/
+    private String authToken;
+    /** User name passed in with request*/
+    private String userName;
+    /** Non-empty string containing the Person ID of the user’s generated Person object*/
+    private String personID;
 
 
     public LoginResult(String authToken, String userName, String personID) {
@@ -16,28 +19,16 @@ public class LoginResult {
         this.userName = userName;
         this.personID = personID;
     }
-
+    /**@RETURN The authToken of this login result*/
     public String getAuthToken() {
         return authToken;
     }
-
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
-    }
-
+    /**@RETURN The userName of this login result*/
     public String getUserName() {
         return userName;
     }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
+    /**@RETURN The personID of this login result*/
     public String getPersonID() {
         return personID;
-    }
-
-    public void setPersonID(String personID) {
-        this.personID = personID;
     }
 }

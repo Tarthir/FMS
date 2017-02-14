@@ -2,6 +2,7 @@ package models;
 
 /**
  * Created by tyler on 2/10/2017.
+ * This class holds the information for a User
  */
 
 public class User {
@@ -29,60 +30,33 @@ public class User {
         this.lName = lName;
         this.gender = gender;
     }
-
+    /**@RETRUN the userID of this user*/
     public String getID() {
         return ID;
     }
-
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-
+    /**@RETRUN the userName of this user*/
     public String getUserName() {
         return userName;
     }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
+    /**@RETRUN the passWord of this user*/
     public String getPassWord() {
         return passWord;
     }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
-
+    /**@RETRUN the email address of this user*/
     public String getEmail() {
         return email;
     }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
+    /**@RETRUN the first name of this user*/
     public String getfName() {
         return fName;
     }
-
-    public void setfName(String fName) {
-        this.fName = fName;
-    }
-
+    /**@RETRUN the last name of this user*/
     public String getlName() {
         return lName;
     }
-
-    public void setlName(String lName) {
-        this.lName = lName;
-    }
-
+    /**@RETRUN the gender of this user*/
     public String getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
 }

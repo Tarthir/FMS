@@ -6,12 +6,12 @@ package functionObjects;
  */
 
 public class RegisterRequest {
-    private String userName; // Non-empty string
-    private String passWord; // Non-empty string
-    private String email;  // Non-empty string
-    private String fName;  // Non-empty string
-    private String lName;  // Non-empty string
-    private String gender; // “f” or “m”
+    private String userName; /** Non-empty string*/
+    private String passWord; /** Non-empty string*/
+    private String email;  /** Non-empty string*/
+    private String fName;  /** Non-empty string*/
+    private String lName;  /** Non-empty string*/
+    private String gender; /** “f” or “m”*/
 
     public RegisterRequest(String userName, String passWord, String email, String fName, String lName, String gender) {
         this.userName = userName;
@@ -21,52 +21,28 @@ public class RegisterRequest {
         this.lName = lName;
         this.gender = gender;
     }
-
+    /**@RETURN Gets the username of this registerRequest*/
     public String getUserName() {
         return userName;
     }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
+    /**@RETURN  Gets the passWord of this registerRequest*/
     public String getPassWord() {
         return passWord;
     }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
-
+    /**@RETURN  Gets the email of this registerRequest*/
     public String getEmail() {
         return email;
     }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
+    /**@RETURN  Gets the fName of this registerRequest*/
     public String getfName() {
         return fName;
     }
-
-    public void setfName(String fName) {
-        this.fName = fName;
-    }
-
+    /**@RETURN  Gets the lName of this registerRequest*/
     public String getlName() {
         return lName;
     }
-
-    public void setlName(String lName) {
-        this.lName = lName;
-    }
-
+    /**@RETURN  Gets the gender of this registerRequest*/
     public String getGender() {
         return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
     }
 }
