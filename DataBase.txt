@@ -1,0 +1,54 @@
+create table user(
+    userID text not null primary key,
+    userName text not null,
+    password text not null,
+    email text not null,
+    firstName text not null,
+    lastName text not null,
+    gender text not null
+);
+
+create table belongsTo (
+    userID text not null,
+    personID text not null
+);
+
+create table person (
+    personID text not null primary key,
+    firstName text not null,
+    lastName text not null,
+    father text,
+    mother text,
+    spouse text
+);
+
+create table location(
+    locationID text not null primary key,
+    city text not null,
+    latitude text not null,
+    longitude text not null,
+    country text not null
+);
+
+create table tookPlaceAt(
+    eventID text not null,
+    locationID text not null
+);
+
+create table events(
+    eventID text not null primary key,
+    person text not null,
+    year text,
+    eventType text
+);
+
+create table userEvent (
+    userID text not null,
+    eventID text not null
+);
+
+create table authToken(
+    authToken text not null primary key,
+    userID text not null
+);
+
