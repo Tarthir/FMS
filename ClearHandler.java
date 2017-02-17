@@ -14,6 +14,7 @@ public class ClearHandler implements HttpHandler {
 
     public ClearHandler(){}
     @Override
+    /**This method handles the clear request from the server*/
     public void handle(HttpExchange httpExchange) throws IOException {
 
     }

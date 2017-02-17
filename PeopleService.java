@@ -1,7 +1,6 @@
-package handler;
+package service;
 
-import functionObjects.PeopleRequest;
-import functionObjects.PersonRequest;
+import infoObjects.PeopleRequest;
 import models.Person;
 
 /**

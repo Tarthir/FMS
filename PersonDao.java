@@ -1,5 +1,7 @@
 package dataAccess;
 
+import infoObjects.PeopleRequest;
+import infoObjects.PersonRequest;
 import models.Person;
 
 /**
@@ -17,7 +19,7 @@ public class PersonDao {
      * @PARAM userID, the ID for a specific user
      * @PARAM personID, the ID for a specific ancestor
      */
-    Person getPerson(int userID, int personID){
+    Person getPerson(PersonRequest request){
         return null;
     }
 
@@ -26,7 +28,7 @@ public class PersonDao {
      *
      * @PARAM userID, the ID for a specific user
      */
-    Person[] getPeople(int userID){
+    Person[] getPeople(PeopleRequest request){
         return null;
     }
 }

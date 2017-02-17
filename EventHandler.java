@@ -5,8 +5,8 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 
-import functionObjects.EventRequest;
-import functionObjects.EventsRequest;
+import infoObjects.EventRequest;
+import infoObjects.EventsRequest;
 
 /**
  * Created by tyler on 2/13/2017.

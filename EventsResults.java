@@ -1,4 +1,4 @@
-package functionObjects;
+package infoObjects;
 
 import models.Event;
 import models.Person;

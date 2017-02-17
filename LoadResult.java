@@ -1,4 +1,4 @@
-package functionObjects;
+package infoObjects;
 
 /**
  * Created by tyler on 2/13/2017.

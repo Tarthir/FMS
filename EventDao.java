@@ -1,8 +1,8 @@
 package dataAccess;
 
-import functionObjects.EventResult;
-import functionObjects.EventRequest;
-import functionObjects.EventsRequest;
+import infoObjects.EventResult;
+import infoObjects.EventRequest;
+import infoObjects.EventsRequest;
 /**
  * Created by tyler on 2/10/2017.
  */

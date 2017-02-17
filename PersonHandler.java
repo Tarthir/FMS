@@ -5,8 +5,8 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 
-import functionObjects.PeopleRequest;
-import functionObjects.PersonRequest;
+import infoObjects.PeopleRequest;
+import infoObjects.PersonRequest;
 
 /**
  * Created by tyler on 2/13/2017.
@@ -30,6 +30,7 @@ public class PersonHandler implements HttpHandler {
     }
 
     @Override
+    /**This method handles the getPerson request from the server*/
     public void handle(HttpExchange httpExchange) throws IOException {
 
     }

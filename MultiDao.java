@@ -6,10 +6,10 @@ package dataAccess;
  */
 
 public class MultiDao {
+    /**The obejcts returns by a multiDao*/
     private Object[] functionObjects;
 
-    public MultiDao(Object[] functionObjects) {
-        this.functionObjects = functionObjects;
+    public MultiDao() {
     }
 
     public Object[] getFunctionObjects() {
