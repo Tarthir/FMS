@@ -12,6 +12,8 @@ public class RegisterResult {
     private String userName;
     /** Non-empty string containing the Person ID of the user’s generated Person object*/
     private String personID;
+    /**An error message we recieved*/
+    private Exception e;
 
 
     public RegisterResult(String authToken, String userName, String personID) {
@@ -37,5 +39,14 @@ public class RegisterResult {
     public String getPersonID() {
         return personID;
     }
+
+    public Exception getE() {
+        return e;
+    }
+
+    public void setE(Exception e) {
+        this.e = e;
+    }
+
 
 }

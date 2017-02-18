@@ -16,6 +16,7 @@ import infoObjects.FillRequest;
 public class FillHandler implements HttpHandler {
     /**The request to fill our database*/
     private FillRequest request;
+    //HANDLERS WILL TAKE IN JSON OBJECTS
     public FillHandler(FillRequest request) {this.request = request;}
 
     @Override

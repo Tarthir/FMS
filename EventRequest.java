@@ -7,13 +7,13 @@ package infoObjects;
 
 public class EventRequest {
     /**The userID of this Event Request*/
-    int eventID;
+    String eventID;
 
-    public EventRequest(int eventID) {
+    public EventRequest(String eventID) {
         this.eventID = eventID;
     }
     /**@RETURN the eventID of this Event Request*/
-    public int getEventID() {
+    public String getEventID() {
         return eventID;
     }
 }

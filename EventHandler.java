@@ -33,11 +33,11 @@ public class EventHandler implements HttpHandler {
 
     }
     /**@RETURN Gets The request to get one event*/
-    public EventRequest getRequest() {
-        return request;
-    }
+    //public EventRequest getRequest() {
+   //     return request;
+   // }
     /**@RETURN Gets The request to get multiple events*/
-    public EventsRequest getRequests() {
-        return requests;
-    }
+   // public EventsRequest getRequests() {
+       // return requests;
+   // }
 }

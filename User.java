@@ -6,6 +6,8 @@ package models;
  */
 
 public class User {
+    /**The users ID*/
+    private String ID;
     /**The user name of this user*/
     private String userName;
     /**Password of this user*/
@@ -18,8 +20,7 @@ public class User {
     private String lName;
     /**The users gender*/
     private String gender;
-    /**The users ID*/
-    private String ID;
+
 
     public User(String ID, String userName, String passWord, String email, String fName, String lName, String gender) {
         this.ID = ID;
