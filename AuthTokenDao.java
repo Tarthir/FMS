@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import models.AuthToken;
@@ -15,7 +16,7 @@ import models.AuthToken;
 
 public class AuthTokenDao {
     /**Our insert string to fill our authtoken table*/
-    private String insertIntoAuth = "insert into authToken (userID authToken timeStamp) values ( ?, ?, ? )";
+    private String insertIntoAuth = "insert into authToken (userID, authToken, timeStamp) values ( ?, ?, ? )";
     /**Our insert string to get an authToken*/
     private String getAuthToken = "SELECT authToken FROM authToken WHERE userID = ?";
     DataBase db;
@@ -50,26 +51,29 @@ public class AuthTokenDao {
     }
 
     /**Gets the Authtoken(s) of a particular user*/
-    public boolean getAuthToken(String userID){
+    public ArrayList<String> getAuthToken(String userID){
         Connection conn = null;
-        // ResultSet rs = null;
+        ResultSet rs = null;
         PreparedStatement stmt = null;
+        ArrayList<String> output = null;
         try {
             stmt = conn.prepareStatement(getAuthToken);
             conn = db.openConnection();
             stmt.setString(1,userID);
-            if(stmt.executeUpdate() == 1){//execute the statement
-                db.closeConnection(true, conn);
-                return true;
+            rs = stmt.executeQuery();
+            while(rs.next()){//execute the statement
+                output.add(rs.getString("authToken"));
             }
+            db.closeConnection(true, conn);
         }
         catch(SQLException e){
             e.printStackTrace();
             db.closeConnection(false, conn);
         }
         finally {
+            DataBase.safeClose(rs);
             DataBase.safeClose(stmt);
         }
-        return false;
+        return output;
     }
 }

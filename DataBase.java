@@ -2,7 +2,6 @@ package dataAccess;
 
 import java.io.File;
 import java.sql.*;
-import java.util.concurrent.locks.StampedLock;
 
 /**
  * Created by tyler on 2/13/2017.
@@ -38,12 +37,15 @@ public class DataBase {
     public Connection openConnection(){
         File file = new File("db");
         Connection connection = null;
-
+        if(!file.exists()){
+            file.mkdirs();
+        }
         try {
             //seperator makes sure it works on linux and windows
-            String db ="db" + file.separator + "database:sqlite";
-            String url = "jdbc:sqlite" + db;
+            String db ="db" + file.separator + "database.sqlite";
+            String url = "jdbc:sqlite:" + db;
             connection = DriverManager.getConnection(url);
+            connection.setAutoCommit(false);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -65,7 +67,6 @@ public class DataBase {
                 connection.rollback();
             }
             connection.close();
-            connection = null;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -92,8 +93,20 @@ public class DataBase {
             e.printStackTrace();
         }
     }
+
+    /**Allows for the safe close of a resultset object*
+     * @PARAM statement, The statement we want to close
+     * @RETURN void
+     */
+    public static void safeClose(ResultSet rs){
+        try {
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     /**
-     * Creates tables based on input. Wipes the database clean first and then starts creating
+     * Creates tables based on input. Wipes the database clean first and then starts creating. Closes your connection for you
      * @PARAM connect, our database connection
      * @return void
      * */
@@ -142,12 +155,14 @@ public class DataBase {
             stmt.executeUpdate("create table userEvent ( userID text not null primary key,\n" + " eventID text not null )");
 
             stmt.executeUpdate("drop table if exists authToken");
-            stmt.executeUpdate("create table authToken ( userID text not null primary key\n" +
-                    " authToken text not null\n +" +
-                    "timeStamp REAL not null )");
+            stmt.executeUpdate("create table authToken ( authToken text not null primary key,\n" +
+                    "    userID text not null,\n" +
+                    "    timeStamp REAL not null)");
+            closeConnection(true,connection);
         }
         catch (SQLException e) {
             e.printStackTrace();
+            closeConnection(false,connection);
         }
         finally{
             DataBase.safeClose(stmt);
@@ -155,28 +170,58 @@ public class DataBase {
 
 
     }
-
-    //public Connection getConnection() {
-       // return connection;
-    //}
-
-/*    public AuthTokenDao getAuthDao() {
-        return authDao;
+    /**
+     * Drops your tables, also closes the connection for you
+     * @PARAM connection, your database connection
+     * @RETURN void
+     * */
+    public void dropTables(Connection connection){
+        Statement stmt = null;
+        try {
+            stmt = connection.createStatement();
+            stmt.executeUpdate("drop table if exists user");
+            stmt.executeUpdate("drop table if exists belongsTo");
+            stmt.executeUpdate("drop table if exists person");
+            stmt.executeUpdate("drop table if exists location");
+            stmt.executeUpdate("drop table if exists tookPlaceAt");
+            stmt.executeUpdate("drop table if exists events");
+            stmt.executeUpdate("drop table if exists userEvent");
+            stmt.executeUpdate("drop table if exists authToken");
+            closeConnection(true,connection);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            closeConnection(false,connection);
+        }
+        finally{
+            DataBase.safeClose(stmt);
+        }
     }
-
-    public EventDao getEventDao() {
-        return eventDao;
+    /**
+     * Selects from all rows and columns on any table
+     * @RETURN the result
+     * */
+    public String selectAllFromUser(){
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        String output = "";
+        try {
+            conn = openConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM user");//execute the statement
+            if(rs.next()){
+                output = rs.getString(1);
+                closeConnection(true, conn);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            closeConnection(false, conn);
+        }
+        finally{
+            DataBase.safeClose(rs);
+            DataBase.safeClose(stmt);
+        }
+        return output;
     }
-
-    public MultiDao getMultDao() {
-        return multDao;
-    }
-
-    public PersonDao getpDao() {
-        return pDao;
-    }
-
-    public UserDao getuDao() {
-        return uDao;
-    }*/
 }
