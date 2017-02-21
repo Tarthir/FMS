@@ -81,4 +81,16 @@ public class Person {
     public Person getSpouse() {
         return spouse;
     }
+
+    public void setSpouse(Person spouse) {
+        this.spouse = spouse;
+    }
+
+    public void setFather(Person father) {
+        this.father = father;
+    }
+
+    public void setMother(Person mother) {
+        this.mother = mother;
+    }
 }

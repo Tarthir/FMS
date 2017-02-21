@@ -25,30 +25,33 @@ create table person (
 create table location(
     locationID text not null primary key,
     city text not null,
-    latitude text not null,
-    longitude text not null,
+    latitude REAL not null,
+    longitude REAL not null,
     country text not null
 );
 
 create table tookPlaceAt(
-    eventID text not null,
+    eventID text not null primary key,
     locationID text not null
 );
 
 create table events(
     eventID text not null primary key,
-    person text not null,
-    year text,
-    eventType text
+    personID text not null,
+    year text not null,
+    eventType text not null
 );
 
 create table userEvent (
-    userID text not null,
+    userID text not null primary key,
     eventID text not null
 );
 
 create table authToken(
+    userID text not null,
     authToken text not null primary key,
-    userID text not null
+    timeStamp REAL not null
+
+
 );
 

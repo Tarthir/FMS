@@ -2,9 +2,11 @@ package service;
 
 import java.util.UUID;
 
+import dataAccess.AuthTokenDao;
 import dataAccess.UserDao;
 import infoObjects.RegisterRequest;
 import infoObjects.RegisterResult;
+import models.AuthToken;
 import models.User;
 
 /**
@@ -26,15 +28,11 @@ public class RegisterService {
         newUser = makeUserModel(request);
         UserDao dao = new UserDao();
         if(dao.register(newUser)){
-            //USE AN AUTHTOKEN DAO FOR THIS, pass it a user/userID
-            //ResultSet rs = null;
-            /* rs = stmt.getGeneratedKeys();
-                stmt = conn.prepareStatement(insertIntoAuth);
-                stmt.setString(1,rs.getString(1));
-                AuthToken authTok = new AuthToken();//get the authtoken for this login
-                stmt.setString(2, authTok.getAuthToken());
-                stmt.setLong(3, authTok.getTimeStamp());*/
-            RegisterResult = new RegisterResult();
+            AuthTokenDao auth = new AuthTokenDao();
+            AuthToken authToken = new AuthToken();//gets the timestamp and UUID in the model object
+            auth.insertAuthToken(newUser.getID(),authToken);
+            //NEED TO GENERATE DATA DATA
+            //RegisterResult = new RegisterResult(authToken.getAuthToken(),newUser.getUserName());
         }
         return null;
     }

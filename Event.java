@@ -19,8 +19,7 @@ public class Event {
     /**The year this event took place*/
     private String year;
 
-    public Event(String eventID, User descendant, Person person, String latitude,
-                 String longitude, Location location, String eventType, String year) {
+    public Event(String eventID, User descendant, Person person, Location location, String eventType, String year) {
         this.eventID = eventID;
         this.descendant = descendant;
         this.person = person;

@@ -12,12 +12,15 @@ import models.Event;
 
 /**
  * Created by tyler on 2/10/2017.
+ * Our DAO class for events
  */
 
 public class EventDao {
     DataBase db;
     private String SELECT = "SELECT from events WHERE eventID = ?";
     private final String SELECT_STAR = "SELECT * from events";
+    private String insertEvents = "insert into events (eventID, person, year, eventType) values (?,?,?,?)";
+    private String insertTookPlaceAt = "insert into events (eventID, locationID) values (?,?)";
     public EventDao() {
         db = new DataBase();
     }
@@ -28,7 +31,7 @@ public class EventDao {
      * @PARAM request, the info for a specific event
      * @RETURN gets the result of attempting to get a specific event
      */
-    EventResult getEvent(EventRequest request){
+    public EventResult getEvent(EventRequest request){
         Connection conn = null;
         try {
             conn = db.openConnection();
@@ -53,7 +56,7 @@ public class EventDao {
      * @PARAM request, the info to get multiple events
      * @RETURN gets the result of attempting to get all the users ancestor's events
      */
-    EventResult getEvents(EventsRequest request){
+    public EventResult getEvents(EventsRequest request){
         //HOW DO I KNOW ITS GETTING THE RIGHT USER?
         Connection conn = null;
         try {
@@ -69,5 +72,23 @@ public class EventDao {
             }
             return null;
         }
+    }
+    /***
+     * A method to get all of a user's ancestor's events
+     *
+     * @PARAM request, the info to get multiple events
+     * @RETURN inserts all the users ancestors events into the database
+     */
+    public void insertEvents(){
+
+    }
+    /***
+     * A method to get all of a user's ancestor's events
+     *
+     * @PARAM request, the info to get multiple events
+     * @RETURN connects the location of the events and the event in the database
+     */
+    public void insertTookPlaceAt(){
+
     }
 }

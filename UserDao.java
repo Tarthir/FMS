@@ -22,12 +22,8 @@ import javax.xml.crypto.Data;
 public class UserDao {
     /**Our insert string to create a user*/
     private String insertIntoUser = "insert into user (userID userName password email firstName lastName gender) values ( ?, ?, ?, ?, ?, ?, ?)";
-    /**Our insert string to fill our authtoken table*/
-    private String insertIntoAuth = "insert into authToken (userID authToken timeStamp) values ( ?, ?, ? )";
     /**Our insert string to get a userID*/
     private String getUserID = "SELECT userID FROM user WHERE firstName = ? AND lastName = ?";
-    /**Our insert string to get an authToken*/
-    private String getAuthToken = "SELECT authToken FROM authToken WHERE userID = ?";
     /**A database object to use to get our connection*/
     DataBase db;
     public UserDao() {

@@ -129,16 +129,17 @@ public class DataBase {
                     "    country text not null )");
 
             stmt.executeUpdate("drop table if exists tookPlaceAt");
-            stmt.executeUpdate("create table tookPlaceAt ( eventID text not null,\n" + " locationID text not null )");
+            stmt.executeUpdate("create table tookPlaceAt ( eventID text not null primary key,\n" +
+                    "    locationID text not null)");
 
             stmt.executeUpdate("drop table if exists events");
             stmt.executeUpdate("create table events ( eventID text not null primary key,\n" +
-                    "    person text not null,\n" +
-                    "    year text,\n" +
-                    "    eventType text)");
+                    "    personID text not null,\n" +
+                    "    year text not null,\n" +
+                    "    eventType text not null)");
 
             stmt.executeUpdate("drop table if exists userEvent");
-            stmt.executeUpdate("create table userEvent ( userID text not null,\n" + " eventID text not null )");
+            stmt.executeUpdate("create table userEvent ( userID text not null primary key,\n" + " eventID text not null )");
 
             stmt.executeUpdate("drop table if exists authToken");
             stmt.executeUpdate("create table authToken ( userID text not null primary key\n" +
