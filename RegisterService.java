@@ -24,15 +24,17 @@ public class RegisterService {
      * @PARAM request: to register a new user
      * @RETURN Gets the result of trying to register a new user
      * */
-    RegisterResult register(RegisterRequest request){
+    public RegisterResult register(RegisterRequest request){
         newUser = makeUserModel(request);
         UserDao dao = new UserDao();
-        if(dao.register(newUser)){
-            AuthTokenDao auth = new AuthTokenDao();
+        if(!dao.checkUserName(request.getUserName()) && dao.register(newUser)){//check to see if the userName already exists then if register is successful
+            AuthTokenDao authDao = new AuthTokenDao();
             AuthToken authToken = new AuthToken();//gets the timestamp and UUID in the model object
-            auth.insertAuthToken(newUser.getID(),authToken);
-            //NEED TO GENERATE DATA DATA
-            //RegisterResult = new RegisterResult(authToken.getAuthToken(),newUser.getUserName());
+            if(authDao.insertAuthToken(newUser.getID(),authToken)) {
+                //NEED TO GENERATE DATA DATA
+                //HOW DO I GET LOGGED ON?
+                return new RegisterResult(authToken.getAuthToken(), newUser.getUserName(), newUser.getID());
+            }
         }
         return null;
     }
@@ -43,9 +45,8 @@ public class RegisterService {
      * */
     private User makeUserModel(RegisterRequest request){
         UUID uuid = UUID.randomUUID();
-        User user;
-        return user = new User(request.getUserName(),request.getPassWord(),
-                request.getEmail(),request.getfName(),request.getlName(),request.getGender(),uuid.toString());
+        return new User(uuid.toString(),request.getUserName(),request.getPassWord(),
+                request.getEmail(),request.getfName(),request.getlName(),request.getGender());
     }
 
 }

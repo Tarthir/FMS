@@ -3,9 +3,6 @@ package dataAccess;
 import java.sql.Connection;
 
 import infoObjects.LoginRequest;
-import infoObjects.LoginResult;
-import infoObjects.RegisterResult;
-import models.AuthToken;
 import models.User;
 
 import java.sql.PreparedStatement;
@@ -22,8 +19,6 @@ import javax.xml.crypto.Data;
 public class UserDao {
     /**Our insert string to create a user*/
     private String insertIntoUser = "insert into user (userID, userName, password, email, firstName, lastName, gender) values ( ?, ?, ?, ?, ?, ?, ?)";
-    /**Our insert string to get a userID*/
-    private String getUserID = "SELECT userID FROM user WHERE firstName = ? AND lastName = ?";
     /**A database object to use to get our connection*/
     private DataBase db;
     public UserDao() {
@@ -54,6 +49,7 @@ public class UserDao {
                 //ALSO LOG US ON
                 return true;
             }
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
         }catch(SQLException e){
             e.printStackTrace();
             db.closeConnection(false, conn);
@@ -68,49 +64,43 @@ public class UserDao {
     /**
      * A method to login a user
      * @Param request, this object holds the info needed to successfully login
-     * @RETURN the result of trying to login a user
+     * @RETURN the userID of the userName/Password combo
      */
-    public boolean login(LoginRequest request){
-        Connection conn = null;
-        PreparedStatement stmt = null;//insert statement
-        try {
-            conn = db.openConnection();
-            stmt = conn.prepareStatement(getUserID);
-            stmt.setString(1,request.getUserName());
-            stmt.setString(2,request.getPassWord());
-            if(stmt.executeUpdate() == 1){//execute the statement
-                db.closeConnection(true, conn);
-                return true;
-            }
-        }catch(SQLException e){
-            e.printStackTrace();
-            db.closeConnection(false, conn);
-            //THROW AN ERROR HERE SO THAT THE RESULT CREATED HOLDS AN ERROR?
-        }
-        finally {
-            DataBase.safeClose(stmt);
-        }
-        return false;
+    public String login(LoginRequest request){
+        return getUserID(request.getUserName(),request.getPassWord(),"SELECT userID FROM user WHERE userName = ? AND password = ?");
     }
 
+    /**
+     * A method get a user ID from the fName/lName of a user
+     * @Param fName, the first name of the user
+     * @Param lName, the last name of the user
+     * @RETURN the userID of the fName/lName comno
+     */
     public String getUserIDWithNames(String fName,String lName){
+        return getUserID(fName,lName,"SELECT userID FROM user WHERE firstName = ? AND lastName = ?");
+    }
+    /**
+     * A method get a user ID from the database from two inputs
+     * @Param input1, the first input
+     * @Param input2, the second input
+     * @RETURN the userID related to these two inputs
+     */
+    private String getUserID(String input1,String input2,String SQLString){
         Connection conn = null;
         PreparedStatement stmt = null;//insert statement
         ResultSet rs = null;
         String output = "";
         try {
             conn = db.openConnection();
-            stmt = conn.prepareStatement(getUserID);
-            stmt.setString(1,fName);
-            stmt.setString(2,lName);
+            stmt = conn.prepareStatement(SQLString);
+            stmt.setString(1,input1);
+            stmt.setString(2,input2);
             rs = stmt.executeQuery();//execute the statement
             if(rs.next()){
                 output = rs.getString(1);
                 db.closeConnection(true, conn);
             }
-            if(!conn.isClosed()){
-                db.closeConnection(false, conn);
-            }
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
         }catch(SQLException e){
             e.printStackTrace();
             db.closeConnection(false, conn);
@@ -121,4 +111,35 @@ public class UserDao {
         }
         return output;
     }
+    //DO DELETES
+    /**
+     * Checks if this userName alreadyExists
+     * @PARAM userName, the userName to be checked against the databse
+     * @RETURN whether it is true of not that this userName is already in the darabase
+     * */
+    public boolean checkUserName(String userName){
+        Connection conn = null;
+        PreparedStatement stmt = null;//insert statement
+        ResultSet rs = null;
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement("SELECT userName FROM user WHERE userName = ?");
+            stmt.setString(1,userName);
+            rs = stmt.executeQuery();//execute the statement
+            if(rs.next()){
+                db.closeConnection(true, conn);
+                return true;
+            }
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
+        }catch(SQLException e){
+            e.printStackTrace();
+            db.closeConnection(false, conn);
+        }
+        finally {
+            DataBase.safeClose(rs);
+            DataBase.safeClose(stmt);
+        }
+        return false;
+    }
+
 }

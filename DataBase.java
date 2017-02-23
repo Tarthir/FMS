@@ -123,11 +123,9 @@ public class DataBase {
                     "    lastName text not null,\n" +
                     "    gender text not null )");
 
-            stmt.executeUpdate("drop table if exists belongsTo");
-            stmt.executeUpdate("create table belongsTo ( userID text not null,\n" + "personID text not null )");
-
             stmt.executeUpdate("drop table if exists person");
             stmt.executeUpdate("create table person ( personID text not null primary key,\n" +
+                    "    userID text not null,\n" +
                     "    firstName text not null,\n" +
                     "    lastName text not null,\n" +
                     "    father text,\n" +
@@ -180,7 +178,6 @@ public class DataBase {
         try {
             stmt = connection.createStatement();
             stmt.executeUpdate("drop table if exists user");
-            stmt.executeUpdate("drop table if exists belongsTo");
             stmt.executeUpdate("drop table if exists person");
             stmt.executeUpdate("drop table if exists location");
             stmt.executeUpdate("drop table if exists tookPlaceAt");
@@ -209,11 +206,12 @@ public class DataBase {
         try {
             conn = openConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM user");//execute the statement
+            rs = stmt.executeQuery("SELECT userID FROM user");//execute the statement
             if(rs.next()){
                 output = rs.getString(1);
                 closeConnection(true, conn);
             }
+            if(!conn.isClosed()){closeConnection(false, conn);}
         } catch (SQLException e) {
             e.printStackTrace();
             closeConnection(false, conn);

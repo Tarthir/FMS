@@ -1,5 +1,8 @@
 package service;
 
+import java.util.ArrayList;
+
+import dataAccess.PersonDao;
 import infoObjects.PeopleRequest;
 import models.Person;
 
@@ -9,17 +12,18 @@ import models.Person;
  */
 
 public class PeopleService {
-    //private PeopleRequest people;
 
-    public PeopleService(PeopleRequest people) {
-        //this.people = people;
+    public PeopleService() {
     }
     /***
-     * Calls/Creates our DAO to interact with our database and get the requested people
+     * Calls/Creates our DAOs to interact with our database and get the requested people
      * @PARAM PeopleRequest, the request to find all people related to a user
      * @Return All people related to the user are returned
      */
     public Person[] getPeople(PeopleRequest p) {
+        PersonDao pDao = new PersonDao();
+        ArrayList<ArrayList<String>> allPeople = pDao.getPeople(p);
+        //SAME WITH PERSON SERVICE. YOU NEED TO USE A uDao and more PDaos to get the info for the user, and mother/father/spouse
         return null;
     }
 }

@@ -2,8 +2,11 @@ package dataAccess;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import infoObjects.PeopleRequest;
 import infoObjects.PersonRequest;
@@ -16,8 +19,8 @@ import models.Person;
 
 public class PersonDao {
     DataBase db;
-    private String SELECT = "SELECT from person WHERE personID = ?";
-    private final String SELECT_STAR = "SELECT * from person";
+    private String SELECT = "SELECT personID,firstName,lastName,father,mother,spouse FROM person WHERE personID = ?";
+    private final String SELECT_ON_USER = "SELECT personID,firstName,lastName,father,mother,spouse FROM person WHERE userID = ?";
     public PersonDao() {
         db = new DataBase();
     }
@@ -27,22 +30,36 @@ public class PersonDao {
      *
      * @PARAM userID, the ID for a specific user
      * @PARAM personID, the ID for a specific ancestor
+     * @RETURN returns the data needed to start to make a person object
      */
-    Person getPerson(PersonRequest request){
+    public ArrayList<String> getPerson(PersonRequest request){
         Connection conn = null;
+        ResultSet rs = null;
         PreparedStatement stmt = null;//insert statement
         try {
             conn = db.openConnection();
             stmt = conn.prepareStatement(SELECT);
             stmt.setString(1,request.getPersonID());
-            stmt.execute();//execute the statement
-            db.closeConnection(true, conn);//how is the data getting in the database?
+            rs = stmt.executeQuery();//execute the statement
+            ResultSetMetaData metadata = rs.getMetaData();
+            int columnCount = metadata.getColumnCount();
+            if(rs.next()){
+                ArrayList<String> resultSet = new ArrayList<>();
+                for(int i = 1; i <= columnCount; i++){
+                    resultSet.add(rs.getString(i));
+                }
+                db.closeConnection(true, conn);
+            }
         }catch(SQLException e){
             e.printStackTrace();
             db.closeConnection(false, conn);
         }
         finally {
+            DataBase.safeClose(rs);
             DataBase.safeClose(stmt);
+            if(conn != null) {
+                db.closeConnection(false, conn);
+            }
         }
         return null;
     }
@@ -51,21 +68,41 @@ public class PersonDao {
      * A method to get all of a users ancestor's
      *
      * @PARAM userID, the ID for a specific user
+     * @RETURN returns the data needed to start to make people objects
      */
-    Person[] getPeople(PeopleRequest request){
+    public ArrayList<ArrayList<String>> getPeople(PeopleRequest request){
         Connection conn = null;
+        ResultSet rs = null;
+        Statement stmt = null;
+        ArrayList<ArrayList<String>> allPeople = new ArrayList<>();//all the people
         try {
             conn = db.openConnection();
-            Statement stmt = conn.createStatement();
-            stmt.execute(SELECT_STAR);//executes, STILL NEED TO GET THE DATA
-            //Person [] =
-            db.closeConnection(true, conn);//how is the data getting in the database?
-        }catch(Exception e){e.printStackTrace();}
-        finally {
-            if(conn != null) {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(SELECT_ON_USER);
+            ResultSetMetaData metadata = rs.getMetaData();
+            int columnCount = metadata.getColumnCount();
+            while(rs.next()){
+                ArrayList<String> resultSet = new ArrayList<>();
+                for(int i = 1; i <= columnCount; i++){
+                    resultSet.add(rs.getString(i));
+                }
+                allPeople.add(resultSet);
+            }
+            if(allPeople.size() == 0) {//nothing was added
                 db.closeConnection(false, conn);
             }
+            else{
+                db.closeConnection(true, conn);
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            db.closeConnection(false, conn);}
+        finally {
+            DataBase.safeClose(rs);
+            DataBase.safeClose(stmt);
             return null;
         }
     }
+    //DO DELETES
 }

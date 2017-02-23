@@ -8,6 +8,7 @@ import java.sql.Connection;
 
 import dataAccess.DataBase;
 import dataAccess.UserDao;
+import infoObjects.LoginRequest;
 import models.User;
 
 /**
@@ -16,14 +17,12 @@ import models.User;
 
 public class UserDaoTest {
     private UserDao uDao;
-    private UserDao uDao2;
     private DataBase db;
     private Connection connection;
 
     @Before
     public void setUp() throws IOException {
         uDao = new UserDao();
-        uDao2 = new UserDao();
         db = new DataBase();
         connection = db.openConnection();
         db.createTables(connection);
@@ -50,11 +49,17 @@ public class UserDaoTest {
         assertNotEquals(uDao.getUserIDWithNames("first2","last2"),"0");
     }
 
-   // @Test
-   // public void testLogin() {
-       // assertFalse(uDao2.login(""));
-       // assertFalse(uDao2.login("google"));
-        //assertFalse(uDao2.login("gonculator"));
-       // assertFalse(uDao2.login("webmaster"));
-   // }
+    @Test
+    public void testLogin() {
+        User user = new User("5","name","password","email","first","last","m");
+        assertTrue(uDao.register(user));
+        LoginRequest request = new LoginRequest("name","password");
+        LoginRequest request2 = new LoginRequest("name2","password2");
+        LoginRequest request3 = new LoginRequest("name3","password3");
+        assertEquals(uDao.login(request),"5");
+        assertNotEquals(uDao.login(request),"0");
+        assertNotEquals(uDao.login(request2),"1");
+        assertNotEquals(uDao.login(request3),"1");
+    }
+
 }

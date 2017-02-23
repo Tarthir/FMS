@@ -3,6 +3,7 @@ package dataAccess;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -24,14 +25,17 @@ public class AuthTokenDao {
         db = new DataBase();
     }
 
-    /**Inserts authtokens into the database keyed to userIDs*/
+    /**Inserts authtokens into the database keyed to userIDs
+     * @PARAM userID, the userId we are inserting
+     * @PARAM authTok, the authTok we are inserting
+     * @RETURN whether the insert was successful or not
+     * */
     public boolean insertAuthToken(String userID,AuthToken authTok){
         Connection conn = null;
-       // ResultSet rs = null;
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement(insertIntoAuth);
             conn = db.openConnection();
+            stmt = conn.prepareStatement(insertIntoAuth);
             stmt.setString(1,userID);
             stmt.setString(2, authTok.getAuthToken());
             stmt.setLong(3, authTok.getTimeStamp());
@@ -39,6 +43,7 @@ public class AuthTokenDao {
                 db.closeConnection(true, conn);
                 return true;
             }
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
         }
         catch(SQLException e){
          e.printStackTrace();
@@ -50,23 +55,64 @@ public class AuthTokenDao {
         return false;
     }
 
-    /**Gets the Authtoken(s) of a particular user*/
+    /**Gets the Authtoken(s) of a particular user
+     * @PARAM userID, The userID of the AuthToken(s) we are getting
+     * @RETURN ArrayList, the list of authtokens belonging to this user
+     */
     public ArrayList<String> getAuthToken(String userID){
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement stmt = null;
-        ArrayList<String> output = null;
+        ArrayList<String> output = new ArrayList<>();
         try {
-            stmt = conn.prepareStatement(getAuthToken);
             conn = db.openConnection();
+            stmt = conn.prepareStatement(getAuthToken);
             stmt.setString(1,userID);
             rs = stmt.executeQuery();
             while(rs.next()){//execute the statement
                 output.add(rs.getString("authToken"));
             }
-            db.closeConnection(true, conn);
+            if(output.size() == 0){//nothing was added
+                db.closeConnection(false, conn);
+            }
+            else{
+                db.closeConnection(true, conn);
+            }
         }
         catch(SQLException e){
+            e.printStackTrace();
+            db.closeConnection(false, conn);
+        }
+        finally {
+            DataBase.safeClose(rs);
+            DataBase.safeClose(stmt);
+
+        }
+        return output;
+    }
+
+    /**
+     * A method to get a user ID from the database from an authToken
+     * @Param authToken, get a user by an Authtoken
+     * @RETURN the userID related to the authToken
+     */
+    public String getUserIDFromAuthToken(String authToken){
+        String SQLString = "SELECT userID FROM authToken WHERE authToken = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;//insert statement
+        ResultSet rs = null;
+        String output = "";
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement(SQLString);
+            stmt.setString(1,authToken);
+            rs = stmt.executeQuery();//execute the statement
+            if(rs.next()){
+                output = rs.getString(1);
+                db.closeConnection(true, conn);
+            }
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
+        }catch(SQLException e){
             e.printStackTrace();
             db.closeConnection(false, conn);
         }
@@ -76,4 +122,5 @@ public class AuthTokenDao {
         }
         return output;
     }
+    //DO DELETES
 }

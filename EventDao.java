@@ -65,30 +65,23 @@ public class EventDao {
             stmt.execute(SELECT_STAR);
             db.closeConnection(true, conn);//how is the data getting in the database?
             // return EventResult =
-        }catch(SQLException e){e.printStackTrace();}
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
+        }catch(SQLException e){
+            e.printStackTrace();
+            db.closeConnection(false, conn);
+        }
         finally {
-            if(conn != null) {
-                db.closeConnection(false, conn);
-            }
             return null;
         }
     }
     /***
-     * A method to get all of a user's ancestor's events
+     * A method to insert all of a user's ancestor's events. Calls appropiate Daos
      *
      * @PARAM request, the info to get multiple events
-     * @RETURN inserts all the users ancestors events into the database
+     * @RETURN void
      */
     public void insertEvents(){
 
     }
-    /***
-     * A method to get all of a user's ancestor's events
-     *
-     * @PARAM request, the info to get multiple events
-     * @RETURN connects the location of the events and the event in the database
-     */
-    public void insertTookPlaceAt(){
-
-    }
+//DO DELETES
 }

@@ -26,6 +26,8 @@ public class DataGenerator {
      * @PARAM mNames, the array of possible male first names
      * @RETURN whether the generation process was successful or not
      * */
+    //SHOULD BE ABLE TO TAKE ANY NON NEGATIVE NUMBER AS THE NUMBER OF GERNEATIONS TO FILL.
+    //MAKE THE CLASS BUILD THE GENERATIONS of 2^N from bottem up, ONE N LEVEL AT A TIME
     public boolean genData(Location[] locations,String[] fNames, String[] lNames, String[] mNames){
         String[] maleOrFemale = {"m","f"};
         Random genderRand = new Random();
@@ -79,7 +81,7 @@ public class DataGenerator {
         return new Person(uuid.toString(), user, mNames[mNameRand.nextInt(mNames.length)],
                 lNames[lNameRand.nextInt(lNames.length)], maleOrFemale[genderRand.nextInt(2)], null, null, null);
     }
-    
+
     /**Sets the mothers and fathers of the people generated
      * @PARAM people, the array of people that has been generated
      * @RETURN void
@@ -136,8 +138,6 @@ public class DataGenerator {
                 return getBirthDates(index,yearRand);
             case "Baptism":
                 return getBaptismDates(index, yearRand, previousYear);
-            //case "Marriage":
-           //     return getMarriageDates(index, yearRand, people);
             default: //death
                 return getDeathDates(index, yearRand, previousYear);
         }
