@@ -12,7 +12,7 @@ public class Person {
     /**
      * The user object of the user to which this person belongs
      */
-    private User descendant;
+    private String userID;
     /**
      * The first name of the person
      * */
@@ -28,69 +28,88 @@ public class Person {
     /**
      * This persons Father(Person obj). May be null
      * */
-    Person father;
+    private String fatherID;
     /**
      * The mother(Person obj) of this person. May be null
      * */
-    Person mother;
+    private String motherID;
     /**
      * The spouse(Person obj) of this person. May be null
      * */
-    Person spouse;
+    private String spouseID;
 
-    public Person(String ID, User descendant, String fName, String lName,
-                  String gender, Person father, Person mother, Person spouse) {
+    public Person(String ID, String userID, String fName, String lName, String gender, String fatherID, String motherID, String spouseID) {
         this.ID = ID;
-        this.descendant = descendant;
+        this.userID = userID;
         this.fName = fName;
         this.lName = lName;
         this.gender = gender;
-        this.father = father;
-        this.mother = mother;
-        this.spouse = spouse;
+        this.fatherID = fatherID;
+        this.motherID = motherID;
+        this.spouseID = spouseID;
     }
-    /**@RETRUN the personID */
+
+
     public String getID() {
         return ID;
     }
-    /**@RETRUN the user that is related to this person*/
-    public User getDescendant() {
-        return descendant;
+
+    public String getUserID() {
+        return userID;
     }
-    /**@RETRUN the first name of this person*/
+
     public String getfName() {
         return fName;
     }
-    /**@RETRUN the last name of this person*/
+
     public String getlName() {
         return lName;
     }
-    /**@RETRUN the gender of this person*/
+
     public String getGender() {
         return gender;
     }
-    /**@RETRUN the father of this person*/
-    public Person getFather() {
-        return father;
-    }
-    /**@RETRUN the mother of this person*/
-    public Person getMother() {
-        return mother;
-    }
-    /**@RETRUN the spouse of this person*/
-    public Person getSpouse() {
-        return spouse;
+
+    public String getFatherID() {
+        return fatherID;
     }
 
-    public void setSpouse(Person spouse) {
-        this.spouse = spouse;
+    public String getMotherID() {
+        return motherID;
     }
 
-    public void setFather(Person father) {
-        this.father = father;
+    public String getSpouseID() {
+        return spouseID;
     }
 
-    public void setMother(Person mother) {
-        this.mother = mother;
+    public void setFatherID(String fatherID) {
+        this.fatherID = fatherID;
+    }
+
+    public void setMotherID(String motherID) {
+        this.motherID = motherID;
+    }
+
+    public void setSpouseID(String spouseID) {
+        this.spouseID = spouseID;
+    }
+    /**
+     * Compares the contents of person objects to see if they are equal
+     * @RETURN true if they are equal, false otherwise
+     * */
+    @Override
+    public boolean equals(Object o) {
+        if(this.getClass() != o.getClass()){return false;}
+        Person other = (Person)o;
+        if(!other.getUserID().equals(this.getUserID())){return false;}
+        if(!other.getID().equals(this.getID())){return false;}
+        if(!other.getGender().equals(this.getGender())){return false;}
+        if(!other.getMotherID().equals(this.getMotherID())){return false;}
+        if(!other.getfName().equals(this.getfName())){return false;}
+        if(!other.getlName().equals(this.getlName())){return false;}
+        if(!other.getSpouseID().equals(this.getSpouseID())){return false;}
+        if(!other.getFatherID().equals(this.getFatherID())){return false;}
+        return true;
+
     }
 }

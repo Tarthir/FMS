@@ -38,9 +38,10 @@ public class DataGenerator {
         Person[] people = new Person[30];
         for(int i = 0; i <= MAX; i++){//create all the generations
             if(i % 2 == 1 ){//female
-                people[i] = getFemale(fNames, lNames,maleOrFemale,genderRand,fNameRand,lNameRand);
-                people[i].setSpouse(people[i-1]);//set spouses; odd indices are females.
-                people[i-1].setSpouse(people[i]);
+                //NEED TO SET BY IDS!!!
+                //people[i] = getFemale(fNames, lNames,maleOrFemale,genderRand,fNameRand,lNameRand);
+                //people[i].setSpouseID(people[i-1]);//set spouses; odd indices are females.
+               // people[i-1].setSpouseID(people[i]);
             }
             else{//male(evens,including zero)
                 people[i] = getMale(mNames, lNames,maleOrFemale,genderRand,mNameRand,lNameRand);
@@ -63,8 +64,9 @@ public class DataGenerator {
      * */
     private Person getFemale(String[] fNames, String[] lNames,String[] maleOrFemale,Random genderRand,Random fNameRand,Random lNameRand){
         UUID uuid = UUID.randomUUID();
-        return new Person(uuid.toString(), user, fNames[fNameRand.nextInt(fNames.length)],
-                lNames[lNameRand.nextInt(lNames.length)], maleOrFemale[genderRand.nextInt(2)], null, null, null);
+        //return new Person(uuid.toString(), user, fNames[fNameRand.nextInt(fNames.length)],
+       //         lNames[lNameRand.nextInt(lNames.length)], maleOrFemale[genderRand.nextInt(2)], null, null, null);
+        return null;
     }
 
     /**Gets male persons
@@ -78,8 +80,9 @@ public class DataGenerator {
      * */
     private Person getMale(String[] lNames, String[] mNames,String[] maleOrFemale,Random genderRand,Random mNameRand,Random lNameRand){
         UUID uuid = UUID.randomUUID();
-        return new Person(uuid.toString(), user, mNames[mNameRand.nextInt(mNames.length)],
-                lNames[lNameRand.nextInt(lNames.length)], maleOrFemale[genderRand.nextInt(2)], null, null, null);
+        //return new Person(uuid.toString(), user, mNames[mNameRand.nextInt(mNames.length)],
+          //      lNames[lNameRand.nextInt(lNames.length)], maleOrFemale[genderRand.nextInt(2)], null, null, null);
+        return null;
     }
 
     /**Sets the mothers and fathers of the people generated
@@ -90,8 +93,8 @@ public class DataGenerator {
         int index = 2;
         int needParents = 14;//only positions 0-13 needs parents
         for(int i = 0; i < needParents; i++) {
-            people[i].setFather(people[index]);
-            people[i].setMother(people[index+1]);
+           // people[i].setFather(people[index]);
+           // people[i].setMother(people[index+1]);
             index +=2;
         }
     }

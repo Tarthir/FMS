@@ -19,12 +19,44 @@ import models.Person;
 
 public class PersonDao {
     DataBase db;
-    private String SELECT = "SELECT personID,firstName,lastName,father,mother,spouse FROM person WHERE personID = ?";
-    private final String SELECT_ON_USER = "SELECT personID,firstName,lastName,father,mother,spouse FROM person WHERE userID = ?";
+    private String INSERT = "INSERT into person (personID, userID, firstName, lastName, gender, fatherID, motherID, spouseID) values (?,?,?,?,?,?,?,?)";
+    private String SELECT = "SELECT personID,userID,firstName,lastName, gender,fatherID,motherID,spouseID FROM person WHERE personID = ?";
+    private String SELECT_ON_USER = "SELECT personID,firstName,lastName,gender,fatherID,motherID,spouseID FROM person WHERE userID = ?";
     public PersonDao() {
         db = new DataBase();
     }
 
+    public boolean insertPerson(Person person){
+        Connection conn = null;
+        PreparedStatement stmt = null;//insert statement
+        //CHECK TO SEE if USER IS UNIQUE
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement(INSERT);
+            stmt.setString(1,person.getID());
+            stmt.setString(2,person.getUserID());
+            stmt.setString(3,person.getfName());
+            stmt.setString(4,person.getlName());
+            stmt.setString(5,person.getGender());
+            stmt.setString(6,person.getFatherID());
+            stmt.setString(7,person.getMotherID());
+            stmt.setString(8,person.getSpouseID());
+            if(stmt.executeUpdate() == 1){//execute the statement
+                db.closeConnection(true, conn);
+                //ALSO LOG US ON
+                return true;
+            }
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
+        }catch(SQLException e){
+            e.printStackTrace();
+            db.closeConnection(false, conn);
+            //THROW AN ERROR HERE SO THAT THE RESULT CREATED HOLDS AN ERROR?
+        }
+        finally {
+            DataBase.safeClose(stmt);
+        }
+        return false;
+    }
     /***
      * A method to get a user's ancestor's info
      *
@@ -43,12 +75,16 @@ public class PersonDao {
             rs = stmt.executeQuery();//execute the statement
             ResultSetMetaData metadata = rs.getMetaData();
             int columnCount = metadata.getColumnCount();
+            ArrayList<String> columns = new ArrayList<>();
             if(rs.next()){
-                ArrayList<String> resultSet = new ArrayList<>();
                 for(int i = 1; i <= columnCount; i++){
-                    resultSet.add(rs.getString(i));
+                    columns.add(rs.getString(i));
                 }
+            }
+            if(columns.size() == 0){db.closeConnection(false, conn);}
+            else{//if we got a result
                 db.closeConnection(true, conn);
+                return columns;
             }
         }catch(SQLException e){
             e.printStackTrace();
@@ -57,9 +93,6 @@ public class PersonDao {
         finally {
             DataBase.safeClose(rs);
             DataBase.safeClose(stmt);
-            if(conn != null) {
-                db.closeConnection(false, conn);
-            }
         }
         return null;
     }
@@ -70,29 +103,31 @@ public class PersonDao {
      * @PARAM userID, the ID for a specific user
      * @RETURN returns the data needed to start to make people objects
      */
-    public ArrayList<ArrayList<String>> getPeople(PeopleRequest request){
+    public ArrayList<ArrayList<String>> getPeople(String userID){
         Connection conn = null;
         ResultSet rs = null;
-        Statement stmt = null;
-        ArrayList<ArrayList<String>> allPeople = new ArrayList<>();//all the people
+        PreparedStatement stmt = null;
+        ArrayList<ArrayList<String>> allRows = new ArrayList<>();//all the people
         try {
             conn = db.openConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(SELECT_ON_USER);
+            stmt = conn.prepareStatement(SELECT_ON_USER);
+            stmt.setString(1,userID);
+            rs = stmt.executeQuery();
             ResultSetMetaData metadata = rs.getMetaData();
             int columnCount = metadata.getColumnCount();
             while(rs.next()){
-                ArrayList<String> resultSet = new ArrayList<>();
+                ArrayList<String> columns = new ArrayList<>();
                 for(int i = 1; i <= columnCount; i++){
-                    resultSet.add(rs.getString(i));
+                    columns.add(rs.getString(i));
                 }
-                allPeople.add(resultSet);
+                allRows.add(columns);
             }
-            if(allPeople.size() == 0) {//nothing was added
+            if(allRows.size() == 0) {//nothing was added
                 db.closeConnection(false, conn);
             }
             else{
                 db.closeConnection(true, conn);
+                return allRows;
             }
         }
         catch(SQLException e){
@@ -101,8 +136,9 @@ public class PersonDao {
         finally {
             DataBase.safeClose(rs);
             DataBase.safeClose(stmt);
-            return null;
         }
+        return null;
     }
+
     //DO DELETES
 }

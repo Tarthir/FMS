@@ -128,9 +128,10 @@ public class DataBase {
                     "    userID text not null,\n" +
                     "    firstName text not null,\n" +
                     "    lastName text not null,\n" +
-                    "    father text,\n" +
-                    "    mother text,\n" +
-                    "    spouse text )");
+                    "    gender text not null,\n" +
+                    "    fatherID text,\n" +
+                    "    motherID text,\n" +
+                    "    spouseID text )");
 
             stmt.executeUpdate("drop table if exists location");
             stmt.executeUpdate("create table location ( locationID text not null primary key,\n" +

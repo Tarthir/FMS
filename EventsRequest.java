@@ -6,14 +6,14 @@ package infoObjects;
  */
 
 public class EventsRequest {
-    /**The UserID of this event Request*/
-    private String userID;
+    /**The authToken of the user are related to*/
+    private String authToken;
 
-    public EventsRequest(String userID) {
-        this.userID = userID;
+    public EventsRequest(String authToken) {
+        this.authToken = authToken;
     }
-    /**@RETURN The UserID of this event Request*/
-    public String getUserID() {
-        return userID;
+    /**@RETURN The authToken of the user are related to*/
+    public String getAuthToken() {
+        return authToken;
     }
 }

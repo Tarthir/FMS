@@ -10,14 +10,14 @@ public class LoginResult {
     private String authToken;
     /** User name passed in with request*/
     private String userName;
-    /** Non-empty string containing the Person ID of the user’s generated Person object*/
-    private String personID;
+    /** Non-empty string containing the userID  of the user’s generated object*/
+    private String userID;
 
 
-    public LoginResult(String authToken, String userName, String personID) {
+    public LoginResult(String authToken, String userName, String userID) {
         this.authToken = authToken;
         this.userName = userName;
-        this.personID = personID;
+        this.userID = userID;
     }
     /**@RETURN The authToken of this login result*/
     public String getAuthToken() {
@@ -28,7 +28,7 @@ public class LoginResult {
         return userName;
     }
     /**@RETURN The personID of this login result*/
-    public String getPersonID() {
-        return personID;
+    public String getuserID() {
+        return userID;
     }
 }

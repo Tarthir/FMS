@@ -2,8 +2,10 @@ package service;
 
 import java.util.ArrayList;
 
+import dataAccess.AuthTokenDao;
 import dataAccess.PersonDao;
 import infoObjects.PersonRequest;
+import models.PeopleMaker;
 import models.Person;
 
 /**
@@ -23,8 +25,8 @@ public class PersonService {
      */
     public Person getPerson(PersonRequest p) {
         PersonDao pDao = new PersonDao();
-        ArrayList<String> person = pDao.getPerson(p);
-        //SAME WITH PERSON SERVICE. YOU NEED TO USE A uDao and more PDaos to get the info for the user, and mother/father/spouse
-        return null;
+        PeopleMaker maker = new PeopleMaker();
+        ArrayList<String> personData = pDao.getPerson(p);
+        return maker.createPerson(personData);
     }
 }
