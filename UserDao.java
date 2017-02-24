@@ -26,11 +26,12 @@ public class UserDao {
     }
 
     /***
-     * A method to register a new user. Create's a user object and passes it to the CreateUsers class
+     * A method to register a new user. Create's a user object and passes it to the UserCreator class
      * @PARAM user, the new user we are making
      * @RETURN the result of trying to register a user
+     * @EXCEPTION throws SQLException
      */
-    public boolean register(User newUser){
+    public boolean register(User newUser)throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;//insert statement
         //CHECK TO SEE if USER IS UNIQUE
@@ -51,8 +52,9 @@ public class UserDao {
             }
             if(!conn.isClosed()){db.closeConnection(false, conn);}
         }catch(SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             db.closeConnection(false, conn);
+            throw e;
             //THROW AN ERROR HERE SO THAT THE RESULT CREATED HOLDS AN ERROR?
         }
         finally {
@@ -65,8 +67,9 @@ public class UserDao {
      * A method to login a user
      * @Param request, this object holds the info needed to successfully login
      * @RETURN the userID of the userName/Password combo
+     * @EXCEPTION throws SQLException
      */
-    public String login(LoginRequest request){
+    public String login(LoginRequest request)throws SQLException{
         return getUserID(request.getUserName(),request.getPassWord(),"SELECT userID FROM user WHERE userName = ? AND password = ?");
     }
 
@@ -74,9 +77,10 @@ public class UserDao {
      * A method get a user ID from the fName/lName of a user
      * @Param fName, the first name of the user
      * @Param lName, the last name of the user
-     * @RETURN the userID of the fName/lName comno
+     * @RETURN the userID of the fName/lName combo
+     * @EXCEPTION throws SQLException
      */
-    public String getUserIDWithNames(String fName,String lName){
+    public String getUserIDWithNames(String fName,String lName)throws SQLException{
         return getUserID(fName,lName,"SELECT userID FROM user WHERE firstName = ? AND lastName = ?");
     }
     /**
@@ -84,8 +88,9 @@ public class UserDao {
      * @Param input1, the first input
      * @Param input2, the second input
      * @RETURN the userID related to these two inputs
+     * @EXCEPTION throws SQLException
      */
-    private String getUserID(String input1,String input2,String SQLString){
+    private String getUserID(String input1,String input2,String SQLString)throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;//insert statement
         ResultSet rs = null;
@@ -102,8 +107,9 @@ public class UserDao {
             }
             if(!conn.isClosed()){db.closeConnection(false, conn);}
         }catch(SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             db.closeConnection(false, conn);
+            throw e;
         }
         finally {
             DataBase.safeClose(rs);
@@ -116,8 +122,9 @@ public class UserDao {
      * Checks if this userName alreadyExists
      * @PARAM userName, the userName to be checked against the databse
      * @RETURN whether it is true of not that this userName is already in the darabase
+     * @EXCEPTION throws SQLException
      * */
-    public boolean checkUserName(String userName){
+    public boolean checkUserName(String userName)throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;//insert statement
         ResultSet rs = null;
@@ -132,8 +139,9 @@ public class UserDao {
             }
             if(!conn.isClosed()){db.closeConnection(false, conn);}
         }catch(SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             db.closeConnection(false, conn);
+            throw e;
         }
         finally {
             DataBase.safeClose(rs);

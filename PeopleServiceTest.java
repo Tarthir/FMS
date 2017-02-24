@@ -6,11 +6,19 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
+import dataAccess.AuthTokenDao;
 import dataAccess.DataBase;
 import dataAccess.PersonDao;
+import dataAccess.UserDao;
+import infoObjects.PeopleRequest;
 import infoObjects.PersonRequest;
+import models.AuthToken;
 import models.Person;
+import models.User;
 import service.PeopleService;
 import service.PersonService;
 
@@ -26,18 +34,45 @@ public class PeopleServiceTest {
     private PersonDao pDao;
     private DataBase db;
     private Connection connection;
+    private Person person1;
+    private Person person2;
+    private Person person3;
+    private Person person4;
+    private ArrayList<String> authToken;
+    private ArrayList<String> authToken2;
 
     @Before
     public void setUp() throws IOException {
-        pDao = new PersonDao();
-        pService = new PeopleService();
-        db = new DataBase();
-        connection = db.openConnection();
-        db.createTables(connection);
-        Person person1 = new Person("1","userID","fName","lName","m","fatherID","motherID","spouseID");
-        Person person2 = new Person("2","userID2","fName2","lName2","f","fatherID2","motherID2","spouseID2");
-        assertTrue(pDao.insertPerson(person1));
-        assertTrue(pDao.insertPerson(person2));
+        try {
+            UserDao uDao = new UserDao();
+            AuthTokenDao aDao = new AuthTokenDao();
+            pDao = new PersonDao();
+            pService = new PeopleService();
+            db = new DataBase();
+            connection = db.openConnection();
+            db.createTables(connection);
+            User user = new User("userID", "name", "password", "email", "first", "last", "m");
+            User user2 = new User("userID2", "name2", "password2", "email2", "first2", "last2", "f");
+            ;
+            assertTrue(uDao.register(user));
+            assertTrue(uDao.register(user2));
+            AuthToken auth = new AuthToken();
+            assertTrue(aDao.insertAuthToken("userID", auth));
+            AuthToken auth2 = new AuthToken();
+            assertTrue(aDao.insertAuthToken("userID2", auth2));
+            authToken = aDao.getAuthToken("userID");
+            authToken2 = aDao.getAuthToken("userID2");
+            person1 = new Person("1", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
+            person2 = new Person("2", "userID2", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2");
+            person3 = new Person("3", "userID", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3");
+            person4 = new Person("4", "userID2", "fName4", "lName4", "f", "fatherID4", "motherID4", "spouseID4");
+            assertTrue(pDao.insertPerson(person1));
+            assertTrue(pDao.insertPerson(person2));
+            assertTrue(pDao.insertPerson(person3));
+            assertTrue(pDao.insertPerson(person4));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @After
@@ -48,10 +83,23 @@ public class PeopleServiceTest {
     }
     @Test
     public void getPeople(){
-        //PersonRequest request = new PersonRequest("2");
-        //Person personExpected = new Person("2","userID2","fName2","lName2","f","fatherID2","motherID2","spouseID2");
-        //pService = new PersonService();
-       // Person personResult = pService.getPerson(request);
-        //assertEquals(personResult,personExpected);
+        //MAKE AUTHTOKENS AND INSERT USERS
+        try {
+        PeopleRequest request = new PeopleRequest(authToken.get(0));
+        PeopleRequest request2 = new PeopleRequest(authToken2.get(0));
+        pService = new PeopleService();
+        ArrayList<Person> expected = new ArrayList<>(Arrays.asList(person1,person3));
+        ArrayList<Person> expected2 = new ArrayList<>(Arrays.asList(person2,person4));
+        ArrayList<Person> peopleResult = null;
+        ArrayList<Person> peopleResult2 = null;
+
+            peopleResult = pService.getPeople(request).getPeople();
+            peopleResult2 = pService.getPeople(request2).getPeople();
+
+        assertEquals(peopleResult,expected);
+        assertEquals(peopleResult2,expected2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

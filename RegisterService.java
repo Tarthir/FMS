@@ -1,5 +1,6 @@
 package service;
 
+import java.sql.SQLException;
 import java.util.UUID;
 
 import dataAccess.AuthTokenDao;
@@ -24,7 +25,7 @@ public class RegisterService {
      * @PARAM request: to register a new user
      * @RETURN Gets the result of trying to register a new user
      * */
-    public RegisterResult register(RegisterRequest request){
+    public RegisterResult register(RegisterRequest request) throws SQLException{
         newUser = makeUserModel(request);
         UserDao dao = new UserDao();
         if(!dao.checkUserName(request.getUserName()) && dao.register(newUser)){//check to see if the userName already exists then if register is successful

@@ -1,5 +1,7 @@
 package service;
 
+import java.sql.SQLException;
+
 import dataAccess.AuthTokenDao;
 import dataAccess.UserDao;
 import infoObjects.LoginRequest;
@@ -21,7 +23,7 @@ public class LoginService {
      * @PARAM LoginRequest: the request to login into the application. holds userName and password
      * @RETURN the result of trying to login
      * */
-    public LoginResult login(LoginRequest request){
+    public LoginResult login(LoginRequest request) throws SQLException{
         UserDao dao = new UserDao();
         String userID = dao.login(request);
         if(!userID.equals("")){

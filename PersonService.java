@@ -2,10 +2,9 @@ package service;
 
 import java.util.ArrayList;
 
-import dataAccess.AuthTokenDao;
 import dataAccess.PersonDao;
 import infoObjects.PersonRequest;
-import models.PeopleMaker;
+import dataAccess.PeopleCreator;
 import models.Person;
 
 /**
@@ -25,7 +24,7 @@ public class PersonService {
      */
     public Person getPerson(PersonRequest p) {
         PersonDao pDao = new PersonDao();
-        PeopleMaker maker = new PeopleMaker();
+        PeopleCreator maker = new PeopleCreator();
         ArrayList<String> personData = pDao.getPerson(p);
         return maker.createPerson(personData);
     }

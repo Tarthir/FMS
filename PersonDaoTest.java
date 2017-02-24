@@ -79,9 +79,9 @@ public class PersonDaoTest {
         assertTrue(pDao.insertPerson(person2));
         assertTrue(pDao.insertPerson(person3));
         assertTrue(pDao.insertPerson(person4));
-        ArrayList<String> expected1 = new ArrayList<>(Arrays.asList("1","fName","lName","m","fatherID","motherID","spouseID"));
-        ArrayList<String> expected3 = new ArrayList<>(Arrays.asList("3","fName3","lName3","m","fatherID3","motherID3","spouseID3"));
-        ArrayList<String> expected4 = new ArrayList<>(Arrays.asList("4","fName4","lName4","m","fatherID4","motherID4","spouseID4"));
+        ArrayList<String> expected1 = new ArrayList<>(Arrays.asList("1","userID","fName","lName","m","fatherID","motherID","spouseID"));
+        ArrayList<String> expected3 = new ArrayList<>(Arrays.asList("3","userID","fName3","lName3","m","fatherID3","motherID3","spouseID3"));
+        ArrayList<String> expected4 = new ArrayList<>(Arrays.asList("4","userID","fName4","lName4","m","fatherID4","motherID4","spouseID4"));
         ArrayList<ArrayList<String>> allPeopleExpected = new ArrayList<>(Arrays.asList(expected1,expected3,expected4));
         assertEquals(allPeopleExpected, pDao.getPeople("userID"));
 

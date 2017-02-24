@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import dataAccess.AuthTokenDao;
 import dataAccess.DataBase;
@@ -35,18 +36,20 @@ public class LoginServiceTest {
     private RegisterResult result2;
 
     @Before
-    public void setUp() throws IOException {
-        lService = new LoginService();
-        uDao = new UserDao();
-        db = new DataBase();
-        connection = db.openConnection();
-        db.createTables(connection);
-        //setup
-        RegisterService rService = new RegisterService();
-        RegisterRequest request = new RegisterRequest("username","password","email","first","last","f");
-        RegisterRequest request2 = new RegisterRequest("username2","password2","email","first","last","f");
-        result = rService.register(request);
-        result2 = rService.register(request2);
+    public void setUp(){
+        try {
+            lService = new LoginService();
+            uDao = new UserDao();
+            db = new DataBase();
+            connection = db.openConnection();
+            db.createTables(connection);
+            //setup
+            RegisterService rService = new RegisterService();
+            RegisterRequest request = new RegisterRequest("username", "password", "email", "first", "last", "f");
+            RegisterRequest request2 = new RegisterRequest("username2", "password2", "email", "first", "last", "f");
+            result = rService.register(request);
+            result2 = rService.register(request2);
+        }catch(SQLException e){e.printStackTrace();}
     }
 
     @After
@@ -58,18 +61,23 @@ public class LoginServiceTest {
 
     @Test
     public void testLogin() {
-        AuthTokenDao authDao = new AuthTokenDao();
-        LoginRequest login = new LoginRequest("username","password");
-        LoginRequest login2 = new LoginRequest("username2","password2");
-        LoginResult result1 = lService.login(login);
-        LoginResult result2 = lService.login(login2);
-        assertNotEquals(result1,null);
-        assertNotEquals(result2,null);
-        assertNotEquals(result1.getAuthToken(),result2.getAuthToken());
-        assertNotEquals(result1.getUserName(),result2.getUserName());
-        assertNotEquals(result1.getuserID(),result2.getuserID());
-        assertEquals(authDao.getAuthToken(result1.getuserID()).size(),2);//we now have two auth tokens
-        assertEquals(authDao.getAuthToken(result2.getuserID()).size(),2);
+        try {
+            AuthTokenDao authDao = new AuthTokenDao();
+            LoginRequest login = new LoginRequest("username", "password");
+            LoginRequest login2 = new LoginRequest("username2", "password2");
+            LoginResult result1 = lService.login(login);
+            LoginResult result2 = lService.login(login2);
+            assertNotEquals(result1, null);
+            assertNotEquals(result2, null);
+            assertNotEquals(result1.getAuthToken(), result2.getAuthToken());
+            assertNotEquals(result1.getUserName(), result2.getUserName());
+            assertNotEquals(result1.getuserID(), result2.getuserID());
+            assertEquals(authDao.getAuthToken(result1.getuserID()).size(), 2);//we now have two auth tokens
+            assertEquals(authDao.getAuthToken(result2.getuserID()).size(), 2);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

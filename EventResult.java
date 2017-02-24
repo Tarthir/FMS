@@ -9,21 +9,37 @@ import models.Person;
  */
 
 public class EventResult {
+    /**
+     * The userID of this event
+     * */
+    private String userID;
+    /**The event object*/
     private Event event;
-    private Person person;
+    /**The personID string*/
+    private String personID;
+    /**The exception thrown object*/
+    private Exception e;
 
 
-    public EventResult(Event event, Person person) {
+    public EventResult(String userID,Event event, String personID) {
+        this.userID = userID;
         this.event = event;
-        this.person = person;
+        this.personID = personID;
+    }
+    public Exception getE() {
+        return e;
     }
 
+    public void setE(Exception e) {
+        this.e = e;
+    }
     public Event getEvent() {
         return event;
     }
 
-    public Person getPerson() {
-        return person;
+    public String getPersonID() {
+        return personID;
     }
+    public String getUserID(){return userID;}
 
 }

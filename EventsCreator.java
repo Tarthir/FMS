@@ -1,0 +1,47 @@
+package dataAccess;
+
+import java.util.ArrayList;
+
+import models.Event;
+
+/**
+ * Created by tyler on 2/23/2017.
+ * creates our events
+ */
+
+public class EventsCreator {
+    public EventsCreator() {
+    }
+
+    /**
+     * Creates multiple people from input
+     *
+     * @PARAM Arraylist of an Arraylist of Strings holding event data
+     * @RETURN An arraylist of event objects
+     */
+    public ArrayList<Event> createEvents(ArrayList<ArrayList<String>> allEvents) {
+        if (allEvents.size() == 0) {
+            return null;
+        }
+        ArrayList<Event> outputEvents= new ArrayList<Event>();
+        for (ArrayList<String> arr : allEvents) {
+            outputEvents.add(createEvent(arr));
+        }
+        return outputEvents;
+    }
+
+    /**
+     * Creates one person from input
+     *
+     * @PARAM Arraylist of of Strings holding event data
+     * @RETURN A event object
+     */
+    public Event createEvent(ArrayList<String> eventData) {
+        if (eventData.size() == 0) {
+            return null;
+        } else {//return a new person
+            return new Event(eventData.get(0), eventData.get(1), eventData.get(2), eventData.get(3),
+                    eventData.get(4), eventData.get(5));
+        }
+    }
+}

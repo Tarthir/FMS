@@ -1,7 +1,12 @@
 package service;
 
+import java.util.ArrayList;
+
+import dataAccess.EventsCreator;
+import dataAccess.EventDao;
 import infoObjects.EventRequest;
 import infoObjects.EventResult;
+import models.Event;
 
 /**
  * Created by tyler on 2/14/2017.
@@ -15,7 +20,14 @@ public class EventService {
      * @PARAM request, the request to get a particular event
      * @RETURN The result of attempting to get a particular event
      * */
-    public EventResult event(EventRequest request){
+    public EventResult getEvent(EventRequest request){
+        EventDao eDao = new EventDao();
+        EventsCreator create = new EventsCreator();
+        ArrayList<String> result = eDao.getEvent(request);
+        if(result != null){
+            Event event = create.createEvent(result);
+            return new EventResult(event.getUserID(),event,event.getPersonID());
+        }
         return null;
     }
 }

@@ -8,17 +8,14 @@ import models.AuthToken;
  */
 
 public class PeopleRequest {
-    private AuthToken auth;
+    private String authToken;
 
-    public PeopleRequest(AuthToken auth) {
-        this.auth = auth;
+    public PeopleRequest(String authToken) {
+        this.authToken = authToken;
     }
 
-    public AuthToken getAuth() {
-        return auth;
+    public String getAuthToken() {
+        return authToken;
     }
 
-    /*public boolean getAllPeople(){
-        return true;
-    }*/
 }

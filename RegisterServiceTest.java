@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import dataAccess.AuthTokenDao;
 import dataAccess.DataBase;
@@ -47,46 +48,58 @@ public class RegisterServiceTest {
 
     @Test
     public void testRegister() {
-        RegisterRequest request = new RegisterRequest("username","password","email","first","last","f");
-        AuthTokenDao authDao = new AuthTokenDao();
-        UserDao uDao = new UserDao();
-        RegisterResult result = rService.register(request);
-        assertEquals(result.getUserName(),"username");
-        assertNotEquals(result.getUserName(),"usernameNotInTable");
-        assertEquals(result.getAuthToken(),authDao.getAuthToken(result.getPersonID()).get(0));
-        assertEquals(uDao.getUserIDWithNames("first","last"),authDao.getUserIDFromAuthToken(result.getAuthToken()));//should get same userID
+        try {
+            RegisterRequest request = new RegisterRequest("username", "password", "email", "first", "last", "f");
+            AuthTokenDao authDao = new AuthTokenDao();
+            UserDao uDao = new UserDao();
+            RegisterResult result = rService.register(request);
+            assertEquals(result.getUserName(), "username");
+            assertNotEquals(result.getUserName(), "usernameNotInTable");
+            assertEquals(result.getAuthToken(), authDao.getAuthToken(result.getPersonID()).get(0));
+            assertEquals(uDao.getUserIDWithNames("first", "last"), authDao.getUserIDFromAuthToken(result.getAuthToken()));//should get same userID
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testRegisterMultiple() {
-        RegisterRequest request = new RegisterRequest("username","password","email","first","last","f");
-        RegisterRequest request2 = new RegisterRequest("username2","password2","email2","first","last2","f");
-        RegisterRequest request3 = new RegisterRequest("username","password","email","first","last","f");
-        AuthTokenDao authDao = new AuthTokenDao();
-        UserDao uDao = new UserDao();
-        RegisterResult result = rService.register(request);
-        RegisterResult result2 = rService.register(request2);
-        RegisterResult result3 = rService.register(request3);
-        assertNotEquals(result.getAuthToken(),result2.getAuthToken());
-        assertNotEquals(result.getUserName(),result2.getUserName());
-        assertNotEquals(result.getPersonID(),result2.getPersonID());
-        assertNotEquals(uDao.getUserIDWithNames("first","last"),uDao.getUserIDWithNames("first","last2"));
-        assertNotEquals(authDao.getAuthToken(uDao.getUserIDWithNames("first","last")),authDao.getAuthToken(uDao.getUserIDWithNames("first","last2")));
+        try {
+            RegisterRequest request = new RegisterRequest("username", "password", "email", "first", "last", "f");
+            RegisterRequest request2 = new RegisterRequest("username2", "password2", "email2", "first", "last2", "f");
+            RegisterRequest request3 = new RegisterRequest("username", "password", "email", "first", "last", "f");
+            AuthTokenDao authDao = new AuthTokenDao();
+            UserDao uDao = new UserDao();
+            RegisterResult result = rService.register(request);
+            RegisterResult result2 = rService.register(request2);
+            RegisterResult result3 = rService.register(request3);
+            assertNotEquals(result.getAuthToken(), result2.getAuthToken());
+            assertNotEquals(result.getUserName(), result2.getUserName());
+            assertNotEquals(result.getPersonID(), result2.getPersonID());
+            assertNotEquals(uDao.getUserIDWithNames("first", "last"), uDao.getUserIDWithNames("first", "last2"));
+            assertNotEquals(authDao.getAuthToken(uDao.getUserIDWithNames("first", "last")), authDao.getAuthToken(uDao.getUserIDWithNames("first", "last2")));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Test
     public void multiRegisterSame() {
-        RegisterRequest request = new RegisterRequest("username","password","email","first","last","f");
-        RegisterRequest request2 = new RegisterRequest("username2","password2","email2","first","last2","f");
-        RegisterRequest request3 = new RegisterRequest("username2","password","email","first","last","f");
+        try {
+            RegisterRequest request = new RegisterRequest("username", "password", "email", "first", "last", "f");
+            RegisterRequest request2 = new RegisterRequest("username2", "password2", "email2", "first", "last2", "f");
+            RegisterRequest request3 = new RegisterRequest("username2", "password", "email", "first", "last", "f");
 
-        RegisterResult result = rService.register(request);
-        RegisterResult result2 = rService.register(request2);
-        RegisterResult result3 = rService.register(request3);
+            RegisterResult result = rService.register(request);
+            RegisterResult result2 = rService.register(request2);
+            RegisterResult result3 = rService.register(request3);
 
-        assertNotEquals(result,null);
-        assertNotEquals(result2,null);
-        assertEquals(result3,null);
+            assertNotEquals(result, null);
+            assertNotEquals(result2, null);
+            assertEquals(result3, null);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

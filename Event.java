@@ -9,46 +9,59 @@ public class Event {
     /**The unique event ID for this event*/
     private String eventID;
     /**The user this event belongs to*/
-    private User descendant;
+    private String userID;
     /**The person this event belongs to*/
-    private Person person;
+    private String personID;
     /**The latitude this event occurred at*/
-    private Location location;
+    private String locationID;
     /**The eventType of this event*/
     private String eventType;
     /**The year this event took place*/
     private String year;
 
-    public Event(String eventID, User descendant, Person person, Location location, String eventType, String year) {
+    public Event(String eventID, String userID, String personID, String year, String eventType, String locationID) {
         this.eventID = eventID;
-        this.descendant = descendant;
-        this.person = person;
-        this.location = location;
+        this.userID = userID;
+        this.personID = personID;
+        this.locationID = locationID;
         this.eventType = eventType;
         this.year = year;
     }
-    /**@RETURN get the eventID of this event*/
+
     public String getEventID() {
         return eventID;
     }
-    /**@RETURN get the descendant related to this event*/
-    public User getDescendant() {
-        return descendant;
+
+    public String getUserID() {
+        return userID;
     }
-    /**@RETURN get the person related to this event*/
-    public Person getPerson() {
-        return person;
+
+    public String getPersonID() {
+        return personID;
     }
-    /**@RETURN get the location of this event*/
-    public Location getLocation() {
-        return location;
+
+    public String getLocationID() {
+        return locationID;
     }
-    /**@RETURN get the eventType of this event*/
+
     public String getEventType() {
         return eventType;
     }
-    /**@RETURN get the year of this event*/
+
     public String getYear() {
         return year;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this.getClass() != o.getClass()){return false;}
+        Event other = (Event)o;
+        if(!other.getUserID().equals(this.getUserID())){return false;}
+        if(!other.getEventID().equals(this.getEventID())){return false;}
+        if(!other.getEventType().equals(this.getEventType())){return false;}
+        if(!other.getLocationID().equals(this.getLocationID())){return false;}
+        if(!other.getYear().equals(this.getYear())){return false;}
+        if(!other.getPersonID().equals(this.getPersonID())){return false;}
+        return true;
     }
 }

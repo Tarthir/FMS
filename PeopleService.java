@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import dataAccess.AuthTokenDao;
 import dataAccess.PersonDao;
 import infoObjects.PeopleRequest;
-import models.Person;
-import models.PeopleMaker;
+import infoObjects.PeopleResult;
+import dataAccess.PeopleCreator;
 
 /**
  * Created by tyler on 2/14/2017.
@@ -22,13 +22,13 @@ public class PeopleService {
      * @PARAM PeopleRequest, the request to find all people related to a user
      * @Return All people related to the user are returned
      */
-    public ArrayList<Person> getPeople(PeopleRequest p) {
+    public PeopleResult getPeople(PeopleRequest p) throws Exception{
+        PeopleCreator create = new PeopleCreator();
         PersonDao pDao = new PersonDao();
         AuthTokenDao authDao = new AuthTokenDao();
-        PeopleMaker create = new PeopleMaker();
-        String userID = authDao.getUserIDFromAuthToken(p.getAuth().getAuthToken());
+        String userID = authDao.getUserIDFromAuthToken(p.getAuthToken());
         ArrayList<ArrayList<String>> allPeople = pDao.getPeople(userID);
-        return create.createPeople(allPeople);
+        return new PeopleResult(create.createPeople(allPeople));
     }
 
 

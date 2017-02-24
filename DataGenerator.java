@@ -115,14 +115,14 @@ public class DataGenerator {
                 int location = locRand.nextInt(locations.length);
                 year = getYear(i,eventT,people,year);
                 //NEED TO HAVE MARRIAGES AT SAME LOCATION/YEAR
-                events.add(new Event(uuid.toString(), user, people[i], locations[location],eventT, Integer.toString(year)));
+                //events.add(new Event(uuid.toString(), user, people[i], locations[location],eventT, Integer.toString(year)));
             }
         }
         for(int i = 1; i < people.length; i+=2){//for all the people, get marriage dates. makes sure spouses share the same marraige event
             int year = getMarriageDates(i);
             int location = locRand.nextInt(locations.length);
-            events.add(new Event(uuid.toString(), user, people[i], locations[location],"Marriage", Integer.toString(year)));
-            events.add(new Event(uuid.toString(), user, people[i-1], locations[location],"Marriage", Integer.toString(year)));
+          //  events.add(new Event(uuid.toString(), user, people[i], locations[location],"Marriage", Integer.toString(year)));
+          //  events.add(new Event(uuid.toString(), user, people[i-1], locations[location],"Marriage", Integer.toString(year)));
         }
         return events;
     }

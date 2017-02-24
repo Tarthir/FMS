@@ -1,7 +1,14 @@
 package service;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import dataAccess.AuthTokenDao;
+import dataAccess.EventsCreator;
+import dataAccess.EventDao;
+import infoObjects.EventsResult;
 import infoObjects.EventsRequest;
-import infoObjects.EventsResults;
+import models.Event;
 
 /**
  * Created by tyler on 2/14/2017.
@@ -9,13 +16,21 @@ import infoObjects.EventsResults;
  */
 
 public class EventsService {
-    //EventsRequest request;
     public EventsService() {}
     /**Gets the result of trying to get all events of all of the users ancestors
      * @PARAM request, the request to get all events
      * @RETURN The result of attempting to get all events
      * */
-    public EventsResults event(EventsRequest request){
+    public EventsResult getEvents(EventsRequest request) throws SQLException {
+        EventDao eDao = new EventDao();
+        EventsCreator create = new EventsCreator();
+        AuthTokenDao authDao = new AuthTokenDao();;
+        String userID = authDao.getUserIDFromAuthToken(request.getAuthToken());
+        ArrayList<ArrayList<String>> result = eDao.getEvents(userID);
+        if(result != null){
+            ArrayList<Event> events = create.createEvents(result);
+            return new EventsResult(events);
+        }
         return null;
     }
 }

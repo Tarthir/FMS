@@ -21,12 +21,19 @@ public class PersonDao {
     DataBase db;
     private String INSERT = "INSERT into person (personID, userID, firstName, lastName, gender, fatherID, motherID, spouseID) values (?,?,?,?,?,?,?,?)";
     private String SELECT = "SELECT personID,userID,firstName,lastName, gender,fatherID,motherID,spouseID FROM person WHERE personID = ?";
-    private String SELECT_ON_USER = "SELECT personID,firstName,lastName,gender,fatherID,motherID,spouseID FROM person WHERE userID = ?";
+    private String SELECT_ON_USER = "SELECT personID, userID, firstName,lastName,gender,fatherID,motherID,spouseID FROM person WHERE userID = ?";
     public PersonDao() {
         db = new DataBase();
     }
 
-    public boolean insertPerson(Person person){
+    /***
+     * A method to insert a user's ancestor's info
+     *
+     * @PARAM Person, the person to be inserted
+     * @RETURN boolean
+     * @EXCEPTION throws SQLException
+     */
+    public boolean insertPerson(Person person)throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;//insert statement
         //CHECK TO SEE if USER IS UNIQUE
@@ -50,6 +57,7 @@ public class PersonDao {
         }catch(SQLException e){
             e.printStackTrace();
             db.closeConnection(false, conn);
+            throw e;
             //THROW AN ERROR HERE SO THAT THE RESULT CREATED HOLDS AN ERROR?
         }
         finally {
@@ -63,8 +71,9 @@ public class PersonDao {
      * @PARAM userID, the ID for a specific user
      * @PARAM personID, the ID for a specific ancestor
      * @RETURN returns the data needed to start to make a person object
+     * @EXCEPTION throws SQLException
      */
-    public ArrayList<String> getPerson(PersonRequest request){
+    public ArrayList<String> getPerson(PersonRequest request)throws SQLException{
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement stmt = null;//insert statement
@@ -89,6 +98,7 @@ public class PersonDao {
         }catch(SQLException e){
             e.printStackTrace();
             db.closeConnection(false, conn);
+            throw e;
         }
         finally {
             DataBase.safeClose(rs);
@@ -102,8 +112,9 @@ public class PersonDao {
      *
      * @PARAM userID, the ID for a specific user
      * @RETURN returns the data needed to start to make people objects
+     * @EXCEPTION throws SQLException
      */
-    public ArrayList<ArrayList<String>> getPeople(String userID){
+    public ArrayList<ArrayList<String>> getPeople(String userID)throws SQLException{
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement stmt = null;
@@ -132,7 +143,9 @@ public class PersonDao {
         }
         catch(SQLException e){
             e.printStackTrace();
-            db.closeConnection(false, conn);}
+            db.closeConnection(false, conn);
+            throw e;
+        }
         finally {
             DataBase.safeClose(rs);
             DataBase.safeClose(stmt);

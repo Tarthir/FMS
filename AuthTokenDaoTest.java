@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dataAccess.AuthTokenDao;
@@ -52,25 +53,34 @@ public class AuthTokenDaoTest {
 
     @Test
     public void insertAuthTokenTest() {
-        String userID = uDao.getUserIDWithNames("first","last");//Get the old userID
         AuthToken auth = new AuthToken();
-        assertTrue(aDao.insertAuthToken(userID,auth));
-        assertFalse(aDao.insertAuthToken("NotInTable",auth));//will throw exception, which is fine in this case
+        try {
+            String userID = uDao.getUserIDWithNames("first", "last");//Get the old userID
+            assertTrue(aDao.insertAuthToken(userID, auth));
+            assertFalse(aDao.insertAuthToken("NotInTable", auth));//will throw exception, which is fine in this case
+        }catch(SQLException e){e.printStackTrace();}
+        try{
+            assertFalse(aDao.insertAuthToken("NotInTable", auth));//will throw exception, which is fine in this case
+         }catch(SQLException e){e.printStackTrace();}
 
     }
 
     @Test
     public void getAuthTokenTest() {
-        //Setup
-        String userID = uDao.getUserIDWithNames("first","last");//Get the old userID
-        AuthToken auth = new AuthToken();
-        assertTrue(aDao.insertAuthToken(userID,auth));
-        //endSetup
-        ArrayList<String> authToks;
-        ArrayList<String> authToksExpected = new ArrayList<>();
-        authToks = aDao.getAuthToken("5");//get the authtoken(s) related to the userID of 5
-        for(String str : authToks) {//for every authToken we found
-            assertEquals(aDao.getUserIDFromAuthToken(str),"5");//can we see that its related to this userID?
+        try {
+            //Setup
+            String userID = uDao.getUserIDWithNames("first", "last");//Get the old userID
+            AuthToken auth = new AuthToken();
+            assertTrue(aDao.insertAuthToken(userID, auth));
+            //endSetup
+            ArrayList<String> authToks;
+           // ArrayList<String> authToksExpected = new ArrayList<>();
+            authToks = aDao.getAuthToken("5");//get the authtoken(s) related to the userID of 5
+            for (String str : authToks) {//for every authToken we found
+                assertEquals(aDao.getUserIDFromAuthToken(str), "5");//can we see that its related to this userID?
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
