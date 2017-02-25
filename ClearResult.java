@@ -8,6 +8,8 @@ package infoObjects;
 public class ClearResult {
     /**Whether the database cleared successfuly or not*/
    private boolean clearedSuccessfully;
+    /**The exception thrown object*/
+    private Exception e;
 
     public ClearResult(boolean clearedSuccessfully) {
         this.clearedSuccessfully = clearedSuccessfully;
@@ -18,5 +20,13 @@ public class ClearResult {
      * */
     public boolean isClearedSuccessfully() {
         return clearedSuccessfully;
+    }
+
+    public Exception getE() {
+        return e;
+    }
+
+    public void setE(Exception e) {
+        this.e = e;
     }
 }

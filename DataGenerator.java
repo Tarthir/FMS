@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
 
+import dataAccess.PeopleCreator;
+import infoObjects.FillRequest;
+import infoObjects.FillResult;
 import models.Event;
 import models.Location;
 import models.Person;
@@ -15,74 +18,81 @@ import models.User;
  */
 
 public class DataGenerator {
-    User user;
-    public DataGenerator(User user){
-        this.user = user;
+    private String userID;
+    private int TOTAL_GENERATIONS;
+    public DataGenerator(String userID){
+        this.userID = userID;
     }
     /**Gets fresh data for a user
-     * @PARAM locations, the array of possible locations for events
-     * @PARAM fNames, the array of possible female first names
-     * @PARAM lNames, the array of possible last names
-     * @PARAM mNames, the array of possible male first names
+     * @PARAM FillRequest object
      * @RETURN whether the generation process was successful or not
      * */
     //SHOULD BE ABLE TO TAKE ANY NON NEGATIVE NUMBER AS THE NUMBER OF GERNEATIONS TO FILL.
-    //MAKE THE CLASS BUILD THE GENERATIONS of 2^N from bottem up, ONE N LEVEL AT A TIME
-    public boolean genData(Location[] locations,String[] fNames, String[] lNames, String[] mNames){
-        String[] maleOrFemale = {"m","f"};
-        Random genderRand = new Random();
-        Random fNameRand = new Random();
-        Random lNameRand = new Random();
-        Random mNameRand = new Random();
-        int MAX = 29;
-        Person[] people = new Person[30];
-        for(int i = 0; i <= MAX; i++){//create all the generations
-            if(i % 2 == 1 ){//female
-                //NEED TO SET BY IDS!!!
-                //people[i] = getFemale(fNames, lNames,maleOrFemale,genderRand,fNameRand,lNameRand);
-                //people[i].setSpouseID(people[i-1]);//set spouses; odd indices are females.
-               // people[i-1].setSpouseID(people[i]);
-            }
-            else{//male(evens,including zero)
-                people[i] = getMale(mNames, lNames,maleOrFemale,genderRand,mNameRand,lNameRand);
-            }
+    //MAKE THE CLASS BUILD THE GENERATIONS of 2^N from top down, ONE N LEVEL AT A TIME
+    public FillResult genData(FillRequest request){
+        TOTAL_GENERATIONS = request.getNumOfGenerations();
+        int currGeneration = TOTAL_GENERATIONS;
+        boolean filled = true;
+        ArrayList<Person> people = new ArrayList<>();
+        for(int i = currGeneration; i > 0; i--){//create all the generations starting from the top
+            people = makeGeneration(i,request,people);
         }
-        setMothersAndFathers(people);
-        ArrayList<Event> events = genEvents(people,locations);
-        insertData(people,events);//insert the data into the database
-        return true;
+        //setMothersAndFathers(people);
+        //ArrayList<Event> events = genEvents(people,request.getLocations());
+        //insertData(people,events);//insert the data into the database
+        return null;
+        //return new FillResult();
+    }
+
+    private ArrayList<Person> makeGeneration(int currGeneration, FillRequest request,ArrayList<Person> people){
+        int numOfPeople = (int)Math.pow(2,currGeneration);
+       for(int i = numOfPeople; i > 0; i--){
+           if(i % 2 == 0){//male
+               people.add(getMale(request.getmNames(),request.getlNames()));
+           }
+           else{//female
+               people.add(getFemale(request.getfNames(),request.getlNames()));
+               people.get(i-1).setSpouseID(people.get(i).getID());
+               people.get(i).setSpouseID(people.get(i-1).getID());
+               //COME UP WITH MATH TO GET FATHER/MOTHER position
+              // people.get(i-1).setFatherID(people.get(i).getID());
+               //people.get(i-1).setFatherID(people.get(i).getID());
+               //people.get(i).setMotherID(people.get(i-1).getID());
+              // people.get(i).setMotherID(people.get(i-1).getID());
+           }
+
+       }
+        if(currGeneration < TOTAL_GENERATIONS){
+            //int lastGen = (int)Math.pow(2,currGeneration + 1);
+        }
+        if(people.size() == numOfPeople){return people;}
+        return null;
     }
 
     /**Gets female persons
      * @PARAM fNames, the array of possible male first names
      * @PARAM lNames, the array of possible last names
-     * @PARAM maleOrFemale, either 'f' or 'm'
-     * @PARAM genderRand, random generator
-     * @PARAM fNameRand, random generator
-     * @PARAM lNameRand, random generator
      * @RETURN whether the generation process was successful or not
      * */
-    private Person getFemale(String[] fNames, String[] lNames,String[] maleOrFemale,Random genderRand,Random fNameRand,Random lNameRand){
+    private Person getFemale(String[] fNames, String[] lNames){
         UUID uuid = UUID.randomUUID();
-        //return new Person(uuid.toString(), user, fNames[fNameRand.nextInt(fNames.length)],
-       //         lNames[lNameRand.nextInt(lNames.length)], maleOrFemale[genderRand.nextInt(2)], null, null, null);
-        return null;
+        Random lNameRand = new Random();
+        Random fNameRand = new Random();
+        return new Person(uuid.toString(), userID, fNames[fNameRand.nextInt(fNames.length)],
+                lNames[lNameRand.nextInt(lNames.length)],"m", null, null, null);
     }
 
     /**Gets male persons
      * @PARAM lNames, the array of possible last names
      * @PARAM mNames, the array of possible male first names
-     * @PARAM maleOrFemale, either 'f' or 'm'
-     * @PARAM genderRand, random generator
-     * @PARAM mNameRand, random generator
-     * @PARAM lNameRand, random generator
      * @RETURN whether the generation process was successful or not
      * */
-    private Person getMale(String[] lNames, String[] mNames,String[] maleOrFemale,Random genderRand,Random mNameRand,Random lNameRand){
+    private Person getMale(String[] mNames,String[] lNames){
+        Random mNameRand = new Random();
+        Random lNameRand = new Random();
         UUID uuid = UUID.randomUUID();
-        //return new Person(uuid.toString(), user, mNames[mNameRand.nextInt(mNames.length)],
-          //      lNames[lNameRand.nextInt(lNames.length)], maleOrFemale[genderRand.nextInt(2)], null, null, null);
-        return null;
+        return new Person(uuid.toString(), userID, mNames[mNameRand.nextInt(mNames.length)],
+                lNames[lNameRand.nextInt(lNames.length)], "f", null, null, null);
     }
 
     /**Sets the mothers and fathers of the people generated

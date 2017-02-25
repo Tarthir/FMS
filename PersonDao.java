@@ -65,6 +65,39 @@ public class PersonDao {
         }
         return false;
     }
+
+    /***
+     * A method to delete a user's ancestor's info
+     *
+     * @PARAM A String: the UserID of the person being deleted
+     * @RETURN boolean
+     * @EXCEPTION throws SQLException
+     */
+    public boolean deletePerson(String userID)throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;//insert statement
+        //CHECK TO SEE if USER IS UNIQUE
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement("DELETE FROM person WHERE userID =?");
+            stmt.setString(1,userID);
+            if(stmt.executeUpdate() >= 1){//execute the statement
+                db.closeConnection(true, conn);
+                //ALSO LOG US ON
+                return true;
+            }
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
+        }catch(SQLException e){
+            e.printStackTrace();
+            db.closeConnection(false, conn);
+            throw e;
+        }
+        finally {
+            DataBase.safeClose(stmt);
+        }
+        return false;
+    }
+
     /***
      * A method to get a user's ancestor's info
      *

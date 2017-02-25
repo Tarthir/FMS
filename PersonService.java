@@ -1,5 +1,6 @@
 package service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dataAccess.PersonDao;
@@ -22,7 +23,7 @@ public class PersonService {
      * @PARAM PersonRequest, the request to get one person from our database; related to oa user
      * @RETURN Gets the person requested
      */
-    public Person getPerson(PersonRequest p) {
+    public Person getPerson(PersonRequest p) throws SQLException{
         PersonDao pDao = new PersonDao();
         PeopleCreator maker = new PeopleCreator();
         ArrayList<String> personData = pDao.getPerson(p);

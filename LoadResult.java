@@ -8,6 +8,8 @@ package infoObjects;
 public class LoadResult {
     /**The result of the attempt to load data*/
     private String resultMessage;
+    /**The exception thrown object*/
+    private Exception e;
 
     public LoadResult(String resultMessage) {
         resultMessage = this.resultMessage;
@@ -15,5 +17,13 @@ public class LoadResult {
     /**@RETURN The result of the attempt to load data*/
     public String getResultMessage() {
         return resultMessage;
+    }
+
+    public Exception getE() {
+        return e;
+    }
+
+    public void setE(Exception e) {
+        this.e = e;
     }
 }

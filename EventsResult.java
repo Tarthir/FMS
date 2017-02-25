@@ -13,6 +13,8 @@ import models.Person;
 public class EventsResult {
     /**The array of events*/
     ArrayList<Event> events;
+    /**The exception thrown object*/
+    private Exception e;
 
     public EventsResult(ArrayList<Event> events) {
         this.events = events;
@@ -21,5 +23,13 @@ public class EventsResult {
     /**@RETURN The events array*/
     public ArrayList<Event> getEvents() {
         return events;
+    }
+
+    public Exception getE() {
+        return e;
+    }
+
+    public void setE(Exception e) {
+        this.e = e;
     }
 }

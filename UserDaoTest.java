@@ -5,6 +5,7 @@ import static org.junit.Assert.* ;
 
 import java.io.*;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import dataAccess.DataBase;
 import dataAccess.UserDao;
@@ -37,6 +38,7 @@ public class UserDaoTest {
 
     @Test
     public void testRegister() {
+        try{
         User user = new User("5","name","password","email","first","last","m");
         User user2 = new User("1","name2","password2","email2","first2","last2","f");;
         assertTrue(uDao.register(user2));
@@ -47,10 +49,12 @@ public class UserDaoTest {
         assertTrue(uDao.register(user));
         assertEquals(uDao.getUserIDWithNames("first","last"),"5");
         assertNotEquals(uDao.getUserIDWithNames("first2","last2"),"0");
+    }catch(SQLException e){e.printStackTrace();}
     }
 
     @Test
     public void testLogin() {
+        try{
         User user = new User("5","name","password","email","first","last","m");
         assertTrue(uDao.register(user));
         LoginRequest request = new LoginRequest("name","password");
@@ -60,6 +64,7 @@ public class UserDaoTest {
         assertNotEquals(uDao.login(request),"0");
         assertNotEquals(uDao.login(request2),"1");
         assertNotEquals(uDao.login(request3),"1");
+    }catch(SQLException e){e.printStackTrace();}
     }
 
 }

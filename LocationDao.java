@@ -99,5 +99,34 @@ public class LocationDao {
         }
         return false;
     }
-    //DO DELETES
+
+    /**
+     * Deletes all row from the location table that belong to a particular ID
+     * @PARAM the ID of location that needs to be deleted
+     * @RETURN whether the deletion was successful or not
+     * @EXCEPTION throws SQLException
+     * */
+   /* public boolean deleteLocation(String locationID)throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement("DELETE FROM location WHERE locationID = ?");
+            stmt.setString(1,locationID);
+            if(stmt.executeUpdate() >= 1){//execute the statement
+                db.closeConnection(true, conn);
+                return true;
+            }
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
+        }
+        catch(SQLException e){
+            //e.printStackTrace();
+            db.closeConnection(false, conn);
+            throw e;
+        }
+        finally {
+            DataBase.safeClose(stmt);
+        }
+        return false;
+    }*/
 }

@@ -1,5 +1,6 @@
 package service;
 
+import dataAccess.DataBase;
 import infoObjects.ClearResult;
 
 /**
@@ -16,6 +17,7 @@ public class ClearService {
      * @RETURN the result of a successful or not attempt to clear the database
      */
     public ClearResult clear(){
+        //USE A MULTI DAO WHICH CALLS DROP TABLE OR SOMETHING...
         return null;
     }
 }

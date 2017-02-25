@@ -35,7 +35,7 @@ public class EventDao {
      * @RETURN boolean
      * @EXCEPTION throws SQL exception
      * */
-    public boolean insertEvent(Event event) {
+    public boolean insertEvent(Event event) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -54,8 +54,9 @@ public class EventDao {
             if(!conn.isClosed()){db.closeConnection(false, conn);}
         }
         catch(SQLException e){
-            e.printStackTrace();
+           // e.printStackTrace();
             db.closeConnection(false, conn);
+            throw e;
         }
         finally {
             DataBase.safeClose(stmt);
@@ -69,7 +70,7 @@ public class EventDao {
      * @RETURN gets the result of attempting to get a specific event
      * @EXCEPTION throws SQL exception
      */
-    public ArrayList<String> getEvent(EventRequest request) {
+    public ArrayList<String> getEvent(EventRequest request) throws SQLException{
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement stmt = null;//insert statement
@@ -92,8 +93,9 @@ public class EventDao {
                 return columns;
             }
         }catch(SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             db.closeConnection(false, conn);
+            throw e;
         }
         finally {
             DataBase.safeClose(rs);
@@ -109,7 +111,7 @@ public class EventDao {
      * @RETURN gets the result of attempting to get all the users ancestor's events
      * @EXCEPTION throws SQL exception
      */
-    public ArrayList<ArrayList<String>> getEvents(String userID){
+    public ArrayList<ArrayList<String>> getEvents(String userID) throws SQLException{
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement stmt = null;//insert statement
@@ -134,14 +136,83 @@ public class EventDao {
                 return rows;
             }
         }catch(SQLException e){
-            e.printStackTrace();
+           // e.printStackTrace();
             db.closeConnection(false, conn);
+            throw e;
         }
         finally {
             DataBase.safeClose(rs);
             DataBase.safeClose(stmt);
         }
         return null;
+    }
+
+    /***
+     * A method to get all of the locationID's keyed to a user
+     *
+     * @PARAM the userID we are getting all the events from
+     * @RETURN All the locationID's
+     * @EXCEPTION throws SQL exception
+     */
+    public ArrayList<String> getLocationIDs(String userID) throws SQLException{
+        Connection conn = null;
+        ResultSet rs = null;
+        PreparedStatement stmt = null;//insert statement
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement("SELECT locationID FROM events WHERE userID = ?");
+            stmt.setString(1,userID);
+            rs = stmt.executeQuery();//execute the statement
+            ArrayList<String> listOfIDs = new ArrayList<>();
+            while(rs.next()) {
+                String column = rs.getString(1);
+                listOfIDs.add(column);
+            }
+            if(listOfIDs.size() == 0){db.closeConnection(false, conn);}
+            else{//if we got a result
+                db.closeConnection(true, conn);
+                return listOfIDs;
+            }
+        }catch(SQLException e){
+            // e.printStackTrace();
+            db.closeConnection(false, conn);
+            throw e;
+        }
+        finally {
+            DataBase.safeClose(rs);
+            DataBase.safeClose(stmt);
+        }
+        return null;
+    }
+
+    /**
+     * deletes from the event table
+     * @PARAM the user ID of event that needs to be deleted
+     * @RETURN whether the deletion was successful or not
+     * @EXCEPTION throws SQLException
+     * */
+    public boolean deleteEvents(String userID)throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement("DELETE FROM events WHERE userID = ?");
+            stmt.setString(1,userID);
+            if(stmt.executeUpdate() >=  1){//execute the statement
+                db.closeConnection(true, conn);
+                return true;
+            }
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
+        }
+        catch(SQLException e){
+            //e.printStackTrace();
+            db.closeConnection(false, conn);
+            throw e;
+        }
+        finally {
+            DataBase.safeClose(stmt);
+        }
+        return false;
     }
 //DO DELETES
 }

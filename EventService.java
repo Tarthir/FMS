@@ -1,5 +1,6 @@
 package service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dataAccess.EventsCreator;
@@ -18,15 +19,23 @@ public class EventService {
     public EventService() {}
     /**Gets the result of trying to get one particular event
      * @PARAM request, the request to get a particular event
-     * @RETURN The result of attempting to get a particular event
+     * @RETURN The result of attempting to get a particular event. May return an error
      * */
     public EventResult getEvent(EventRequest request){
         EventDao eDao = new EventDao();
         EventsCreator create = new EventsCreator();
-        ArrayList<String> result = eDao.getEvent(request);
+        Exception except = null;
+        ArrayList<String> result = null;
+        try {
+            result = eDao.getEvent(request);
+        } catch (SQLException e) {
+            except = e;
+        }
         if(result != null){
             Event event = create.createEvent(result);
-            return new EventResult(event.getUserID(),event,event.getPersonID());
+            EventResult eResult = new EventResult(event.getUserID(),event,event.getPersonID());
+            eResult.setE(except);
+            return eResult;
         }
         return null;
     }

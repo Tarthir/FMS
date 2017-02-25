@@ -1,5 +1,9 @@
 package service;
 
+import java.sql.SQLException;
+
+import dataAccess.MultiDao;
+import dataAccess.UserDao;
 import infoObjects.FillRequest;
 import infoObjects.FillResult;
 
@@ -9,22 +13,25 @@ import infoObjects.FillResult;
  */
 
 public class FillService {
-    /**The request to fill our database*/
-    //private FillRequest request;
 
-    public FillService() {}
+    public FillService() {
+    }
+
     /**
      * Gets the result of a request to fill the database
+     *
      * @PARAM request, the request to fill the database
      * @RETURN the result of attempting to fill the database
-     * */
-    public FillResult fill(FillRequest request){
-        return null;
+     */
+    public FillResult fill(FillRequest request) throws SQLException {
+        if (request.getNumOfGenerations() > 0) {//if given a non negative integer
+            MultiDao multiDao = new MultiDao();
+            if (multiDao.deleteFromDataBase(request.getUsername())) {//if the deletion works right
+                UserDao uDao = new UserDao();
+                String userID = uDao.getUserIDWithUserName(request.getUsername());//get the userName
+                DataGenerator dataGenerator = new DataGenerator(userID);
+                return dataGenerator.genData(request);//if it generates right
+            }
+            return null;
+        }
     }
-    /**
-     * @RETURN Gets the request object
-     * */
-    //public FillRequest getRequest() {
-    //    return request;
-    //}
-}

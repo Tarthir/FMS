@@ -10,7 +10,9 @@ import models.Person;
  */
 
 public class PeopleResult {
+    /**Array of people that is our result*/
     private ArrayList<Person> people;
+    /**An exception that may have been thrown*/
     private Exception e;
 
     public PeopleResult(ArrayList<Person> people) {

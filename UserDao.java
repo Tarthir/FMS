@@ -84,6 +84,15 @@ public class UserDao {
         return getUserID(fName,lName,"SELECT userID FROM user WHERE firstName = ? AND lastName = ?");
     }
     /**
+     * A method get a user ID from the userName of a user
+     * @Param String, the userName of the user
+     * @RETURN the userID
+     * @EXCEPTION throws SQLException
+     */
+    public String getUserIDWithUserName(String userName)throws SQLException{
+        return getUserID(userName,"SELECT userID FROM user WHERE userName = ?");
+    }
+    /**
      * A method get a user ID from the database from two inputs
      * @Param input1, the first input
      * @Param input2, the second input
@@ -100,6 +109,33 @@ public class UserDao {
             stmt = conn.prepareStatement(SQLString);
             stmt.setString(1,input1);
             stmt.setString(2,input2);
+            rs = stmt.executeQuery();//execute the statement
+            if(rs.next()){
+                output = rs.getString(1);
+                db.closeConnection(true, conn);
+            }
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
+        }catch(SQLException e){
+            //e.printStackTrace();
+            db.closeConnection(false, conn);
+            throw e;
+        }
+        finally {
+            DataBase.safeClose(rs);
+            DataBase.safeClose(stmt);
+        }
+        return output;
+    }
+
+    private String getUserID(String userName,String SQLString)throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;//insert statement
+        ResultSet rs = null;
+        String output = "";
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement(SQLString);
+            stmt.setString(1,userName);
             rs = stmt.executeQuery();//execute the statement
             if(rs.next()){
                 output = rs.getString(1);

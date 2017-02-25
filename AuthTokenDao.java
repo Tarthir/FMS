@@ -56,6 +56,34 @@ public class AuthTokenDao {
         return false;
     }
 
+    /**Deletes authtokens from the database that are keyed to userIDs
+     * @PARAM userID, the userId we are inserting
+     * @RETURN whether the deletion was successful or not
+     * @EXCEPTION throws SQLException
+     * */
+    public boolean deleteAuthToken(String userID) throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement("DELETE FROM authToken WHERE userID = ?");
+            stmt.setString(1, userID);
+            if (stmt.executeUpdate() >= 1) {//execute the statement
+                db.closeConnection(true, conn);
+                return true;
+            }
+            if (!conn.isClosed()) {
+                db.closeConnection(false, conn);
+            }
+        } catch (SQLException e) {
+            db.closeConnection(false, conn);
+            throw e;
+        } finally {
+            DataBase.safeClose(stmt);
+        }
+        return false;
+    }
+
     /**Gets the Authtoken(s) of a particular user
      * @PARAM userID, The userID of the AuthToken(s) we are getting
      * @RETURN ArrayList, the list of authtokens belonging to this user

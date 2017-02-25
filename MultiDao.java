@@ -1,42 +1,44 @@
 package dataAccess;
 
-import models.Person;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
- * Created by tyler on 2/10/2017.
- * This handles cases where we have to get results from more than one table at a time
+ * Created by tyler on 2/24/2017.
+ * Used when we need to access the Database from multiple Daos in a particular order or at the same time
  */
 
 public class MultiDao {
-    /**The obejcts returns by a multiDao*/
-    private Object[] functionObjects;
+    private PersonDao pDao;
+    private EventDao eDao;
+    //private LocationDao lDao;
+    private AuthTokenDao aDao;
 
-    public MultiDao() {
+    public MultiDao(){
+        pDao = new PersonDao();
+        eDao = new EventDao();
+        //lDao = new LocationDao();
+        aDao = new AuthTokenDao();
     }
     /**
-     * Makes people objects. Called by the
-     * */
-    public Person makePerson() {
-        return null;
-    }
-
-    /***
-     * A method to get all of a user's ancestor's events
-     *
-     * @PARAM request, the info to get multiple events
-     * @RETURN connects the location of the events and the event in the database
+     * Takes a userID and deletes all data related to it
+     * @PARAM A String userID
+     * @RETURN boolean
+     * @EXCEPTION SQLException
      */
-    public void insertTookPlaceAt(){
+    public boolean deleteFromDataBase(String userName) throws SQLException{
+        //ArrayList<String> locationIDs = eDao.getLocationIDs(userID);//get the UserIDs
+        boolean delete = true;//If we ever return false, then this failed
+        UserDao uDao = new UserDao();
+        String userID = uDao.getUserIDWithUserName(userName);
 
+        /*for (String id : locationIDs) {
+            if(delete){delete = lDao.deleteLocation(id);}
+        }*/
+        if(delete){delete = eDao.deleteEvents(userID);}
+        if(delete){delete = pDao.deletePerson(userID);}
+       //if(delete){delete = aDao.deleteAuthToken(userID);}
+        return delete;
     }
 
-    /***
-     * A method to get all of a user's ancestor's events
-     *
-     * @PARAM request, the info to get multiple events
-     * @RETURN connects the location of the events and the event in the database
-     */
-    public void insertBelongsTo(){
-
-    }
 }
