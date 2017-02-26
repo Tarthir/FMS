@@ -21,11 +21,11 @@ import models.Event;
 public class EventDao {
     DataBase db;
     /**Select on the whole table where eventID = ?*/
-    private String SELECT = "SELECT eventID,userID,personID,year,eventType,locationID FROM events WHERE eventID = ?";
+    private String SELECT = "SELECT eventID,userID,personID,year,eventType,city,latitude,longitude,country FROM events WHERE eventID = ?";
     /**Select on the whole table where userID = ?*/
-    private String SELECT_STAR = "SELECT eventID,userID,personID,year,eventType,locationID FROM events WHERE userID = ?";
+    private String SELECT_STAR = "SELECT eventID,userID,personID,year,eventType,city,latitude,longitude,country FROM events WHERE userID = ?";
     /**Insert into every column of the table the table creating a new row*/
-    private String insertEvents = "insert into events (eventID,userID,personID,year,eventType,locationID) values (?,?,?,?,?,?)";
+    private String insertEvents = "insert into events (eventID,userID,personID,year,eventType,city,latitude,longitude,country) values (?,?,?,?,?,?,?,?,?)";
     public EventDao() {
         db = new DataBase();
     }
@@ -46,7 +46,10 @@ public class EventDao {
             stmt.setString(3, event.getPersonID());
             stmt.setString(4, event.getYear());
             stmt.setString(5, event.getEventType());
-            stmt.setString(6, event.getLocationID());
+            stmt.setString(6, event.getLocation().getCity());
+            stmt.setString(7, event.getLocation().getLatitude());
+            stmt.setString(8, event.getLocation().getLongitude());
+            stmt.setString(9, event.getLocation().getCountry());
             if(stmt.executeUpdate() == 1){//execute the statement
                 db.closeConnection(true, conn);
                 return true;
@@ -153,7 +156,6 @@ public class EventDao {
      * @PARAM the userID we are getting all the events from
      * @RETURN All the locationID's
      * @EXCEPTION throws SQL exception
-     */
     public ArrayList<String> getLocationIDs(String userID) throws SQLException{
         Connection conn = null;
         ResultSet rs = null;
@@ -183,7 +185,7 @@ public class EventDao {
             DataBase.safeClose(stmt);
         }
         return null;
-    }
+    }*/
 
     /**
      * deletes from the event table

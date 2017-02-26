@@ -27,46 +27,38 @@ public class DataGenerator {
      * @PARAM FillRequest object
      * @RETURN whether the generation process was successful or not
      * */
-    //SHOULD BE ABLE TO TAKE ANY NON NEGATIVE NUMBER AS THE NUMBER OF GERNEATIONS TO FILL.
-    //MAKE THE CLASS BUILD THE GENERATIONS of 2^N from top down, ONE N LEVEL AT A TIME
-    public FillResult genData(FillRequest request){
+    public FillResult genData(FillRequest request) {
         TOTAL_GENERATIONS = request.getNumOfGenerations();
         int currGeneration = TOTAL_GENERATIONS;
-        boolean filled = true;
-        ArrayList<Person> people = new ArrayList<>();
-        for(int i = currGeneration; i > 0; i--){//create all the generations starting from the top
-            people = makeGeneration(i,request,people);
-        }
-        //setMothersAndFathers(people);
-        //ArrayList<Event> events = genEvents(people,request.getLocations());
-        //insertData(people,events);//insert the data into the database
-        return null;
-        //return new FillResult();
-    }
+        //boolean filled = true;
+        ArrayList<Person> people = new ArrayList<>();//one arraylist per geneartion
+        int numOfPeople = (int) Math.pow(2, TOTAL_GENERATIONS);
+        int adderIndex = 0;//allows us to set mother/father indicies for children
+        for (int j = currGeneration; j > 0; j--) {//create all the generations starting from the top
+            for (int i = 0; i < numOfPeople; i++) {//create all people of this generation with all their connections
+                if (i % 2 == 0) {//male
+                    people.add(getMale(request.getmNames(), request.getlNames()));
+                }
+                else {//female
+                    people.add(getFemale(request.getfNames(), request.getlNames()));
+                    //add spouses together
+                    people.get(i - 1).setSpouseID(people.get(i).getID());
+                    people.get(i).setSpouseID(people.get(i - 1).getID());
+                    if (currGeneration < TOTAL_GENERATIONS) {
+                        people.get(i - 1).setFatherID(people.get(adderIndex).getID());
+                        adderIndex++;
+                        people.get(i - 1).setMotherID(people.get(adderIndex).getID());
+                        adderIndex++;
+                        people.get(i).setFatherID(people.get(adderIndex).getID());
+                        adderIndex++;
+                        people.get(i).setMotherID(people.get(adderIndex).getID());
+                        adderIndex++;
+                    }
 
-    private ArrayList<Person> makeGeneration(int currGeneration, FillRequest request,ArrayList<Person> people){
-        int numOfPeople = (int)Math.pow(2,currGeneration);
-       for(int i = numOfPeople; i > 0; i--){
-           if(i % 2 == 0){//male
-               people.add(getMale(request.getmNames(),request.getlNames()));
-           }
-           else{//female
-               people.add(getFemale(request.getfNames(),request.getlNames()));
-               people.get(i-1).setSpouseID(people.get(i).getID());
-               people.get(i).setSpouseID(people.get(i-1).getID());
-               //COME UP WITH MATH TO GET FATHER/MOTHER position
-              // people.get(i-1).setFatherID(people.get(i).getID());
-               //people.get(i-1).setFatherID(people.get(i).getID());
-               //people.get(i).setMotherID(people.get(i-1).getID());
-              // people.get(i).setMotherID(people.get(i-1).getID());
-           }
-
-       }
-        if(currGeneration < TOTAL_GENERATIONS){
-            //int lastGen = (int)Math.pow(2,currGeneration + 1);
+                }
+            }
         }
-        if(people.size() == numOfPeople){return people;}
-        return null;
+        return genEvents(people,request.getLocations());
     }
 
     /**Gets female persons
@@ -95,46 +87,32 @@ public class DataGenerator {
                 lNames[lNameRand.nextInt(lNames.length)], "f", null, null, null);
     }
 
-    /**Sets the mothers and fathers of the people generated
-     * @PARAM people, the array of people that has been generated
-     * @RETURN void
-     */
-    private void setMothersAndFathers(Person[] people){
-        int index = 2;
-        int needParents = 14;//only positions 0-13 needs parents
-        for(int i = 0; i < needParents; i++) {
-           // people[i].setFather(people[index]);
-           // people[i].setMother(people[index+1]);
-            index +=2;
-        }
-    }
-
     /**Generates the events of the people generated. Called after the data has been generated
      * @PARAM people, the array of people that has been generated
      * @PARAM locations, the array of locations to choose from
      * @RETURN void
      */
-    private ArrayList<Event> genEvents(Person[] people,Location[] locations){
+    private FillResult  genEvents(ArrayList<Person> people,Location[] locations){
         String[] eventType = {"Birth","Baptism","Death"};
         ArrayList<Event> events = new ArrayList<>();
         UUID uuid = UUID.randomUUID();
         Random locRand = new Random();
-        for(int i = 0; i < people.length; i++){//for all the people
+        for(int i = 0; i < people.size(); i++){//for all the people
             int year = 0;
             for(String eventT: eventType) {//for every kind of event
                 int location = locRand.nextInt(locations.length);
-                year = getYear(i,eventT,people,year);
+                //year = getYear(i,eventT,people,year);
                 //NEED TO HAVE MARRIAGES AT SAME LOCATION/YEAR
                 //events.add(new Event(uuid.toString(), user, people[i], locations[location],eventT, Integer.toString(year)));
             }
         }
-        for(int i = 1; i < people.length; i+=2){//for all the people, get marriage dates. makes sure spouses share the same marraige event
+        for(int i = 1; i < people.size(); i+=2){//for all the people, get marriage dates. makes sure spouses share the same marraige event
             int year = getMarriageDates(i);
             int location = locRand.nextInt(locations.length);
           //  events.add(new Event(uuid.toString(), user, people[i], locations[location],"Marriage", Integer.toString(year)));
           //  events.add(new Event(uuid.toString(), user, people[i-1], locations[location],"Marriage", Integer.toString(year)));
         }
-        return events;
+        return insertData(null,null);
     }
     /**
      *Gets an appropriate year to use for our new event
@@ -243,7 +221,8 @@ public class DataGenerator {
      * @PARAM events, the array of events that the people took part in
      * @RETURN void
      */
-    private void insertData(Person[] people, ArrayList<Event> events){
+    private FillResult insertData(Person[] people, ArrayList<Event> events){
         //USE MULTIDAO
+        return null;
     }
 }

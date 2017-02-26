@@ -26,18 +26,30 @@ public class MultiDao {
      * @RETURN boolean
      * @EXCEPTION SQLException
      */
-    public boolean deleteFromDataBase(String userName) throws SQLException{
-        //ArrayList<String> locationIDs = eDao.getLocationIDs(userID);//get the UserIDs
+    public boolean deleteFromDataBase(String userName) {//throws SQLException{
         boolean delete = true;//If we ever return false, then this failed
         UserDao uDao = new UserDao();
-        String userID = uDao.getUserIDWithUserName(userName);
+        String userID = null;
+        try {
+            userID = uDao.getUserIDWithUserName(userName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-        /*for (String id : locationIDs) {
-            if(delete){delete = lDao.deleteLocation(id);}
-        }*/
-        if(delete){delete = eDao.deleteEvents(userID);}
-        if(delete){delete = pDao.deletePerson(userID);}
-       //if(delete){delete = aDao.deleteAuthToken(userID);}
+        if(delete){
+            try {
+                delete = eDao.deleteEvents(userID);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if(delete){
+            try {
+                delete = pDao.deletePerson(userID);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return delete;
     }
 

@@ -19,13 +19,13 @@ public class LocationCreator {
      * @PARAM Arraylist location data
      * @RETURN An arraylist of event objects
      */
-    public Location createLocation(ArrayList<Object> locData) {
+    public Location createLocation(ArrayList<String> locData) {
         Location loc = null;
         if (locData.size() == 0) {
             return loc;
         }
         else{
-            loc = new Location((String)locData.get(0),(String)locData.get(1),(Double)locData.get(2),(Double)locData.get(3),(String)locData.get(4));
+            loc = new Location(locData.get(0),locData.get(1),locData.get(2),locData.get(3));
         }
         return loc;
     }

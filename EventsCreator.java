@@ -1,8 +1,10 @@
 package dataAccess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import models.Event;
+import models.Location;
 
 /**
  * Created by tyler on 2/23/2017.
@@ -40,8 +42,11 @@ public class EventsCreator {
         if (eventData.size() == 0) {
             return null;
         } else {//return a new person
+            LocationCreator locCreator = new LocationCreator();
+            ArrayList<String> location = new ArrayList<>(Arrays.asList(eventData.get(5),eventData.get(6),eventData.get(7),eventData.get(8)));
+            Location loc = locCreator.createLocation(location);
             return new Event(eventData.get(0), eventData.get(1), eventData.get(2), eventData.get(3),
-                    eventData.get(4), eventData.get(5));
+                    eventData.get(4),loc);
         }
     }
 }

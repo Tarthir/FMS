@@ -13,17 +13,18 @@ public class Event {
     /**The person this event belongs to*/
     private String personID;
     /**The latitude this event occurred at*/
-    private String locationID;
+    private Location location;
     /**The eventType of this event*/
     private String eventType;
     /**The year this event took place*/
     private String year;
+    /**The location of this event*/
 
-    public Event(String eventID, String userID, String personID, String year, String eventType, String locationID) {
+    public Event(String eventID, String userID, String personID, String year, String eventType, Location location) {
         this.eventID = eventID;
         this.userID = userID;
         this.personID = personID;
-        this.locationID = locationID;
+        this.location = location;
         this.eventType = eventType;
         this.year = year;
     }
@@ -40,8 +41,8 @@ public class Event {
         return personID;
     }
 
-    public String getLocationID() {
-        return locationID;
+    public Location getLocation() {
+        return location;
     }
 
     public String getEventType() {
@@ -59,7 +60,7 @@ public class Event {
         if(!other.getUserID().equals(this.getUserID())){return false;}
         if(!other.getEventID().equals(this.getEventID())){return false;}
         if(!other.getEventType().equals(this.getEventType())){return false;}
-        if(!other.getLocationID().equals(this.getLocationID())){return false;}
+        if(!other.getLocation().equals(this.getLocation())){return false;}
         if(!other.getYear().equals(this.getYear())){return false;}
         if(!other.getPersonID().equals(this.getPersonID())){return false;}
         return true;

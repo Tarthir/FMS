@@ -32,6 +32,7 @@ public class FillService {
                 DataGenerator dataGenerator = new DataGenerator(userID);
                 return dataGenerator.genData(request);//if it generates right
             }
-            return null;
         }
+        return null;
     }
+}

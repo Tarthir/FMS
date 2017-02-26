@@ -126,12 +126,12 @@ public class DataBase {
                     "    motherID text,\n" +
                     "    spouseID text )");
 
-            stmt.executeUpdate("drop table if exists location");
+            /*stmt.executeUpdate("drop table if exists location");
             stmt.executeUpdate("create table location ( locationID text not null primary key,\n" +
                     "    city text not null,\n" +
                     "    latitude REAL not null,\n" +
                     "    longitude REAL not null,\n" +
-                    "    country text not null)");
+                    "    country text not null)");*/
 
             stmt.executeUpdate("drop table if exists events");
             stmt.executeUpdate("create table events ( eventID text not null primary key,\n" +
@@ -139,7 +139,10 @@ public class DataBase {
                     "    personID text not null,\n" +
                     "    year text not null,\n" +
                     "    eventType text not null,\n" +
-                    "    locationID text not null)");
+                    "    city text not null,\n" +
+                    "    latitude text not null,\n" +
+                    "    longitude text not null,\n" +
+                    "    country text not null)");
 
             stmt.executeUpdate("drop table if exists authToken");
             stmt.executeUpdate("create table authToken ( authToken text not null primary key,\n" +
@@ -168,10 +171,10 @@ public class DataBase {
             stmt = connection.createStatement();
             stmt.executeUpdate("drop table if exists user");
             stmt.executeUpdate("drop table if exists person");
-            stmt.executeUpdate("drop table if exists location");
-            stmt.executeUpdate("drop table if exists tookPlaceAt");
+           // stmt.executeUpdate("drop table if exists location");
+            //stmt.executeUpdate("drop table if exists tookPlaceAt");
             stmt.executeUpdate("drop table if exists events");
-            stmt.executeUpdate("drop table if exists userEvent");
+           // stmt.executeUpdate("drop table if exists userEvent");
             stmt.executeUpdate("drop table if exists authToken");
             closeConnection(true,connection);
         }
