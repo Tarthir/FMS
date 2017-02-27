@@ -26,13 +26,15 @@ public class EventResult {
         this.event = event;
         this.personID = personID;
     }
+
+    public EventResult(Exception e) {
+        this.e = e;
+    }
+
     public Exception getE() {
         return e;
     }
 
-    public void setE(Exception e) {
-        this.e = e;
-    }
     public Event getEvent() {
         return event;
     }

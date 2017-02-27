@@ -1,5 +1,6 @@
 package dataAccess;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -51,6 +52,26 @@ public class MultiDao {
             }
         }
         return delete;
+    }
+
+    /**
+     * Clears the database
+     * @RETURN VOID
+     * @EXCEPTION throws SQLException
+     * */
+    public void doClear()throws SQLException{
+        DataBase db = new DataBase();
+        Connection conn = null;
+        try {
+            conn = db.openConnection();
+            db.dropTables(conn);//connection is closed in the method. drops the tables
+            conn = db.openConnection();//creats new empty tables
+            db.createTables(conn);
+        }catch(SQLException e){
+            db.closeConnection(false,conn);
+            throw e;
+        }
+
     }
 
 }

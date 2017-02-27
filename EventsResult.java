@@ -20,6 +20,10 @@ public class EventsResult {
         this.events = events;
     }
 
+    public EventsResult(Exception e) {
+        this.e = e;
+    }
+
     /**@RETURN The events array*/
     public ArrayList<Event> getEvents() {
         return events;

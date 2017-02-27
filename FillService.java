@@ -23,15 +23,19 @@ public class FillService {
      * @PARAM request, the request to fill the database
      * @RETURN the result of attempting to fill the database
      */
-    public FillResult fill(FillRequest request) throws SQLException {
-        if (request.getNumOfGenerations() > 0) {//if given a non negative integer
-            MultiDao multiDao = new MultiDao();
-            if (multiDao.deleteFromDataBase(request.getUsername())) {//if the deletion works right
-                UserDao uDao = new UserDao();
-                String userID = uDao.getUserIDWithUserName(request.getUsername());//get the userName
-                DataGenerator dataGenerator = new DataGenerator(userID);
-                return dataGenerator.genData(request);//if it generates right
+    public FillResult fill(FillRequest request){
+        try {
+            if (request.getNumOfGenerations() > 0) {//if given a non negative integer
+                MultiDao multiDao = new MultiDao();
+                if (multiDao.deleteFromDataBase(request.getUsername())) {//if the deletion works right
+                    UserDao uDao = new UserDao();
+                    String userID = uDao.getUserIDWithUserName(request.getUsername());//get the userName
+                    DataGenerator dataGenerator = new DataGenerator(userID);
+                    return dataGenerator.genData(request);//if it generates right
+                }
             }
+        }catch(SQLException e){
+            return new FillResult(e);//return the error
         }
         return null;
     }

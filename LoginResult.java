@@ -21,6 +21,11 @@ public class LoginResult {
         this.userName = userName;
         this.userID = userID;
     }
+
+    public LoginResult(Exception e) {
+        this.e = e;
+    }
+
     /**@RETURN The authToken of this login result*/
     public String getAuthToken() {
         return authToken;
@@ -38,7 +43,4 @@ public class LoginResult {
         return e;
     }
 
-    public void setE(Exception e) {
-        this.e = e;
-    }
 }

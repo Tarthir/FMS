@@ -1,5 +1,6 @@
 package service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dataAccess.AuthTokenDao;
@@ -22,13 +23,16 @@ public class PeopleService {
      * @PARAM PeopleRequest, the request to find all people related to a user
      * @Return All people related to the user are returned
      */
-    public PeopleResult getPeople(PeopleRequest p) throws Exception{
-        PeopleCreator create = new PeopleCreator();
-        PersonDao pDao = new PersonDao();
-        AuthTokenDao authDao = new AuthTokenDao();
-        String userID = authDao.getUserIDFromAuthToken(p.getAuthToken());
-        ArrayList<ArrayList<String>> allPeople = pDao.getPeople(userID);
-        return new PeopleResult(create.createPeople(allPeople));
+    public PeopleResult getPeople(PeopleRequest p) {
+        try {
+            PeopleCreator create = new PeopleCreator();
+            PersonDao pDao = new PersonDao();
+            AuthTokenDao authDao = new AuthTokenDao();
+            String userID = authDao.getUserIDFromAuthToken(p.getAuthToken());
+            ArrayList<ArrayList<String>> allPeople = pDao.getPeople(userID);
+            return new PeopleResult(create.createPeople(allPeople));
+        }
+        catch(SQLException e){return new PeopleResult(e);}
     }
 
 

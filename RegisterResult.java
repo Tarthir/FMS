@@ -21,6 +21,9 @@ public class RegisterResult {
         this.userName = userName;
         this.personID = personID;
     }
+    public RegisterResult(Exception e) {
+        this.e = e;
+    }
     /***
      * @RETURN Gets the authtoken
      */

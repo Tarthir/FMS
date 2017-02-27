@@ -21,16 +21,21 @@ public class EventsService {
      * @PARAM request, the request to get all events
      * @RETURN The result of attempting to get all events
      * */
-    public EventsResult getEvents(EventsRequest request) throws SQLException {
-        EventDao eDao = new EventDao();
-        EventsCreator create = new EventsCreator();
-        AuthTokenDao authDao = new AuthTokenDao();;
-        String userID = authDao.getUserIDFromAuthToken(request.getAuthToken());
-        ArrayList<ArrayList<String>> result = eDao.getEvents(userID);
-        if(result != null){
-            ArrayList<Event> events = create.createEvents(result);
-            return new EventsResult(events);
+    public EventsResult getEvents(EventsRequest request) {
+        try {
+            EventDao eDao = new EventDao();
+            EventsCreator create = new EventsCreator();
+            AuthTokenDao authDao = new AuthTokenDao();
+            ;
+            String userID = authDao.getUserIDFromAuthToken(request.getAuthToken());
+            ArrayList<ArrayList<String>> result = eDao.getEvents(userID);
+            if (result != null) {
+                ArrayList<Event> events = create.createEvents(result);
+                return new EventsResult(events);
+            }
+            else{ return null;}//found nothing
+        }catch(SQLException e){
+            return new EventsResult(e);//SQL error
         }
-        return null;
     }
 }

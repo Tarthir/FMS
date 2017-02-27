@@ -1,6 +1,9 @@
 package service;
 
+import java.sql.SQLException;
+
 import dataAccess.DataBase;
+import dataAccess.MultiDao;
 import infoObjects.ClearResult;
 
 /**
@@ -17,7 +20,16 @@ public class ClearService {
      * @RETURN the result of a successful or not attempt to clear the database
      */
     public ClearResult clear(){
-        //USE A MULTI DAO WHICH CALLS DROP TABLE OR SOMETHING...
-        return null;
+        MultiDao mDao = new MultiDao();
+        ClearResult result = null;
+        try {
+            mDao.doClear();
+            result = new ClearResult(true);//if worked!
+        } catch (SQLException e) {
+            result = new ClearResult(false);//Exception was thrown
+            result.setE(e);
+            //e.printStackTrace();
+        }
+        return result;
     }
 }

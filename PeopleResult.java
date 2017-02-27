@@ -19,6 +19,10 @@ public class PeopleResult {
         this.people = people;
     }
 
+    public PeopleResult(Exception e) {
+        this.e = e;
+    }
+
     public ArrayList<Person> getPeople() {
         return people;
     }

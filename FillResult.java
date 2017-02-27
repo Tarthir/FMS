@@ -12,12 +12,19 @@ public class FillResult {
     private int numOfEvents;
     /**The result of filling the database*/
     private String result;
+    /**An exception that may or not have been thrown*/
+    private Exception e;
 
     public FillResult(int numOfPersons, int numOfEvents) {
         this.numOfPersons = numOfPersons;
         this.numOfEvents = numOfEvents;
-        result +="Successfully added " + this.numOfPersons + " people and " + this.numOfEvents + " events.";
+        result = "Successfully added " + this.numOfPersons + " people and " + this.numOfEvents + " events.";
     }
+
+    public FillResult(Exception e) {
+        this.e = e;
+    }
+
     /**@RETURN The Num of persons to fill our database with*/
     public int getNumOfPersons() {
         return numOfPersons;
@@ -29,5 +36,9 @@ public class FillResult {
     /**@RETURN The result of filling the database*/
     public String getResult() {
         return result;
+    }
+
+    public Exception getE() {
+        return e;
     }
 }

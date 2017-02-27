@@ -24,18 +24,23 @@ public class RegisterService {
      * Calls/Creates our DAO classes to interact with the database and get the RegisterResult
      * @PARAM request: to register a new user
      * @RETURN Gets the result of trying to register a new user
+     * @Exception throws SQLException
      * */
-    public RegisterResult register(RegisterRequest request) throws SQLException{
-        newUser = makeUserModel(request);
-        UserDao dao = new UserDao();
-        if(!dao.checkUserName(request.getUserName()) && dao.register(newUser)){//check to see if the userName already exists then if register is successful
-            AuthTokenDao authDao = new AuthTokenDao();
-            AuthToken authToken = new AuthToken();//gets the timestamp and UUID in the model object
-            if(authDao.insertAuthToken(newUser.getID(),authToken)) {
-                //NEED TO GENERATE DATA DATA
-                //HOW DO I GET LOGGED ON?
-                return new RegisterResult(authToken.getAuthToken(), newUser.getUserName(), newUser.getID());
+    public RegisterResult register(RegisterRequest request){
+        try {
+            newUser = makeUserModel(request);
+            UserDao dao = new UserDao();
+            if (!dao.checkUserName(request.getUserName()) && dao.register(newUser)) {//check to see if the userName already exists then if register is successful
+                AuthTokenDao authDao = new AuthTokenDao();
+                AuthToken authToken = new AuthToken();//gets the timestamp and UUID in the model object
+                if (authDao.insertAuthToken(newUser.getID(), authToken)) {
+                    //NEED TO GENERATE DATA DATA
+                    //HOW DO I GET LOGGED ON?
+                    return new RegisterResult(authToken.getAuthToken(), newUser.getUserName(), newUser.getID());
+                }
             }
+        }catch(SQLException e){
+            return new RegisterResult(e);
         }
         return null;
     }
