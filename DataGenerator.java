@@ -33,6 +33,14 @@ public class DataGenerator {
      * The people we are generating
      */
     private ArrayList<Person> people;
+    /**The last Names we will use in our generated data*/
+    private String[] lNames;
+    /**The male Names we will use in our generated data*/
+    private String[] mNames;
+    /**The female Names we will use in our generated data*/
+    private String[] fNames;
+    /**The loactions we will use in our generated data*/
+    private Location[] locations;
 
     public DataGenerator(String userID) {
         this.userID = userID;
@@ -233,7 +241,7 @@ public class DataGenerator {
      *
      * @RETURN void
      */
-    protected FillResult insertData() throws SQLException {
+    private FillResult insertData() throws SQLException {
         PersonDao pDao = new PersonDao();
         EventDao eDao = new EventDao();
         for (Person p : people) {
@@ -243,5 +251,37 @@ public class DataGenerator {
             eDao.insertEvent(e);
         }
         return new FillResult(people.size(), events.size());
+    }
+
+    public String[] getlNames() {
+        return lNames;
+    }
+
+    public void setlNames(String[] lNames) {
+        this.lNames = lNames;
+    }
+
+    public String[] getmNames() {
+        return mNames;
+    }
+
+    public void setmNames(String[] mNames) {
+        this.mNames = mNames;
+    }
+
+    public String[] getfNames() {
+        return fNames;
+    }
+
+    public void setfNames(String[] fNames) {
+        this.fNames = fNames;
+    }
+
+    public Location[] getLocations() {
+        return locations;
+    }
+
+    public void setLocations(Location[] locations) {
+        this.locations = locations;
     }
 }

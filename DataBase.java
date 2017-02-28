@@ -142,13 +142,6 @@ public class DataBase {
                     "    motherID text,\n" +
                     "    spouseID text )");
 
-            /*stmt.executeUpdate("drop table if exists location");
-            stmt.executeUpdate("create table location ( locationID text not null primary key,\n" +
-                    "    city text not null,\n" +
-                    "    latitude REAL not null,\n" +
-                    "    longitude REAL not null,\n" +
-                    "    country text not null)");*/
-
             stmt.executeUpdate("drop table if exists events");
             stmt.executeUpdate("create table events ( eventID text not null primary key,\n" +
                     "    userID text not null,\n" +
@@ -202,34 +195,4 @@ public class DataBase {
         }
     }
 
-    /**
-     * Selects from all rows and columns on any table
-     *
-     * @RETURN the result
-     */
-    public String selectAllFromUser() {
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        String output = "";
-        try {
-            conn = openConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT userID FROM user");//execute the statement
-            if (rs.next()) {
-                output = rs.getString(1);
-                closeConnection(true, conn);
-            }
-            if (!conn.isClosed()) {
-                closeConnection(false, conn);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            closeConnection(false, conn);
-        } finally {
-            DataBase.safeClose(rs);
-            DataBase.safeClose(stmt);
-        }
-        return output;
-    }
 }

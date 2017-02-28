@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import dataAccess.AuthTokenDao;
 import dataAccess.UserDao;
+import infoObjects.FillRequest;
+import infoObjects.FillResult;
 import infoObjects.RegisterRequest;
 import infoObjects.RegisterResult;
 import models.AuthToken;
@@ -34,9 +36,14 @@ public class RegisterService {
                 AuthTokenDao authDao = new AuthTokenDao();
                 AuthToken authToken = new AuthToken();//gets the timestamp and UUID in the model object
                 if (authDao.insertAuthToken(newUser.getID(), authToken)) {
-                    //NEED TO GENERATE DATA DATA
-                    //HOW DO I GET LOGGED ON?
-                    return new RegisterResult(authToken.getAuthToken(), newUser.getUserName(), newUser.getID());
+                    FillService fillService = new FillService();
+                    DataGenerator dataGenerator = new DataGenerator(newUser.getID());
+                    //Generates my data right here
+                    FillResult result = dataGenerator.genData(new FillRequest(4, newUser.getUserName(), request.getLocations(), request.getfNames(), request.getlNames(), request.getmNames()));
+                    if (result.getE() == null){//if we didnt have an error
+                        return new RegisterResult(authToken.getAuthToken(), newUser.getUserName(), newUser.getID());
+                    }
+                    else{return new RegisterResult(result.getE());}//we had an error
                 }
             }
         }catch(SQLException e){

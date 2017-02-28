@@ -8,6 +8,7 @@ import models.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.xml.crypto.Data;
 
@@ -185,5 +186,37 @@ public class UserDao {
         }
         return false;
     }
+    /**
+     /** Selects from all rows and columns on any table
+     *
+     * @RETURN the result
+     *//*
+
+    public String selectAllFromUser() {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        String output = "";
+        try {
+            conn = db.openConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("SELECT userID FROM user");//execute the statement
+            if (rs.next()) {
+                output = rs.getString(1);
+                db.closeConnection(true, conn);
+            }
+            if (!conn.isClosed()) {
+                db.closeConnection(false, conn);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            db.closeConnection(false, conn);
+            throw e;
+        } finally {
+            DataBase.safeClose(rs);
+            DataBase.safeClose(stmt);
+        }
+        return output;
+    }*/
 
 }

@@ -18,10 +18,8 @@ import models.User;
  */
 
 public class LoadService {
-    //private LoadRequest load;
 
-    public LoadService(LoadRequest load) {
-        //    this.load = load;
+    public LoadService() {
     }
 
     /**
@@ -45,12 +43,11 @@ public class LoadService {
                 eDao.insertEvent(event);
             }
         } catch (SQLException e) {
-            LoadResult result = new LoadResult(e.getMessage());
-            result.setE(e);
-            return result;
+            return new LoadResult(e);
+            //return result;
         }
 
-        return new LoadResult("Successfully added " + request.getUsers().length + " users, " + request.getPersons().length
-                + " persons, and " + request.getEvents().length + " events to the database.”");
+        return new LoadResult(request.getUsers().length,request.getPersons().length,request.getEvents().length);
+       // return load;
     }
 }

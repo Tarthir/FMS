@@ -24,18 +24,15 @@ public class EventService {
     public EventResult getEvent(EventRequest request){
         EventDao eDao = new EventDao();
         EventsCreator create = new EventsCreator();
-        Exception except = null;
         ArrayList<String> result = null;
         try {
             result = eDao.getEvent(request);
         } catch (SQLException e) {
-            except = e;
+            return new EventResult(e);
         }
         if(result != null){
             Event event = create.createEvent(result);
-            EventResult eResult = new EventResult(event.getUserID(),event,event.getPersonID());
-            eResult.setE(except);
-            return eResult;
+            return new EventResult(event.getUserID(),event,event.getPersonID());
         }
         return null;
     }

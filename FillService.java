@@ -29,9 +29,11 @@ public class FillService {
                 MultiDao multiDao = new MultiDao();
                 if (multiDao.deleteFromDataBase(request.getUsername())) {//if the deletion works right
                     UserDao uDao = new UserDao();
-                    String userID = uDao.getUserIDWithUserName(request.getUsername());//get the userName
-                    DataGenerator dataGenerator = new DataGenerator(userID);
-                    return dataGenerator.genData(request);//if it generates right
+                    String userID = uDao.getUserIDWithUserName(request.getUsername());//get the userID
+                    if(!userID.equals("")) {//if we found a userID
+                        DataGenerator dataGenerator = new DataGenerator(userID);
+                        return dataGenerator.genData(request);//if it generates right
+                    }
                 }
             }
         }catch(SQLException e){

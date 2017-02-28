@@ -150,43 +150,6 @@ public class EventDao {
         return null;
     }
 
-    /***
-     * A method to get all of the locationID's keyed to a user
-     *
-     * @PARAM the userID we are getting all the events from
-     * @RETURN All the locationID's
-     * @EXCEPTION throws SQL exception
-    public ArrayList<String> getLocationIDs(String userID) throws SQLException{
-        Connection conn = null;
-        ResultSet rs = null;
-        PreparedStatement stmt = null;//insert statement
-        try {
-            conn = db.openConnection();
-            stmt = conn.prepareStatement("SELECT locationID FROM events WHERE userID = ?");
-            stmt.setString(1,userID);
-            rs = stmt.executeQuery();//execute the statement
-            ArrayList<String> listOfIDs = new ArrayList<>();
-            while(rs.next()) {
-                String column = rs.getString(1);
-                listOfIDs.add(column);
-            }
-            if(listOfIDs.size() == 0){db.closeConnection(false, conn);}
-            else{//if we got a result
-                db.closeConnection(true, conn);
-                return listOfIDs;
-            }
-        }catch(SQLException e){
-            // e.printStackTrace();
-            db.closeConnection(false, conn);
-            throw e;
-        }
-        finally {
-            DataBase.safeClose(rs);
-            DataBase.safeClose(stmt);
-        }
-        return null;
-    }*/
-
     /**
      * deletes from the event table
      * @PARAM the user ID of event that needs to be deleted

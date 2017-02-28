@@ -11,9 +11,15 @@ public class LoadResult {
     /**The exception thrown object*/
     private Exception e;
 
-    public LoadResult(String resultMessage) {
-        resultMessage = this.resultMessage;
+    public LoadResult(int numUsers, int numPersons, int numEvents) {
+       resultMessage = "Successfully added " + numUsers + " users, " + numPersons
+                + " persons, and " + numEvents + " events to the database";
     }
+
+    public LoadResult(Exception e) {
+        this.e = e;
+    }
+
     /**@RETURN The result of the attempt to load data*/
     public String getResultMessage() {
         return resultMessage;
@@ -21,9 +27,5 @@ public class LoadResult {
 
     public Exception getE() {
         return e;
-    }
-
-    public void setE(Exception e) {
-        this.e = e;
     }
 }
