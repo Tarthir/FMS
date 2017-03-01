@@ -1,4 +1,20 @@
 package server;
+import com.sun.net.httpserver.HttpServer;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+
+import javax.xml.crypto.Data;
+
+import dataAccess.DataBase;
+import handler.ClearHandler;
+import handler.EventHandler;
+import handler.FillHandler;
+import handler.IndexHandler;
+import handler.LoadHandler;
+import handler.LoginHandler;
+import handler.PersonHandler;
+import handler.RegisterHandler;
 import models.Person;
 import infoObjects.*;
 
@@ -11,87 +27,41 @@ import infoObjects.*;
 
 public class MainServer {
 
-    /***
-     * A method to register a new user
-     *
-     * @PARAM request, the request to register a new user
-     * @Return the result, successful or not of the register attempt
-     */
-    public RegisterResult register(RegisterRequest request) {
-        return null;
+    private static final int MAX_WAITING_CONNECTIONS = 10;
+
+    private HttpServer server;
+    /**
+     * Runs our server
+     * */
+    private void run(String portNumber) {
+        //System.out.println("Initializing HTTP Server");
+        try {
+            server = HttpServer.create(
+                    new InetSocketAddress(Integer.parseInt(portNumber)),
+                    MAX_WAITING_CONNECTIONS);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        server.setExecutor(null); // use the default executor
+
+        server.createContext("/uer/register",new RegisterHandler());
+        server.createContext("/user/login",new LoginHandler());
+        server.createContext("/fill",new FillHandler());//gives username/generations
+        server.createContext("/load",new LoadHandler());
+        server.createContext("/person",new PersonHandler());//gives all people
+        server.createContext("/event",new EventHandler());//gives personID
+        server.createContext("/",new IndexHandler());//for CSS and index handler
+        DataBase db = new DataBase();
+        db.createTables(db.openConnection());//initialize the DB
+
+        server.start();
     }
 
-    /***
-     * A method to login a user
-     * @Param request, this object holds the info needed to successfully login
-     * @Return the result, successful or not of the login attempt
-     */
-    public LoginResult login(LoginRequest request) {
-        return null;
-    }
-
-    /***
-     * A method to get a user's ancestor's info
-     *
-     * @PARAM request, the info needed to make a request on the database for a specific ancestor
-     * @Return the result, a person object; successful or not of the getPerson attempt
-     */
-    public Person getPerson(PersonRequest request) {
-        return null;
-    }
-
-    /***
-     * A method to get all of a users ancestor's
-     *
-     * @PARAM request, the info needed to make a request on the database for all ancestors
-     * @Return the array of people related to the User
-     */
-    public Person[] getPeople(PeopleRequest request) {
-        return new Person[0];
-    }
-
-    /***
-     * A method to get a specific event
-     *
-     * @PARAM request, the info needed to make a request on a particular event of a particular person of a user
-     * @Return the result, an event object; successful or not of the getEvent Attempt attempt
-     */
-    public EventResult getEvent(EventRequest request) {
-        return null;
-    }
-
-    /***
-     * A method to get all of a user's ancestor's events
-     *
-     * @PARAM request, the info needed to make a request on the database for all events of a user's ancestor
-     * @Return the result, an event object array; successful or not of the getEvents Attempt attempt
-     */
-    public EventResult getEvents(EventsRequest request) {
-        return null;
-    }
-
-    /***
-     * Calls a method to clear the database
-     * @Return the result, successful or not of the clear attempt
-     */
-    public ClearResult clear() {
-        return null;
-    }
-
-    /***
-     * Calls a method to fill the database with new data
-     * @Return the result, a FillResult object; successful or not of the fill attempt
-     */
-    public FillResult fill(FillRequest request) {
-        return null;
-    }
-
-    /***
-     *Calls a method to fill the database with new Data
-     * @Param request, A object which contains the info needs to load up a database
-     * @Return the result, an loadResult object; successful or not of the load attempt
-     */
-    public LoadResult load(LoadRequest request) {
-        return null;
+    public static void main(String[] args) {
+        //String portNumber = args[0];
+        new MainServer().run("8080");
     }
 }

@@ -10,11 +10,8 @@ import infoObjects.LoadRequest;
  */
 
 public class LoadHandler implements HttpHandler{
-    /**This object holds the information ot preform a load attempt on the database*/
-    private LoadRequest request;
 
-    public LoadHandler(LoadRequest request) {
-        this.request = request;
+    public LoadHandler() {
     }
 
     @Override

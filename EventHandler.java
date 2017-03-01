@@ -15,29 +15,12 @@ import infoObjects.EventsRequest;
  */
 
 public class EventHandler implements HttpHandler {
-    /**The request to get one event*/
-    EventRequest request;
-    /**The request to get multiple events*/
-    EventsRequest requests;
     /**Creates an object which handles getting one event from a person*/
-    public EventHandler(EventRequest request) {
-        this.request = request;
-    }
-    /**Creates an object which handles getting all events from all the people related to the user*/
-    public EventHandler(EventsRequest requests) {
-        this.requests = requests;
+    public EventHandler() {
     }
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 
     }
-    /**@RETURN Gets The request to get one event*/
-    //public EventRequest getRequest() {
-   //     return request;
-   // }
-    /**@RETURN Gets The request to get multiple events*/
-   // public EventsRequest getRequests() {
-       // return requests;
-   // }
 }

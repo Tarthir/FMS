@@ -14,37 +14,12 @@ import infoObjects.PersonRequest;
  */
 
 public class PersonHandler implements HttpHandler {
-    /**
-     * A single person request
-     */
-    PersonRequest person;
-    /***
-     * A request for multiple people
-     */
-    PeopleRequest people;
 
-    public PersonHandler(PersonRequest person) {this.person = person;}
-
-    public PersonHandler(PeopleRequest people) {
-        this.people = people;
-    }
+    public PersonHandler() {}
 
     @Override
     /**This method handles the getPerson request from the server*/
     public void handle(HttpExchange httpExchange) throws IOException {
 
-    }
-    /**
-     * @RETURN A single person request
-     */
-    public PersonRequest getPerson() {
-        return person;
-    }
-    /***
-     * @RETURN
-     * A request for multiple people
-     */
-    public PeopleRequest getPeople() {
-        return people;
     }
 }

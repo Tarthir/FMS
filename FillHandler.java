@@ -14,19 +14,10 @@ import infoObjects.FillRequest;
  */
 
 public class FillHandler implements HttpHandler {
-    /**The request to fill our database*/
-    private FillRequest request;
-    //HANDLERS WILL TAKE IN JSON OBJECTS
-    public FillHandler(FillRequest request) {this.request = request;}
+    public FillHandler() {}
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 
-    }
-    /**
-     * @RETURN gets the fill request
-     * */
-    public FillRequest getRequest() {
-        return request;
     }
 }

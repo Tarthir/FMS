@@ -12,21 +12,12 @@ import infoObjects.LoginRequest;
  * Handles login requests from our client. Unpackages JSON object into appropriate object
  */
 public class LoginHandler implements HttpHandler {
-    /**This object holds the information needs to perform a login request*/
-    private LoginRequest request;
-    public LoginHandler(LoginRequest request) {
-        this.request = request;
+    public LoginHandler( ) {
     }
 
     @Override
     /**This method handles the login request from the server*/
     public void handle(HttpExchange httpExchange) throws IOException {
 
-    }
-    /**
-     * @RETURN the login request
-     * */
-    public LoginRequest getRequest() {
-        return request;
     }
 }
