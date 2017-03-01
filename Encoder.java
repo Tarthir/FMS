@@ -58,9 +58,9 @@ public class Encoder {
      * @RETURN String object
      * @EXCEPTION IOException
      * */
-    public String decodeString(HttpExchange exchange)throws IOException{
+    public String[] decodeStringArray(HttpExchange exchange)throws IOException{
         Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, String.class);
+        return gson.fromJson(reader, String[].class);
     }
    /***
      * This decodes java objects from JSON

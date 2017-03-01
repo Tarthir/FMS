@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import javax.xml.crypto.Data;
 
@@ -186,27 +187,32 @@ public class UserDao {
         }
         return false;
     }
-    /**
-     /** Selects from all rows and columns on any table
-     *
-     * @RETURN the result
-     *//*
 
-    public String selectAllFromUser() {
+    /** Selects from all rows and columns on any table from the UserName
+     * @PARAM String userName
+     * @RETURN  userInfo
+     * @EXCEPTION SQLException
+     */
+    public ArrayList<String> selectAllFromUser(String userName) throws SQLException{
         Connection conn = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         ResultSet rs = null;
-        String output = "";
         try {
             conn = db.openConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT userID FROM user");//execute the statement
+            stmt = conn.prepareStatement("SELECT userID,userName,password,email,firstName,lastName,gender FROM user WHERE userName = ?");
+            stmt.setString(1,userName);
+            rs = stmt.executeQuery();//execute the statement
+            int columns = rs.getMetaData().getColumnCount();
+            ArrayList<String> user = new ArrayList<>();
             if (rs.next()) {
-                output = rs.getString(1);
-                db.closeConnection(true, conn);
+                for(int i = 1; i <= columns; i++){
+                    user.add(rs.getString(i));
+                }
             }
-            if (!conn.isClosed()) {
-                db.closeConnection(false, conn);
+            if(user.size() == 0){db.closeConnection(false, conn);}
+            else{//if we got a result
+                db.closeConnection(true, conn);
+                return user;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -216,7 +222,7 @@ public class UserDao {
             DataBase.safeClose(rs);
             DataBase.safeClose(stmt);
         }
-        return output;
-    }*/
+        return null;
+    }
 
 }

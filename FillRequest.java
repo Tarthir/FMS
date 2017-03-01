@@ -20,14 +20,10 @@ public class FillRequest {
     private String[] lNames;
     /**Array of possible male names*/
     private String[] mNames;
-    //TODO:DELETE ARRAYS FROM CONSTRUCTOR,just use the setters
-    public FillRequest(int numOfGenerations, String username, Location[] locations, String[] fNames, String[] lNames, String[] mNames) {
+
+    public FillRequest(int numOfGenerations, String username) {
         this.numOfGenerations = numOfGenerations;
         this.username = username;
-        this.locations = locations;
-        this.fNames = fNames;
-        this.lNames = lNames;
-        this.mNames = mNames;
     }
 
     public FillRequest() {
@@ -56,5 +52,21 @@ public class FillRequest {
 
     public String[] getmNames() {
         return mNames;
+    }
+
+    public void setLocations(Location[] locations) {
+        this.locations = locations;
+    }
+
+    public void setfNames(String[] fNames) {
+        this.fNames = fNames;
+    }
+
+    public void setlNames(String[] lNames) {
+        this.lNames = lNames;
+    }
+
+    public void setmNames(String[] mNames) {
+        this.mNames = mNames;
     }
 }

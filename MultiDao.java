@@ -10,16 +10,14 @@ import java.util.ArrayList;
  */
 
 public class MultiDao {
+    /**A PersonDao*/
     private PersonDao pDao;
+    /**A EventDao*/
     private EventDao eDao;
-    //private LocationDao lDao;
-    private AuthTokenDao aDao;
 
     public MultiDao(){
         pDao = new PersonDao();
         eDao = new EventDao();
-        //lDao = new LocationDao();
-        aDao = new AuthTokenDao();
     }
     /**
      * Takes a userID and deletes all data related to it
@@ -27,31 +25,13 @@ public class MultiDao {
      * @RETURN boolean
      * @EXCEPTION SQLException
      */
-    public boolean deleteFromDataBase(String userName) {//throws SQLException{
-        boolean delete = true;//If we ever return false, then this failed
+    public boolean deleteFromDataBase(String userName) throws SQLException{
+        //boolean delete = true;//If we ever return false, then this failed
         UserDao uDao = new UserDao();
         String userID = null;
-        try {
-            userID = uDao.getUserIDWithUserName(userName);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
-        if(delete){
-            try {
-                delete = eDao.deleteEvents(userID);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        if(delete){
-            try {
-                delete = pDao.deletePerson(userID);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return delete;
+        userID = uDao.getUserIDWithUserName(userName);
+        return (eDao.deleteEvents(userID) && pDao.deletePerson(userID));
     }
 
     /**

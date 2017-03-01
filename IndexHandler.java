@@ -25,8 +25,9 @@ import service.RegisterService;
 // 1.0.0.|:8080/
 public class IndexHandler implements HttpHandler {
     //exchange variable holds the http info
-    public void handle(HttpExchange exchange) {
+    public void handle(HttpExchange exchange)throws IOException {
         //String myBaseFolder = "HTML" + File.separator;
+        OutputStream respBody = null;
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("get")) {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);//otherwise send Forbidden/BadRequest/etc as needed
@@ -35,20 +36,22 @@ public class IndexHandler implements HttpHandler {
                 String filePathStr = "C:\\Users\\tyler\\AndroidStudioProjects\\FamilyMap\\DefaultFiles\\index.html";
                 Path filePath = FileSystems.getDefault().getPath(filePathStr);
                 Files.copy(filePath, exchange.getResponseBody());
-                OutputStream respBody = exchange.getResponseBody();
-                respBody.close();
+                respBody = exchange.getResponseBody();
+
                 //DO the .css file too if you want
+                filePathStr = "C:\\Users\\tyler\\AndroidStudioProjects\\FamilyMap\\DefaultFiles\\main.css";
+                filePath = FileSystems.getDefault().getPath(filePathStr);
+                Files.copy(filePath, exchange.getResponseBody());
+
+                respBody.close();//right?
 
             }
             else{
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             }
         } catch (IOException e) {
-            try {
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+            exchange.getResponseBody().close();
             e.printStackTrace();
         }
     }

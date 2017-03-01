@@ -8,6 +8,8 @@ import java.util.UUID;
 import dataAccess.EventDao;
 import dataAccess.PeopleCreator;
 import dataAccess.PersonDao;
+import dataAccess.UserCreator;
+import dataAccess.UserDao;
 import infoObjects.FillRequest;
 import infoObjects.FillResult;
 import models.Event;
@@ -55,17 +57,38 @@ public class DataGenerator {
      *
      * @PARAM FillRequest object
      * @RETURN whether the generation process was successful or not
+     * @EXCEPTION SQLException,IllegalArgumentException
      */
-    public FillResult genData(FillRequest request) throws SQLException {
-        //MAKE THE USER A PERSON IN THE TABLE AS WELL!!
+    public FillResult genData(FillRequest request) throws SQLException,IllegalArgumentException{
+        //MAKE THE USER A PERSON IN THE TABLE AS WELL!!!!User the userID
+        User user = createUserPerson(request.getUsername());
+        if(user == null){throw new IllegalArgumentException();}
         TOTAL_GENERATIONS = request.getNumOfGenerations();
         int currGeneration = TOTAL_GENERATIONS;
         int adderIndex = 0;//allows us to set mother/father indicies for children
         for (int j = currGeneration; j > 0; j--) {//create all the generations starting from the top
             adderIndex = genPeople(j, request, adderIndex);
         }
-        //once people are generated move on to the events
+        //gput the user in the table
+        UUID uuid = UUID.randomUUID();
+        String father = people.get(people.size() -2).getID();
+        String mother = people.get(people.size()-1).getID();
+        people.add(new Person(uuid.toString(),user.getID(),user.getfName(),user.getlName(),user.getGender(),father,mother,""));
+        genEvents(people.get(people.size() - 1), request.getLocations(), 0);
         return insertData();
+    }
+
+    /**
+     * Creates a user object using other classes
+     *
+     * @PARAM FString, the user's username
+     * @RETURN A User object
+     * @EXCEPTION SQLException
+     */
+    private User createUserPerson(String userName)throws SQLException{
+        UserDao uDao = new UserDao();
+        UserCreator creator = new UserCreator();
+        return creator.createUser(uDao.selectAllFromUser(userName));
     }
 
     /**
@@ -148,7 +171,7 @@ public class DataGenerator {
      * @RETURN void
      */
     private void genEvents(Person person, Location[] locations, int currGeneration) {
-        int startYear = 2017 - (currGeneration * 50);
+        int startYear = 1970- (currGeneration * 50);
         String[] eventType = {"Birth", "Baptism", "Death"};
         Random locRand = new Random();
         for (String eventT : eventType) {//for every kind of event
@@ -253,35 +276,4 @@ public class DataGenerator {
         return new FillResult(people.size(), events.size());
     }
 
-    public String[] getlNames() {
-        return lNames;
-    }
-
-    public void setlNames(String[] lNames) {
-        this.lNames = lNames;
-    }
-
-    public String[] getmNames() {
-        return mNames;
-    }
-
-    public void setmNames(String[] mNames) {
-        this.mNames = mNames;
-    }
-
-    public String[] getfNames() {
-        return fNames;
-    }
-
-    public void setfNames(String[] fNames) {
-        this.fNames = fNames;
-    }
-
-    public Location[] getLocations() {
-        return locations;
-    }
-
-    public void setLocations(Location[] locations) {
-        this.locations = locations;
-    }
 }

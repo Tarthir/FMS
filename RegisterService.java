@@ -35,11 +35,17 @@ public class RegisterService {
             if (!dao.checkUserName(request.getUserName()) && dao.register(newUser)) {//check to see if the userName already exists then if register is successful
                 AuthTokenDao authDao = new AuthTokenDao();
                 AuthToken authToken = new AuthToken();//gets the timestamp and UUID in the model object
+
                 if (authDao.insertAuthToken(newUser.getID(), authToken)) {
-                    FillService fillService = new FillService();
                     DataGenerator dataGenerator = new DataGenerator(newUser.getID());
-                    //Generates my data right here
-                    FillResult result = dataGenerator.genData(new FillRequest(4, newUser.getUserName(), request.getLocations(), request.getfNames(), request.getlNames(), request.getmNames()));
+                    //Generates my data right here Setting up the request first
+                    FillRequest fillRequest = new FillRequest(4, newUser.getUserName());
+                    fillRequest.setLocations(request.getLocations());
+                    fillRequest.setfNames(request.getfNames());
+                    fillRequest.setmNames(request.getmNames());
+                    fillRequest.setlNames(request.getlNames());
+
+                    FillResult result = dataGenerator.genData(fillRequest);
                     if (result.getE() == null){//if we didnt have an error
                         return new RegisterResult(authToken.getAuthToken(), newUser.getUserName(), newUser.getID());
                     }

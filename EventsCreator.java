@@ -39,7 +39,7 @@ public class EventsCreator {
      * @RETURN A event object
      */
     public Event createEvent(ArrayList<String> eventData) {
-        if (eventData.size() == 0) {
+        if (eventData.size() < 9) {//9 is the number of parameters we should have
             return null;
         } else {//return a new person
             LocationCreator locCreator = new LocationCreator();

@@ -48,12 +48,7 @@ public class ClearHandler implements HttpHandler {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             }
         } catch (IOException e) {
-            try {
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            } catch (IOException e1) {
-                exchange.getResponseBody().close();
-                e1.printStackTrace();
-            }
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
             e.printStackTrace();
         }

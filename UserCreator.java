@@ -3,9 +3,11 @@ package dataAccess;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import infoObjects.RegisterRequest;
 import infoObjects.RegisterResult;
+import models.Person;
 import models.User;
 
 /**
@@ -16,13 +18,19 @@ import models.User;
 public class UserCreator {
     public UserCreator() {
     }
-    /***
-     * A method to register a new user
-     * @PARAM request, the request to register a new user
-     * @Return the result, successful or not of the register attempt
-     */
-    RegisterResult register(User user,Connection conn) throws SQLException{
 
-        return null;
+    /**
+     * Creates one person from input
+     *
+     * @PARAM Arraylist of of Strings holding user data
+     * @RETURN A person object
+     */
+    public User createUser(ArrayList<String> userData) {
+        if (userData.size() < 7) {//7 is the number of parameters we should have
+            return null;
+        } else {//return a new person
+            return new User(userData.get(0), userData.get(1), userData.get(2), userData.get(3),
+                    userData.get(4), userData.get(5), userData.get(6));
+        }
     }
 }

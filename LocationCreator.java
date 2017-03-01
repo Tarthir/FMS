@@ -21,7 +21,7 @@ public class LocationCreator {
      */
     public Location createLocation(ArrayList<String> locData) {
         Location loc = null;
-        if (locData.size() == 0) {
+        if (locData.size() < 4 ) {
             return loc;
         }
         else{
