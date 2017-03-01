@@ -37,6 +37,10 @@ public class RegisterRequest {
         this.lName = lName;
         this.gender = gender;
     }
+
+    public RegisterRequest() {
+    }
+
     /**@RETURN Gets the username of this registerRequest*/
     public String getUserName() {
         return userName;

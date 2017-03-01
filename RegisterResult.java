@@ -24,6 +24,10 @@ public class RegisterResult {
     public RegisterResult(Exception e) {
         this.e = e;
     }
+
+    public RegisterResult() {
+    }
+
     /***
      * @RETURN Gets the authtoken
      */

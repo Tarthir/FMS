@@ -6,6 +6,9 @@ package infoObjects;
  */
 
 public class PersonRequest {
+    public PersonRequest() {
+    }
+
     /**The ID of this personRequest*/
     private String personID;
 

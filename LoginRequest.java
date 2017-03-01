@@ -15,6 +15,10 @@ public class LoginRequest {
         this.userName = userName;
         this.passWord = passWord;
     }
+
+    public LoginRequest() {
+    }
+
     /**@RETURN The userName of this loginrequest*/
     public String getUserName() {
         return userName;

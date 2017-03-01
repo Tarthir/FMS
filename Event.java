@@ -29,6 +29,9 @@ public class Event {
         this.year = year;
     }
 
+    public Event() {
+    }
+
     public String getEventID() {
         return eventID;
     }

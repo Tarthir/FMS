@@ -31,6 +31,9 @@ public class EventResult {
         this.e = e;
     }
 
+    public EventResult() {
+    }
+
     public Exception getE() {
         return e;
     }

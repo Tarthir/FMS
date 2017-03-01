@@ -15,11 +15,14 @@ public class Location {
     /**The longitude this event occured at*/
     private String longitude;
 
-    public Location(String city, String latitude, String longitude, String country) {
+    public Location(String latitude, String longitude,String city, String country) {
         this.city = city;
         this.country = country;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public Location() {
     }
 
 

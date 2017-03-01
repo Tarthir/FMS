@@ -26,6 +26,9 @@ public class LoginResult {
         this.e = e;
     }
 
+    public LoginResult() {
+    }
+
     /**@RETURN The authToken of this login result*/
     public String getAuthToken() {
         return authToken;

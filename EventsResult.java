@@ -24,6 +24,9 @@ public class EventsResult {
         this.e = e;
     }
 
+    public EventsResult() {
+    }
+
     /**@RETURN The events array*/
     public ArrayList<Event> getEvents() {
         return events;

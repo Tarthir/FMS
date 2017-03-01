@@ -12,6 +12,10 @@ public class EventRequest {
     public EventRequest(String eventID) {
         this.eventID = eventID;
     }
+
+    public EventRequest() {
+    }
+
     /**@RETURN the eventID of this Event Request*/
     public String getEventID() {
         return eventID;

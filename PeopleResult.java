@@ -23,6 +23,9 @@ public class PeopleResult {
         this.e = e;
     }
 
+    public PeopleResult() {
+    }
+
     public ArrayList<Person> getPeople() {
         return people;
     }

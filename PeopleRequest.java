@@ -14,6 +14,9 @@ public class PeopleRequest {
         this.authToken = authToken;
     }
 
+    public PeopleRequest() {
+    }
+
     public String getAuthToken() {
         return authToken;
     }

@@ -20,7 +20,8 @@ public class AuthTokenDao {
     private String insertIntoAuth = "insert into authToken (userID, authToken, timeStamp) values ( ?, ?, ? )";
     /**Our insert string to get an authToken*/
     private String getAuthToken = "SELECT authToken FROM authToken WHERE userID = ?";
-    DataBase db;
+    /**Our Database object*/
+    private DataBase db;
     public AuthTokenDao() {
         db = new DataBase();
     }

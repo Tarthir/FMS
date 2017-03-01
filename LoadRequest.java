@@ -23,6 +23,9 @@ public class LoadRequest {
         this.events = events;
     }
 
+    public LoadRequest() {
+    }
+
     public User[] getUsers() {
         return users;
     }

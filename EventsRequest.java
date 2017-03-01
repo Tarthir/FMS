@@ -12,6 +12,10 @@ public class EventsRequest {
     public EventsRequest(String authToken) {
         this.authToken = authToken;
     }
+
+    public EventsRequest() {
+    }
+
     /**@RETURN The authToken of the user are related to*/
     public String getAuthToken() {
         return authToken;

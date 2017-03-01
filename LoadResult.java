@@ -20,6 +20,9 @@ public class LoadResult {
         this.e = e;
     }
 
+    public LoadResult() {
+    }
+
     /**@RETURN The result of the attempt to load data*/
     public String getResultMessage() {
         return resultMessage;

@@ -31,6 +31,10 @@ public class User {
         this.lName = lName;
         this.gender = gender;
     }
+
+    public User() {
+    }
+
     /**@RETRUN the userID of this user*/
     public String getID() {
         return ID;

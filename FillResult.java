@@ -25,6 +25,9 @@ public class FillResult {
         this.e = e;
     }
 
+    public FillResult() {
+    }
+
     /**@RETURN The Num of persons to fill our database with*/
     public int getNumOfPersons() {
         return numOfPersons;

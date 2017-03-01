@@ -49,6 +49,9 @@ public class Person {
         this.spouseID = spouseID;
     }
 
+    public Person() {
+    }
+
 
     public String getID() {
         return ID;
