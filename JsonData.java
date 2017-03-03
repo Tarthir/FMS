@@ -26,36 +26,53 @@ public class JsonData {
 
     public JsonData() {
     }
-
-    public Object setupJSONArrays(Object request) throws IllegalArgumentException{
-        if(request instanceof FillRequest){
+    /**
+     *Takes our Json arrays we have and then converts them to java arrays
+     * @PARAM Object, a type of request
+     * @RETURN The request Object with updated fields containg the arrays we setup
+     * @EXCEPTION IllegalArgumentException
+     * */
+    public Object setupJSONArrays(Object request) throws IllegalArgumentException {
+        System.out.println("json Data");
+        if (request instanceof FillRequest) {
+            System.out.println("FillRequest");
             return setupJSONArraysFill((FillRequest) request);
-        }
-        else if(request instanceof RegisterRequest){
+        } else if (request instanceof RegisterRequest) {
+            System.out.println("RegisterRequest");
             return setupJSONArraysReg((RegisterRequest) request);
-        }
-        else{
+        } else {
+            System.out.println("Illegal");
             throw new IllegalArgumentException();
         }
     }
-
-    private RegisterRequest setupJSONArraysReg(RegisterRequest request){
-        String filePathStr = "C:\\Users\\tyler\\AndroidStudioProjects\\FamilyMap\\locations.json";
-        FileReader reader = null;
+    /**
+     *Takes our Json arrays we have and then converts them to java arrays
+     * @PARAM RegisterRequest, a type of request
+     * @RETURN The RegisterRequest object with updated fields containg the arrays we setup
+     * */
+    private RegisterRequest setupJSONArraysReg(RegisterRequest request) {
+        String filePathStr = "C:\\Users\\tyler\\AndroidStudioProjects\\FamilyMap\\DefaultFiles\\locations.json";
+        Gson gson = new Gson();
         try {
-            reader = new FileReader(filePathStr);
+            FileReader reader = new FileReader(filePathStr);
+            request.setfNames(new FemaleNamesHolder().getFnames());
+            request.setlNames(new SurNamesHolder().getSnames());
+            request.setLocations(gson.fromJson(reader, LocationDataHolder.class).getLocArray());
+            request.setmNames(new MaleNamesHolder().getMnames());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Gson gson = new Gson();
-        request.setfNames(new FemaleNamesHolder().getFnames());
-        request.setlNames(new SurNamesHolder().getSnames());
-        request.setLocations(gson.fromJson(reader,Location[].class));
-        request.setmNames(new MaleNamesHolder().getMnames());
+
         return request;
     }
-
-    private FillRequest setupJSONArraysFill(FillRequest request){
+    /**
+     *Takes our Json arrays we have and then converts them to java arrays
+     * @PARAM FillRequest, a type of request
+     * @RETURN The FillRequest object with updated fields containg the arrays we setup
+     * */
+    private FillRequest setupJSONArraysFill(FillRequest request) {
         String filePathStr = "C:\\Users\\tyler\\AndroidStudioProjects\\FamilyMap\\locations.json";
         FileReader reader = null;
         try {
@@ -66,7 +83,7 @@ public class JsonData {
         Gson gson = new Gson();
         request.setfNames(new FemaleNamesHolder().getFnames());
         request.setlNames(new SurNamesHolder().getSnames());
-        request.setLocations(gson.fromJson(reader,Location[].class));
+        request.setLocations(gson.fromJson(reader, Location[].class));
         request.setmNames(new MaleNamesHolder().getMnames());
         return request;
     }

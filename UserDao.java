@@ -36,7 +36,6 @@ public class UserDao {
     public boolean register(User newUser)throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;//insert statement
-        //CHECK TO SEE if USER IS UNIQUE
         try {
             conn = db.openConnection();
             stmt = conn.prepareStatement(insertIntoUser);
@@ -49,7 +48,6 @@ public class UserDao {
             stmt.setString(7,newUser.getGender());
             if(stmt.executeUpdate() == 1){//execute the statement
                 db.closeConnection(true, conn);
-                //ALSO LOG US ON
                 return true;
             }
             if(!conn.isClosed()){db.closeConnection(false, conn);}

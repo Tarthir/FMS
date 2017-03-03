@@ -48,6 +48,16 @@ public class Person {
         this.motherID = motherID;
         this.spouseID = spouseID;
     }
+    public Person(String ID, String userID, String fName, String lName, String gender) {
+        this.ID = ID;
+        this.userID = userID;
+        this.fName = fName;
+        this.lName = lName;
+        this.gender = gender;
+        this.fatherID = "";
+        this.motherID = "";
+        this.spouseID = "";
+    }
 
     public Person() {
     }

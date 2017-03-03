@@ -41,9 +41,10 @@ public class RegisterHandler implements HttpHandler {
      */
     public void handle(HttpExchange exchange) throws IOException {
         boolean success = false;//?
-        OutputStream respBody = null;
+        OutputStream respBody;
         try {
-            if (exchange.getRequestMethod().toLowerCase().equals("get")) {
+            if (exchange.getRequestMethod().toLowerCase().equals("post")) {
+                System.out.println("entered1");
 
                 //Headers reqHeaders = exchange.getRequestHeaders();
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
@@ -51,26 +52,28 @@ public class RegisterHandler implements HttpHandler {
                 respBody = exchange.getResponseBody();
                 Encoder encode = new Encoder();
                 RegisterRequest request = encode.decodeReg(exchange);
-
+                System.out.println(request.getUserName());
                 request = (RegisterRequest) new JsonData().setupJSONArrays(request);//grabs the arrays we need
                 RegisterResult result = service.register(request);
                 if(result.getE() != null){
+                    System.out.println("entered2");
                     encode.encode(result.getE(),respBody);
                 }
                 else {
+                    System.out.println("entered3");
                     encode.encode(result, respBody);
                 }
                 respBody.close();
                 success = true;
             }
 
-            if (!success) {
+            else{
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             }
         } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
-            // e.printStackTrace();
+            e.printStackTrace();
         }
     }
 

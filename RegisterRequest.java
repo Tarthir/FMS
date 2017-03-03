@@ -9,15 +9,15 @@ import models.Location;
 
 public class RegisterRequest {
     /** Non-empty string*/
-    private String userName;
+    private String username;
     /** Non-empty string*/
-    private String passWord;
+    private String password;
     /** Non-empty string*/
     private String email;
     /** Non-empty string*/
-    private String fName;
+    private String firstname;
     /** Non-empty string*/
-    private String lName;
+    private String lastname;
     /** f or m*/
     private String gender;
     /**Array of possible locations*/
@@ -29,12 +29,12 @@ public class RegisterRequest {
     /**Array of possible male names*/
     private String[] mNames;
 
-    public RegisterRequest(String userName, String passWord, String email, String fName, String lName, String gender) {
-        this.userName = userName;
-        this.passWord = passWord;
+    public RegisterRequest(String username, String password, String email, String firstname, String lastname, String gender) {
+        this.username = username;
+        this.password = password;
         this.email = email;
-        this.fName = fName;
-        this.lName = lName;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.gender = gender;
     }
 
@@ -43,11 +43,11 @@ public class RegisterRequest {
 
     /**@RETURN Gets the username of this registerRequest*/
     public String getUserName() {
-        return userName;
+        return username;
     }
     /**@RETURN  Gets the passWord of this registerRequest*/
     public String getPassWord() {
-        return passWord;
+        return password;
     }
     /**@RETURN  Gets the email of this registerRequest*/
     public String getEmail() {
@@ -55,11 +55,11 @@ public class RegisterRequest {
     }
     /**@RETURN  Gets the fName of this registerRequest*/
     public String getfName() {
-        return fName;
+        return firstname;
     }
     /**@RETURN  Gets the lName of this registerRequest*/
     public String getlName() {
-        return lName;
+        return lastname;
     }
     /**@RETURN  Gets the gender of this registerRequest*/
     public String getGender() {
@@ -80,7 +80,7 @@ public class RegisterRequest {
 
     public void setfNames(String[] fNames) {
         this.fNames = fNames;
-    }
+    }//female names
 
     public String[] getlNames() {
         return lNames;

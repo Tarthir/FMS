@@ -4,8 +4,14 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 
+import encode.Encoder;
+import encode.JsonData;
 import infoObjects.LoginRequest;
+import infoObjects.LoginResult;
+import service.LoginService;
 
 /**
  * Created by tyler on 2/13/2017.
@@ -17,7 +23,34 @@ public class LoginHandler implements HttpHandler {
 
     @Override
     /**This method handles the login request from the server*/
-    public void handle(HttpExchange httpExchange) throws IOException {
+    public void handle(HttpExchange exchange) throws IOException {
+        OutputStream respBody;
+        try {
+            if (exchange.getRequestMethod().toLowerCase().equals("post")) {
 
+                //Headers reqHeaders = exchange.getRequestHeaders();
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                LoginService service = new LoginService();
+                respBody = exchange.getResponseBody();
+                Encoder encode = new Encoder();
+                LoginRequest request = encode.decodeLogin(exchange);
+                LoginResult result = service.login(request);
+                if(result.getE() != null){
+                    encode.encode(result.getE(),respBody);
+                }
+                else {
+                    encode.encode(result, respBody);
+                }
+                respBody.close();
+            }
+
+            else{
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+            }
+        } catch (IOException e) {
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+            exchange.getResponseBody().close();
+            // e.printStackTrace();
+        }
     }
 }
