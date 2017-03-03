@@ -44,7 +44,11 @@ public class PersonDaoTest {
     @After
     public void tearDown() {
         connection = db.openConnection();
-        db.dropTables(connection);
+        try {
+            db.dropTables(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return;
     }
 

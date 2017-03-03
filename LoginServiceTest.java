@@ -37,7 +37,7 @@ public class LoginServiceTest {
 
     @Before
     public void setUp(){
-        try {
+        //try {
             lService = new LoginService();
             uDao = new UserDao();
             db = new DataBase();
@@ -49,13 +49,17 @@ public class LoginServiceTest {
             RegisterRequest request2 = new RegisterRequest("username2", "password2", "email", "first", "last", "f");
             result = rService.register(request);
             result2 = rService.register(request2);
-        }catch(SQLException e){e.printStackTrace();}
+        //}catch(SQLException e){e.printStackTrace();}
     }
 
     @After
     public void tearDown() {
         connection = db.openConnection();
-        db.dropTables(connection);
+        try {
+            db.dropTables(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return;
     }
 

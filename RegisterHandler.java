@@ -40,41 +40,42 @@ public class RegisterHandler implements HttpHandler {
      * @RETURN void
      */
     public void handle(HttpExchange exchange) throws IOException {
-        boolean success = false;//?
-        OutputStream respBody;
+        Encoder encode = new Encoder();
+        OutputStream respBody = exchange.getResponseBody();
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
-                System.out.println("entered1");
 
                 //Headers reqHeaders = exchange.getRequestHeaders();
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                RegisterService service = new RegisterService();
-                respBody = exchange.getResponseBody();
-                Encoder encode = new Encoder();
-                RegisterRequest request = encode.decodeReg(exchange);
-                System.out.println(request.getUserName());
-                request = (RegisterRequest) new JsonData().setupJSONArrays(request);//grabs the arrays we need
-                RegisterResult result = service.register(request);
-                if(result.getE() != null){
-                    System.out.println("entered2");
-                    encode.encode(result.getE(),respBody);
-                }
-                else {
-                    System.out.println("entered3");
-                    encode.encode(result, respBody);
-                }
-                respBody.close();
-                success = true;
-            }
 
-            else{
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                RegisterService service = new RegisterService();
+                RegisterRequest request = encode.decodeReg(exchange);
+                request = (RegisterRequest) new JsonData().setupJSONArrays(request);//grabs the arrays we need
+                if (request.isValidRequest()) {
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                    RegisterResult result = service.register(request);
+                    if (result.getE() != null) {
+                        encode.encode(result.getE(), respBody);
+                    }
+                    else {
+                        encode.encode(result, respBody);
+                    }
+                    respBody.close();
+                    return;
+                }
             }
+            //if we got an Error in the request we will reach here
+            //PROBLEMS WITH STACK OVERFLOW WITH BAD INPUT WHEN ITRY TO SEND AN ERROR
+            System.out.println("errorRegister");
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+            //encode.encode(new RegisterResult(new IllegalArgumentException()), respBody);
+            respBody.close();
         } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
             e.printStackTrace();
         }
+        //System.out.println("errorout");
     }
+
 
 }

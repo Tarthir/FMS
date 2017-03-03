@@ -3,6 +3,7 @@ package service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import dataAccess.MultiDao;
 import dataAccess.PersonDao;
 import infoObjects.PersonRequest;
 import dataAccess.PeopleCreator;
@@ -21,12 +22,19 @@ public class PersonService {
     /***
      * Calls/Creates our DAO to interact with our database to get the requested person
      * @PARAM PersonRequest, the request to get one person from our database; related to oa user
+     * @PARAM String, an authtoken
      * @RETURN Gets the person requested
      */
-    public Person getPerson(PersonRequest p) throws SQLException{
+    public Person getPerson(PersonRequest p,String authToken) throws SQLException,IllegalArgumentException{
         PersonDao pDao = new PersonDao();
+        MultiDao multi = new MultiDao();
         PeopleCreator maker = new PeopleCreator();
-        ArrayList<String> personData = pDao.getPerson(p);
-        return maker.createPerson(personData);
+        if(multi.ValidateAuthToken(p.getPersonID(),authToken)) {
+            ArrayList<String> personData = pDao.getPerson(p);
+            return maker.createPerson(personData);
+        }
+        else{
+            throw new IllegalArgumentException();
+        }
     }
 }

@@ -15,7 +15,13 @@ public class EventRequest {
 
     public EventRequest() {
     }
-
+    /**
+     * Checks to see if request is valid
+     * @RETURN BOOLEAN, whether request is valid or not
+     * */
+    public boolean isValidRequest(){
+        return !eventID.isEmpty();
+    }
     /**@RETURN the eventID of this Event Request*/
     public String getEventID() {
         return eventID;

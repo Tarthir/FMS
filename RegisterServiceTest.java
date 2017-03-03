@@ -42,7 +42,11 @@ public class RegisterServiceTest {
     @After
     public void tearDown() {
         connection = db.openConnection();
-        db.dropTables(connection);
+        try {
+            db.dropTables(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return;
     }
 
@@ -86,7 +90,7 @@ public class RegisterServiceTest {
 
     @Test
     public void multiRegisterSame() {
-        try {
+        //try {
             RegisterRequest request = new RegisterRequest("username", "password", "email", "first", "last", "f");
             RegisterRequest request2 = new RegisterRequest("username2", "password2", "email2", "first", "last2", "f");
             RegisterRequest request3 = new RegisterRequest("username2", "password", "email", "first", "last", "f");
@@ -98,8 +102,8 @@ public class RegisterServiceTest {
             assertNotEquals(result, null);
             assertNotEquals(result2, null);
             assertEquals(result3, null);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        //} catch (SQLException e) {
+         //   e.printStackTrace();
+       // }
     }
 }

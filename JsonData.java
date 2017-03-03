@@ -33,15 +33,15 @@ public class JsonData {
      * @EXCEPTION IllegalArgumentException
      * */
     public Object setupJSONArrays(Object request) throws IllegalArgumentException {
-        System.out.println("json Data");
+       // System.out.println("json Data");
         if (request instanceof FillRequest) {
-            System.out.println("FillRequest");
+            //System.out.println("FillRequest");
             return setupJSONArraysFill((FillRequest) request);
         } else if (request instanceof RegisterRequest) {
-            System.out.println("RegisterRequest");
+            //System.out.println("RegisterRequest");
             return setupJSONArraysReg((RegisterRequest) request);
         } else {
-            System.out.println("Illegal");
+            //System.out.println("Illegal");
             throw new IllegalArgumentException();
         }
     }
@@ -55,10 +55,14 @@ public class JsonData {
         Gson gson = new Gson();
         try {
             FileReader reader = new FileReader(filePathStr);
+
             request.setfNames(new FemaleNamesHolder().getFnames());
             request.setlNames(new SurNamesHolder().getSnames());
-            request.setLocations(gson.fromJson(reader, LocationDataHolder.class).getLocArray());
+            LocationDataHolder holder = gson.fromJson(reader,LocationDataHolder.class);
+            request.setLocations(holder.getLocArray());
             request.setmNames(new MaleNamesHolder().getMnames());
+
+            reader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (Exception e) {

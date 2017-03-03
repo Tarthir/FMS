@@ -52,4 +52,20 @@ public class Location {
         if(!other.getLongitude().equals(this.getLongitude())){return false;}
         return true;
     }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
 }

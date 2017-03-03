@@ -9,13 +9,13 @@ import models.Location;
 
 public class LocationDataHolder {
     /**An array of location objects*/
-    private Location[] locArray;
+    private Location[] data;
 
-    public LocationDataHolder(Location[] locArray) {
-        this.locArray = locArray;
+    public LocationDataHolder(Location[] data) {
+        this.data = data;
     }
 
     public Location[] getLocArray() {
-        return locArray;
+        return data;
     }
 }

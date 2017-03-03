@@ -67,6 +67,7 @@ public class AuthTokenDao {
         PreparedStatement stmt = null;
         try {
             conn = db.openConnection();
+            //TODO:HAVE IT DEPEND ON TIMESTAMP PASSED IN
             stmt = conn.prepareStatement("DELETE FROM authToken WHERE userID = ?");
             stmt.setString(1, userID);
             if (stmt.executeUpdate() >= 1) {//execute the statement

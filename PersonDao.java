@@ -101,8 +101,7 @@ public class PersonDao {
     /***
      * A method to get a user's ancestor's info
      *
-     * @PARAM userID, the ID for a specific user
-     * @PARAM personID, the ID for a specific ancestor
+     * @PARAM PersonREquest, has info needed to make request
      * @RETURN returns the data needed to start to make a person object
      * @EXCEPTION throws SQLException
      */
@@ -127,6 +126,43 @@ public class PersonDao {
             else{//if we got a result
                 db.closeConnection(true, conn);
                 return columns;
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+            db.closeConnection(false, conn);
+            throw e;
+        }
+        finally {
+            DataBase.safeClose(rs);
+            DataBase.safeClose(stmt);
+        }
+        return null;
+    }
+
+    /***
+     * A method to get a userID with a personID
+     *
+     * @PARAM PersonRequest, has info needed to make request
+     * @RETURN returns the userID
+     * @EXCEPTION throws SQLException
+     */
+    String getUserIDWithPersonID(String personID)throws SQLException{
+        Connection conn = null;
+        ResultSet rs = null;
+        PreparedStatement stmt = null;//insert statement
+        String output = "";
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement("SELECT userID FROM person WHERE personID = ?");
+            stmt.setString(1,personID);
+            rs = stmt.executeQuery();//execute the statement
+            if(rs.next()){
+                output = rs.getString(1);
+            }
+            if(output.length() == 0){db.closeConnection(false, conn);}
+            else{//if we got a result
+                db.closeConnection(true, conn);
+                return output;
             }
         }catch(SQLException e){
             e.printStackTrace();

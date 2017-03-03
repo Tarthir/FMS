@@ -26,6 +26,11 @@ public class LoadRequest {
     public LoadRequest() {
     }
 
+    public boolean isValidRequest(){
+        return  (users != null) && (persons != null) && (events != null) &&
+                (users.length > 0) && (persons.length > 0) && (events.length > 0);
+    }
+
     public User[] getUsers() {
         return users;
     }

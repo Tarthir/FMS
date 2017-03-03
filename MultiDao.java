@@ -1,5 +1,7 @@
 package dataAccess;
 
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -52,6 +54,27 @@ public class MultiDao {
             throw e;
         }
 
+    }
+    /**
+     * Validates authtokens given by the user
+     * @PARAM String,A personID
+     * @PARAM String, an Authtoken
+     * @RETURN boolean, if is validated
+     * @EXCEPTION SQLException
+     * */
+    public boolean ValidateAuthToken(String personID,String authTok)throws SQLException{
+        PersonDao pDao = new PersonDao();
+        AuthTokenDao aDao = new AuthTokenDao();
+        String userID = pDao.getUserIDWithPersonID(personID);
+        ArrayList<String> authTokens = aDao.getAuthToken(userID);
+        System.out.println(authTokens.size());
+        for(String tok : authTokens){
+            if(tok.equals(authTok)){
+                System.out.println(true);
+                return true;
+            }
+        }
+        return false;
     }
 
 }

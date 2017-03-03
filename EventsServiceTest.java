@@ -21,6 +21,7 @@ import infoObjects.EventsRequest;
 import infoObjects.EventsResult;
 import models.AuthToken;
 import models.Event;
+import models.Location;
 import models.Person;
 import models.User;
 import service.EventService;
@@ -76,10 +77,10 @@ public class EventsServiceTest {
             assertTrue(pDao.insertPerson(person2));
             assertTrue(pDao.insertPerson(person3));
             assertTrue(pDao.insertPerson(person4));
-            event = new Event("eventID", "userID", "personID", "1994", "Birth", "23");
-            event2 = new Event("eventID2", "userID", "personID2", "1994", "Birth", "232");
-            event3 = new Event("eventID3", "userID", "personID3", "1994", "Birth", "233");
-            event4 = new Event("eventID4", "userID2", "personID4", "1994", "Birth2", "236");
+            event = new Event("eventID", "userID", "personID", "1994", "Birth", new Location("213.7", "123.7","Provo", "USA"));
+            event2 = new Event("eventID2", "userID", "personID2", "1994", "Birth", new Location("213.7", "123.7","Provo", "USA"));
+            event3 = new Event("eventID3", "userID", "personID3", "1994", "Birth", new Location("213.7", "123.7","Provo", "USA"));
+            event4 = new Event("eventID4", "userID2", "personID4", "1994", "Birth2", new Location("213.7", "123.7","Provo", "USA"));
             assertTrue(eDao.insertEvent(event));
             assertTrue(eDao.insertEvent(event2));
             assertTrue(eDao.insertEvent(event3));
@@ -90,13 +91,17 @@ public class EventsServiceTest {
     @After
     public void tearDown() {
         connection = db.openConnection();
-        db.dropTables(connection);
+        try {
+            db.dropTables(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return;
     }
 
     @Test
     public void testGetEvents() {
-        try {
+       // try {
             ArrayList<Event> expected = new ArrayList<>(Arrays.asList(event, event2, event3));
             ArrayList<Event> expected2 = new ArrayList<>(Arrays.asList(event4));
             EventsRequest request = new EventsRequest(authToken.get(0));
@@ -105,6 +110,6 @@ public class EventsServiceTest {
             EventsResult resultExpected2 = new EventsResult(expected2);
             assertEquals(eService.getEvents(request).getEvents(), resultExpected.getEvents());
             assertEquals(eService.getEvents(request2).getEvents(), resultExpected2.getEvents());
-        }catch(SQLException e){e.printStackTrace();}
+        //}catch(SQLException e){e.printStackTrace();}
     }
 }

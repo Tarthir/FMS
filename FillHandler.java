@@ -24,34 +24,34 @@ public class FillHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        OutputStream respBody;
+        OutputStream respBody = exchange.getResponseBody();
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
 
                 //Headers reqHeaders = exchange.getRequestHeaders();
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 FillService service = new FillService();
-                respBody = exchange.getResponseBody();
                 Encoder encode = new Encoder();
                 FillRequest request = encode.decodeFill(exchange);
-
                 request = (FillRequest) new JsonData().setupJSONArrays(request);//grabs the arrays we need
-                FillResult result = service.fill(request);
-                if(result.getE() != null){
-                    encode.encode(result.getE(),respBody);
+
+                if(request.isValidRequest()) {
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                    FillResult result = service.fill(request);
+                    if (result.getE() != null) {
+                        encode.encode(result.getE(), respBody);
+                    } else {
+                        encode.encode(result, respBody);
+                    }
+                    respBody.close();
+                    return;
                 }
-                else {
-                    encode.encode(result, respBody);
-                }
-                respBody.close();
             }
-            else{
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-            }
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+            respBody.close();
         } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
-            // e.printStackTrace();
+            e.printStackTrace();
         }
     }
 }

@@ -12,6 +12,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.util.Iterator;
+import java.util.List;
 
 //import javax.xml.ws.spi.http.HttpExchange;
 import com.sun.net.httpserver.HttpExchange;
@@ -61,6 +63,16 @@ public class Encoder {
     public String[] decodeStringArray(HttpExchange exchange)throws IOException{
         Reader reader = new InputStreamReader(exchange.getRequestBody());
         return gson.fromJson(reader, String[].class);
+    }
+    /***
+     * This decodes java objects from JSON
+     * @PARAM HttpExchange object
+     * @RETURN String object
+     * @EXCEPTION IOException
+     * */
+    public String decodeString(HttpExchange exchange)throws IOException{
+        Reader reader = new InputStreamReader(exchange.getRequestBody());
+        return gson.fromJson(reader, String.class);
     }
    /***
      * This decodes java objects from JSON
@@ -127,11 +139,12 @@ public class Encoder {
      * @PARAM HttpExchange object
      * @RETURN PersonRequest object
      * @EXCEPTION IOException
-     * */
+     *
     public PersonRequest decodePerson(HttpExchange exchange)throws IOException{
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, PersonRequest.class);
-    }
+        Iterator<List<String>> itr = exchange.getRequestHeaders().values().iterator();
+        List<String> header = itr.next();
+        return new PersonRequest(header.get(1));
+    }*/
     /**
      * This decodes java objects from JSON
      * @PARAM HttpExchange object

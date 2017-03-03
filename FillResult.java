@@ -14,6 +14,8 @@ public class FillResult {
     private String result;
     /**An exception that may or not have been thrown*/
     private Exception e;
+    /**Used when a user is registered and the automatic fill command is called. We need to grab the User's personID*/
+    private String userPersonID;
 
     public FillResult(int numOfPersons, int numOfEvents) {
         this.numOfPersons = numOfPersons;
@@ -26,6 +28,13 @@ public class FillResult {
     }
 
     public FillResult() {
+    }
+
+    public FillResult(int numOfEvents, int numOfPersons, String userPersonID) {
+        this.numOfEvents = numOfEvents;
+        this.numOfPersons = numOfPersons;
+        this.userPersonID = userPersonID;
+        result = "Successfully added " + this.numOfPersons + " people and " + this.numOfEvents + " events.";
     }
 
     /**@RETURN The Num of persons to fill our database with*/
@@ -43,5 +52,9 @@ public class FillResult {
 
     public Exception getE() {
         return e;
+    }
+
+    public String getUserPersonID() {
+        return userPersonID;
     }
 }

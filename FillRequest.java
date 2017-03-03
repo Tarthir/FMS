@@ -29,6 +29,12 @@ public class FillRequest {
     public FillRequest() {
     }
 
+    public boolean isValidRequest(){
+        return  (!username.isEmpty()) && (numOfGenerations > 0) &&
+                (locations != null) && (fNames != null) &&
+                (lNames != null) && (mNames != null);
+    }
+
     /**@RETURN the num of generations to generate*/
     public int getNumOfGenerations() {
         return numOfGenerations;

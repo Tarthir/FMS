@@ -8,6 +8,7 @@ import models.AuthToken;
  */
 
 public class PeopleRequest {
+    /**The authtoken belonging to the user of our people*/
     private String authToken;
 
     public PeopleRequest(String authToken) {

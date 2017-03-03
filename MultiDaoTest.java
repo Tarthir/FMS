@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import dataAccess.AuthTokenDao;
 import dataAccess.DataBase;
 import dataAccess.EventDao;
-import dataAccess.LocationDao;
+//import dataAccess.LocationDao;
 import dataAccess.MultiDao;
 import dataAccess.PersonDao;
 import dataAccess.UserDao;
@@ -27,6 +27,7 @@ import models.User;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Created by tyler on 2/24/2017.
@@ -36,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 public class MultiDaoTest {
     private PersonDao pDao;
     private EventDao eDao;
-    private LocationDao lDao;
+    //private LocationDao lDao;
     private AuthTokenDao aDao;
     private DataBase db;
     private Connection connection;
@@ -48,7 +49,7 @@ public class MultiDaoTest {
         mDao = new MultiDao();
         pDao = new PersonDao();
         eDao = new EventDao();
-        lDao = new LocationDao();
+        //lDao = new LocationDao();
         aDao = new AuthTokenDao();
         UserDao uDao = new UserDao();
         db = new DataBase();
@@ -67,20 +68,16 @@ public class MultiDaoTest {
             assertTrue(pDao.insertPerson(new Person("personID3", "userID", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3")));
             assertTrue(pDao.insertPerson(new Person("personID4", "userID2", "fName4", "lName4", "f", "fatherID4", "motherID4", "spouseID4")));
 
-            assertTrue(eDao.insertEvent(new Event("eventID", "userID", "personID", "1994", "Birth", "locID")));
-            assertTrue(eDao.insertEvent(new Event("eventID2", "userID", "personID2", "1994", "Birth", "locID2")));
-            assertTrue(eDao.insertEvent(new Event("eventID3", "userID", "personID3", "1994", "Birth", "locID3")));
-            assertTrue(eDao.insertEvent(new Event("eventID4", "userID2", "personID4", "1994", "Birth2", "locID4")));
+            assertTrue(eDao.insertEvent(new Event("eventID", "userID", "personID", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"))));
+            assertTrue(eDao.insertEvent(new Event("eventID2", "userID", "personID2", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"))));
+            assertTrue(eDao.insertEvent(new Event("eventID3", "userID", "personID3", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"))));
+            assertTrue(eDao.insertEvent(new Event("eventID4", "userID2", "personID4", "1994", "Birth2", new Location( "213.7", "123.7","Provo", "USA"))));
 
             assertNotEquals(eDao.getEvent(new EventRequest("eventID")),null);
             assertNotEquals(eDao.getEvent(new EventRequest("eventID2")),null);
             assertNotEquals(eDao.getEvent(new EventRequest("eventID3")),null);
             assertNotEquals(eDao.getEvent(new EventRequest("eventID4")),null);
 
-            assertTrue(lDao.insertLocation(new Location("locID", "Provo", 213.7, 123.7, "USA")));
-            assertTrue(lDao.insertLocation(new Location("locID2", "Provo", 213.7, 123.7, "USA")));
-            assertTrue(lDao.insertLocation(new Location("locID3", "Provo", 213.7, 123.7, "USA")));
-            assertTrue(lDao.insertLocation(new Location("locID4", "Provo", 213.7, 123.7, "USA")));
         }catch(SQLException e){
             e.printStackTrace();
         }
@@ -89,7 +86,11 @@ public class MultiDaoTest {
     @After
     public void tearDown() {
         connection = db.openConnection();
-        db.dropTables(connection);
+        try {
+            db.dropTables(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return;
     }
 
@@ -107,5 +108,38 @@ public class MultiDaoTest {
             assertEquals(arr3,null);
             assertEquals(arr4,null);
         }catch(SQLException e){e.printStackTrace();}
+    }
+
+    @Test
+    public void deleteFromDataBaseTestFail(){
+        try {
+            assertFalse(mDao.deleteFromDataBase("nameNotInDataBase"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void doClear(){
+        try {
+            mDao.doClear();
+            assertEquals(eDao.getEvent(new EventRequest("eventID")), null);
+            assertEquals(eDao.getEvent(new EventRequest("eventID2")), null);
+            assertEquals(eDao.getEvent(new EventRequest("eventID3")), null);
+            assertEquals(eDao.getEvent(new EventRequest("eventID4")), null);
+            assertEquals(pDao.getPerson(new PersonRequest("personID")), null);
+            assertEquals(pDao.getPerson(new PersonRequest("personID2")), null);
+            assertEquals(pDao.getPerson(new PersonRequest("personID3")), null);
+            assertEquals(pDao.getPerson(new PersonRequest("personID4")), null);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void ValidateAuthTokenTest(){
+        try {
+            assertTrue(mDao.ValidateAuthToken("personID4",authToken2.getAuthToken()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

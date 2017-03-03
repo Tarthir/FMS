@@ -39,6 +39,9 @@ public class FillService {
         }catch(SQLException e){
             return new FillResult(e);//return the error
         }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         return null;
     }
 }

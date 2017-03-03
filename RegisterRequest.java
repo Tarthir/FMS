@@ -41,6 +41,12 @@ public class RegisterRequest {
     public RegisterRequest() {
     }
 
+    public boolean isValidRequest(){
+        return  (!username.isEmpty()) && (!password.isEmpty()) && (!email.isEmpty()) &&
+                (!email.isEmpty()) && (!firstname.isEmpty()) && (!lastname.isEmpty()) &&
+                (!gender.isEmpty()) &&(gender.toLowerCase().equals("f") || gender.toLowerCase().equals("m"))&&
+                (locations != null) && (fNames != null) && (lNames != null) && (mNames != null);
+    }
     /**@RETURN Gets the username of this registerRequest*/
     public String getUserName() {
         return username;

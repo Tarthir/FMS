@@ -10,10 +10,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import dataAccess.AuthTokenDao;
 import dataAccess.DataBase;
 import dataAccess.PersonDao;
+import dataAccess.UserDao;
 import infoObjects.PersonRequest;
+import models.AuthToken;
 import models.Person;
+import models.User;
 import service.PersonService;
 
 import static org.junit.Assert.assertEquals;
@@ -29,6 +33,7 @@ public class PersonServiceTest {
     private PersonDao pDao;
     private DataBase db;
     private Connection connection;
+    private AuthToken authTok;
 
     @Before
     public void setUp() throws IOException {
@@ -38,6 +43,10 @@ public class PersonServiceTest {
             db = new DataBase();
             connection = db.openConnection();
             db.createTables(connection);
+            User user = new User("userID2","name","password","email","first","last","m");
+            assertTrue(new UserDao().register(user));
+            authTok = new AuthToken();
+            new AuthTokenDao().insertAuthToken("userID2",authTok);
             Person person1 = new Person("1", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
             Person person2 = new Person("2", "userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
             assertTrue(pDao.insertPerson(person1));
@@ -51,7 +60,11 @@ public class PersonServiceTest {
     @After
     public void tearDown() {
         connection = db.openConnection();
-        db.dropTables(connection);
+        try {
+            db.dropTables(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return;
     }
 
@@ -61,7 +74,7 @@ public class PersonServiceTest {
             PersonRequest request = new PersonRequest("2");
             Person personExpected = new Person("2", "userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
             pService = new PersonService();
-            Person personResult = pService.getPerson(request);
+            Person personResult = pService.getPerson(request,authTok.getAuthToken());
             assertEquals(personResult, personExpected);
         } catch (SQLException e) {
             e.printStackTrace();

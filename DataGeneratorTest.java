@@ -20,17 +20,17 @@ import models.Location;
 import models.Person;
 import models.User;
 import service.DataGenerator;
-import service.FillService;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by tyler on 2/24/2017.
+ * Created by tyler on 2/27/2017.
+ * Tests our data generator
  */
 
-public class FillServiceTest {
-    private FillService fService;
+public class DataGeneratorTest {
+    private DataGenerator dGen;
     private DataBase db;
     private Connection connection;
     private Location[] locations = {new Location("lat","long","provo","USA"),new Location("lat2","long2","tucson","USA"),new Location("lat3","long3","Richland","USA")};
@@ -40,11 +40,12 @@ public class FillServiceTest {
     private UserDao uDao;
     private PersonDao pDao;
     private EventDao eDao;
+    private FillRequest request;
 
     @Before
     public void setUp(){
         try {
-            fService = new FillService();
+            dGen = new DataGenerator("userID");
             uDao = new UserDao();
             db = new DataBase();
             pDao = new PersonDao();
@@ -53,6 +54,11 @@ public class FillServiceTest {
             db.createTables(connection);
             User user = new User("userID","userName","password","email","first","last","m");
             assertTrue(uDao.register(user));
+            request = new FillRequest(4, "userName");
+            request.setfNames(fNames);
+            request.setlNames(lNames);
+            request.setLocations(locations);
+            request.setmNames(mNames);
         }catch(SQLException e){e.printStackTrace();}
     }
 
@@ -67,35 +73,63 @@ public class FillServiceTest {
         return;
     }
     @Test
-    public void genDataAndDeletion() {
+    public void genData() {
         try {
-            //setup
-            User user = new User("userID2","userName2","password","email","first","last","m");
-            assertTrue(uDao.register(user));
-            assertTrue(pDao.insertPerson(new Person("personID", "userID2", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
-            assertTrue(pDao.insertPerson(new Person("personID2", "userID2", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2")));
-            assertTrue(eDao.insertEvent(new Event("eventID", "userID2", "personID", "1994", "Birth", new Location( "213.7", "123.7", "Provo","USA"))));
-            assertTrue(eDao.insertEvent(new Event("eventID2", "userID2", "personID2", "1994", "Birth", new Location( "213.7", "123.7", "Provo", "USA"))));
-            //setup end
-            FillRequest request = new FillRequest(4, "userName2");
-            request.setfNames(fNames);
-            request.setlNames(lNames);
-            request.setLocations(locations);
-            request.setmNames(mNames);
-            FillResult actual = fService.fill(request);
-
-            //FillRequest request = new FillRequest(4, "userName2", locations, fNames, lNames, mNames);
             FillResult result = new FillResult(31,123);
-           // FillResult actual = dGen.genData(request);
-            assertEquals(eDao.getEvent(new EventRequest("eventID")),null);
-            assertEquals(eDao.getEvent(new EventRequest("eventID2")),null);
-            assertEquals(pDao.getPerson(new PersonRequest("personID")),null);
-            assertEquals(pDao.getPerson(new PersonRequest("personID2")),null);
+            FillResult actual = dGen.genData(request);
             assertEquals(result.getNumOfEvents(),actual.getNumOfEvents());
             assertEquals(result.getNumOfPersons(),actual.getNumOfPersons());
             assertEquals(result.getResult(),actual.getResult());
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+
         }
     }
+
+
+    /*@Test
+    private void genPeopleTest(){
+
+    }
+
+    @Test
+    private void getFemaleTest(){
+
+    }
+
+    @Test
+    private void getMaleTest(){
+    }
+
+    @Test
+    private void genEventsTest(){
+
+    }
+    @Test
+    private void getYearTest(){
+
+    }
+    @Test
+    private void getBirthDatesTest(){
+
+    }
+
+    @Test
+    private void getBaptismDatesTest(){
+
+    }
+
+    @Test
+    private void createMarriageTest(){
+    }
+    @Test
+    private void getDeathDatesTest(){
+
+    }
+
+    @Test
+    private void insertDataTest(){
+
+    }*/
 }
