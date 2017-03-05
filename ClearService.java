@@ -22,18 +22,13 @@ public class ClearService {
     public ClearResult clear(){
         MultiDao mDao = new MultiDao();
         ClearResult result;
-        //System.out.println("entering");
         try {
             mDao.doClear();
-           // System.out.println("cleared");
             result = new ClearResult(true);//if worked!
         } catch (SQLException e) {
             result = new ClearResult(false);//Exception was thrown
-           // System.out.println("Not cleared");
             result.setE(e);
-            //e.printStackTrace();
         }
-        System.out.print(result.getMessage());
         return result;
     }
 }

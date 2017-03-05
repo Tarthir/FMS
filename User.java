@@ -6,46 +6,38 @@ package models;
  */
 
 public class User {
-    /**The users ID*/
-    private String ID;
     /**The user name of this user*/
-    private String userName;
+    private String username;
     /**Password of this user*/
-    private String passWord;
+    private String password;
     /**THe user's email address*/
     private String email;
     /**The users first name*/
-    private String fName;
+    private String firstname;
     /**The users last name*/
-    private String lName;
+    private String lastname;
     /**The users gender*/
     private String gender;
 
 
-    public User(String ID, String userName, String passWord, String email, String fName, String lName, String gender) {
-        this.ID = ID;
-        this.userName = userName;
-        this.passWord = passWord;
+    public User(String username, String password, String email, String firstname, String lastname, String gender) {
+        this.username = username;
+        this.password = password;
         this.email = email;
-        this.fName = fName;
-        this.lName = lName;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.gender = gender;
     }
 
     public User() {
     }
-
-    /**@RETRUN the userID of this user*/
-    public String getID() {
-        return ID;
-    }
     /**@RETRUN the userName of this user*/
     public String getUserName() {
-        return userName;
+        return username;
     }
     /**@RETRUN the passWord of this user*/
     public String getPassWord() {
-        return passWord;
+        return password;
     }
     /**@RETRUN the email address of this user*/
     public String getEmail() {
@@ -53,15 +45,38 @@ public class User {
     }
     /**@RETRUN the first name of this user*/
     public String getfName() {
-        return fName;
+        return firstname;
     }
     /**@RETRUN the last name of this user*/
     public String getlName() {
-        return lName;
+        return lastname;
     }
     /**@RETRUN the gender of this user*/
     public String getGender() {
         return gender;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstname = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastname = lastName;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 }

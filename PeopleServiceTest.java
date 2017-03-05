@@ -51,21 +51,21 @@ public class PeopleServiceTest {
             db = new DataBase();
             connection = db.openConnection();
             db.createTables(connection);
-            User user = new User("userID", "name", "password", "email", "first", "last", "m");
-            User user2 = new User("userID2", "name2", "password2", "email2", "first2", "last2", "f");
+            User user = new User( "name", "password", "email", "first", "last", "m");
+            User user2 = new User( "name2", "password2", "email2", "first2", "last2", "f");
             ;
             assertTrue(uDao.register(user));
             assertTrue(uDao.register(user2));
             AuthToken auth = new AuthToken();
-            assertTrue(aDao.insertAuthToken("userID", auth));
+            assertTrue(aDao.insertAuthToken("name", auth));
             AuthToken auth2 = new AuthToken();
-            assertTrue(aDao.insertAuthToken("userID2", auth2));
-            authToken = aDao.getAuthToken("userID");
-            authToken2 = aDao.getAuthToken("userID2");
-            person1 = new Person("1", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
-            person2 = new Person("2", "userID2", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2");
-            person3 = new Person("3", "userID", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3");
-            person4 = new Person("4", "userID2", "fName4", "lName4", "f", "fatherID4", "motherID4", "spouseID4");
+            assertTrue(aDao.insertAuthToken("name2", auth2));
+            authToken = aDao.getAuthToken("name");
+            authToken2 = aDao.getAuthToken("name2");
+            person1 = new Person("1", "name", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
+            person2 = new Person("2", "name2", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2");
+            person3 = new Person("3", "name", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3");
+            person4 = new Person("4", "name2", "fName4", "lName4", "f", "fatherID4", "motherID4", "spouseID4");
             assertTrue(pDao.insertPerson(person1));
             assertTrue(pDao.insertPerson(person2));
             assertTrue(pDao.insertPerson(person3));
@@ -76,7 +76,7 @@ public class PeopleServiceTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         connection = db.openConnection();
         try {
             db.dropTables(connection);

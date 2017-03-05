@@ -44,17 +44,17 @@ public class RegisterHandler implements HttpHandler {
         OutputStream respBody = exchange.getResponseBody();
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
-
-                //Headers reqHeaders = exchange.getRequestHeaders();
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
                 RegisterService service = new RegisterService();
                 RegisterRequest request = encode.decodeReg(exchange);
-                request = (RegisterRequest) new JsonData().setupJSONArrays(request);//grabs the arrays we need
+                //request = (RegisterRequest) new JsonData().setupJSONArrays(request);//grabs the arrays we need
                 if (request.isValidRequest()) {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+
+                    System.out.println("good to go");
                     RegisterResult result = service.register(request);
                     if (result.getE() != null) {
-                        encode.encode(result.getE(), respBody);
+                        encode.encode(result.getE().getMessage(), respBody);
                     }
                     else {
                         encode.encode(result, respBody);
@@ -63,16 +63,14 @@ public class RegisterHandler implements HttpHandler {
                     return;
                 }
             }
-            //if we got an Error in the request we will reach here
-            //PROBLEMS WITH STACK OVERFLOW WITH BAD INPUT WHEN ITRY TO SEND AN ERROR
-            System.out.println("errorRegister");
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-            //encode.encode(new RegisterResult(new IllegalArgumentException()), respBody);
+            encode.encode("Invalid Request",respBody);
             respBody.close();
         } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            exchange.getResponseBody().close();
-            e.printStackTrace();
+            encode.encode(e.getMessage(),respBody);
+            respBody.close();
+           // e.printStackTrace();
         }
         //System.out.println("errorout");
     }

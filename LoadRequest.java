@@ -1,5 +1,6 @@
 package infoObjects;
 
+import models.AuthToken;
 import models.Event;
 import models.Person;
 import models.User;
@@ -17,14 +18,15 @@ public class LoadRequest {
     /**The array of event objects to put into the database*/
     private Event[] events;
 
+    public LoadRequest() {
+    }
+
     public LoadRequest(User[] users, Person[] persons, Event[] events) {
         this.users = users;
         this.persons = persons;
         this.events = events;
     }
 
-    public LoadRequest() {
-    }
 
     public boolean isValidRequest(){
         return  (users != null) && (persons != null) && (events != null) &&

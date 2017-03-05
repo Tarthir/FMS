@@ -25,8 +25,11 @@ public class DataBase {
 
     /**
      * Opens a connection to the database
+     *
+     * @RETURN Connection
+     * @EXCEPTION SQLException
      */
-    public Connection openConnection() {
+    public Connection openConnection() throws SQLException {
         File file = new File("db");
         Connection connection = null;
         if (!file.exists()) {
@@ -39,7 +42,9 @@ public class DataBase {
             connection = DriverManager.getConnection(url);
             connection.setAutoCommit(false);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            connection.close();
+            throw e;
         }
         return connection;
     }
@@ -50,18 +55,15 @@ public class DataBase {
      * @return void
      * @PARAM commit, Whether we want to commit request or not
      * @PARAM connection, our database connection
+     * @EXCEPTION SQLException
      */
-    public void closeConnection(boolean commit, Connection connection) {
-        try {
-            if (commit) {
-                connection.commit();
-            } else {
-                connection.rollback();
-            }
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void closeConnection(boolean commit, Connection connection) throws SQLException {
+        if (commit) {
+            connection.commit();
+        } else {
+            connection.rollback();
         }
+        connection.close();
     }
 
     /**
@@ -69,15 +71,11 @@ public class DataBase {
      *
      * @PARAM statement, The statement we want to close
      * @RETURN void
+     * @EXCEPTION SQLException
      */
-    public static void safeClose(PreparedStatement stmt) {
+    public static void safeClose(PreparedStatement stmt) throws SQLException {
         if (stmt != null) {
-
-            try {
-                stmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            stmt.close();
         }
     }
 
@@ -86,14 +84,11 @@ public class DataBase {
      *
      * @PARAM statement, The statement we want to close
      * @RETURN void
+     * @EXCEPTION SQLException
      */
-    public static void safeClose(Statement stmt) {
+    public static void safeClose(Statement stmt) throws SQLException {
         if (stmt != null) {
-            try {
-                stmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            stmt.close();
         }
     }
 
@@ -102,14 +97,11 @@ public class DataBase {
      *
      * @PARAM statement, The statement we want to close
      * @RETURN void
+     * @EXCEPTION SQLException
      */
-    public static void safeClose(ResultSet rs) {
+    public static void safeClose(ResultSet rs) throws SQLException {
         if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            rs.close();
         }
     }
 
@@ -118,33 +110,33 @@ public class DataBase {
      *
      * @return void
      * @PARAM connect, our database connection
+     * @EXCEPTION SQLException
      */
-    public void createTables(Connection connection) {
+    public void createTables(Connection connection) throws SQLException {
         Statement stmt = null;
         try {
             stmt = connection.createStatement();
             stmt.executeUpdate("drop table if exists user");
-            stmt.executeUpdate("create table user ( userID text not null primary key,\n" +
-                    "    userName text not null,\n" +
+            stmt.executeUpdate("create table user ( userName text not null primary key,\n" +
                     "    password text not null,\n" +
                     "    email text not null,\n" +
                     "    firstName text not null,\n" +
                     "    lastName text not null,\n" +
-                    "    gender text not null )");
+                    "    gender text not null)");
 
             stmt.executeUpdate("drop table if exists person");
             stmt.executeUpdate("create table person ( personID text not null primary key,\n" +
-                    "    userID text not null,\n" +
+                    "    descendant text not null,\n" +
                     "    firstName text not null,\n" +
                     "    lastName text not null,\n" +
                     "    gender text not null,\n" +
                     "    fatherID text,\n" +
                     "    motherID text,\n" +
-                    "    spouseID text )");
+                    "    spouseID text)");
 
             stmt.executeUpdate("drop table if exists events");
             stmt.executeUpdate("create table events ( eventID text not null primary key,\n" +
-                    "    userID text not null,\n" +
+                    "    descendant text not null,\n" +
                     "    personID text not null,\n" +
                     "    year text not null,\n" +
                     "    eventType text not null,\n" +
@@ -155,12 +147,13 @@ public class DataBase {
 
             stmt.executeUpdate("drop table if exists authToken");
             stmt.executeUpdate("create table authToken ( authToken text not null primary key,\n" +
-                    "    userID text not null,\n" +
+                    "    descendant text not null,\n" +
                     "    timeStamp REAL not null)");
             closeConnection(true, connection);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             closeConnection(false, connection);
+            throw e;
         } finally {
             DataBase.safeClose(stmt);
         }
@@ -173,6 +166,7 @@ public class DataBase {
      *
      * @PARAM connection, your database connection
      * @RETURN void
+     * @EXCEPTION SQLException
      */
     public void dropTables(Connection connection) throws SQLException {
         Statement stmt = null;
@@ -180,14 +174,10 @@ public class DataBase {
             stmt = connection.createStatement();
             stmt.executeUpdate("drop table if exists user");
             stmt.executeUpdate("drop table if exists person");
-            // stmt.executeUpdate("drop table if exists location");
-            //stmt.executeUpdate("drop table if exists tookPlaceAt");
             stmt.executeUpdate("drop table if exists events");
-            // stmt.executeUpdate("drop table if exists userEvent");
             stmt.executeUpdate("drop table if exists authToken");
             closeConnection(true, connection);
         } catch (SQLException e) {
-            //e.printStackTrace();
             closeConnection(false, connection);
             throw e;
         } finally {

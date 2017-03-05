@@ -52,6 +52,11 @@ public class Encoder {
         writer.flush();
     }
 
+    public void sendMessage(String message,OutputStream resBody) throws IOException {
+        OutputStreamWriter writer = new OutputStreamWriter(resBody);
+        writer.write(gson.toJson(message));
+        writer.flush();
+    }
 
 
     /***
@@ -171,9 +176,17 @@ public class Encoder {
      * @RETURN LoadRequest object
      * @EXCEPTION IOException
      * */
-    public LoadRequest decodeLoad(HttpExchange exchange)throws IOException{
+    public LoadRequest decodeLoad(HttpExchange exchange)throws IOException,IllegalArgumentException{
         Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, LoadRequest.class);
+        LoadDataHolder holder = gson.fromJson(reader, LoadDataHolder.class);//put into holder class
+        //System.out.println(holder.getUsers()[0].getfName());
+        if(holder.getEvents().length > 0 && holder.getPersons().length > 0 && holder.getUsers().length > 0) {
+            //System.out.println(holder.getUsers()[0].getfName());
+            return new LoadRequest(holder.getUsers(), holder.getPersons(), holder.getEvents());
+        }
+        else{
+            throw new IllegalArgumentException("LoadData incomplete error");
+        }
     }
 
 }

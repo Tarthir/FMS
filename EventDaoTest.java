@@ -32,15 +32,19 @@ public class EventDaoTest {
     private Connection connection;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws IOException, SQLException {
         eDao = new EventDao();
         db = new DataBase();
-        connection = db.openConnection();
+        try {
+            connection = db.openConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         db.createTables(connection);
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         connection = db.openConnection();
         try {
             db.dropTables(connection);
@@ -53,7 +57,7 @@ public class EventDaoTest {
     @Test
     public void testInsertEvent() {
         try {
-            Event event = new Event("eventID", "userID", "personID", "1994", "Birth", new Location("213.7", "123.7","Provo", "USA"));
+            Event event = new Event("eventID", "userID", "personID", new Location( "213.7", "123.7", "Provo","USA"), "1994", "Birth");
             assertTrue(eDao.insertEvent(event));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -63,7 +67,7 @@ public class EventDaoTest {
     @Test
     public void testgetEvent() {
         try {
-            Event event = new Event("eventID", "userID", "personID", "1994", "Birth", new Location( "213.7", "123.7", "Provo","USA"));
+            Event event = new Event("eventID", "userID", "personID", new Location( "213.7", "123.7", "Provo","USA"), "1994", "Birth");
             EventsCreator eventsCreator = new EventsCreator();
             assertTrue(eDao.insertEvent(event));
             ArrayList<String> expected = new ArrayList<>(Arrays.asList("eventID", "userID", "personID", "1994", "Birth", "213.7", "123.7", "Provo", "USA"));
@@ -81,10 +85,10 @@ public class EventDaoTest {
     @Test
     public void testDeleteEvent() {
         try {
-            assertTrue(eDao.insertEvent(new Event("eventID", "userID", "personID", "1994", "Birth", new Location("213.7", "123.7","Provo", "USA"))));
-            assertTrue(eDao.insertEvent(new Event("eventID2", "userID", "personID2", "1994", "Birth", new Location("213.7", "123.7","Provo","USA"))));
-            assertTrue(eDao.insertEvent(new Event("eventID3", "userID", "personID3", "1994", "Birth", new Location("213.7", "123.7","Provo", "USA"))));
-            assertTrue(eDao.insertEvent(new Event("eventID4", "userID2", "personID4", "1994", "Birth2", new Location("213.7", "123.7","Provo",  "USA"))));
+            assertTrue(eDao.insertEvent(new Event("eventID", "userID", "personID",new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth")));
+            assertTrue(eDao.insertEvent(new Event("eventID2", "userID", "personID2",new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth")));
+            assertTrue(eDao.insertEvent(new Event("eventID3", "userID", "personID3",new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth")));
+            assertTrue(eDao.insertEvent(new Event("eventID4", "userID2", "personID4",new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth2")));
             assertTrue(eDao.deleteEvents("userID"));
             EventRequest request = new EventRequest("eventID");
             ArrayList<String> actual = eDao.getEvent(request);
@@ -97,7 +101,7 @@ public class EventDaoTest {
     @Test
     public void testgetEventFail() {
         try {
-            Event event = new Event("eventID", "userID", "personID", "1994", "Birth",new Location("Provo", "213.7", "123.7", "USA"));
+            Event event = new Event("eventID", "userID", "personID",new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth");
             assertTrue(eDao.insertEvent(event));
             ArrayList<String> expected = new ArrayList<>(Arrays.asList("eventID", "userID", "personID", "1994", "Birth","213.7", "123.7", "Provo", "USA"));
             EventRequest request = new EventRequest("eventID2");
@@ -110,10 +114,10 @@ public class EventDaoTest {
     @Test
     public void testgetEvents() {
         try {
-            Event event = new Event("eventID", "userID", "personID", "1994", "Birth", new Location("Provo", "213.7", "123.7", "USA"));
-            Event event2 = new Event("eventID2", "userID", "personID2", "1994", "Birth", new Location("Provo", "213.7", "123.7", "USA"));
-            Event event3 = new Event("eventID3", "userID", "personID3", "1994", "Birth", new Location("Provo", "213.7", "123.7", "USA"));
-            Event event4 = new Event("eventID4", "userID2", "personID2", "1994", "Birth2", new Location("Provo", "213.7", "123.7", "USA"));
+            Event event = new Event("eventID", "userID", "personID", new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth");
+            Event event2 = new Event("eventID2", "userID", "personID2", new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth");
+            Event event3 = new Event("eventID3", "userID", "personID3", new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth");
+            Event event4 = new Event("eventID4", "userID2", "personID2", new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth2");
             ArrayList<String> expected = new ArrayList<>(Arrays.asList("eventID", "userID", "personID", "1994", "Birth",  "213.7", "123.7","Provo", "USA"));
             ArrayList<String> expected2 = new ArrayList<>(Arrays.asList("eventID2", "userID", "personID2", "1994", "Birth", "213.7", "123.7","Provo",  "USA"));
             ArrayList<String> expected3 = new ArrayList<>(Arrays.asList("eventID3", "userID", "personID3", "1994", "Birth", "213.7", "123.7","Provo",  "USA"));
@@ -132,10 +136,10 @@ public class EventDaoTest {
     @Test
     public void testgetEventsFail() {
         try {
-            Event event = new Event("eventID", "userID", "personID", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"));
-            Event event2 = new Event("eventID2", "userID", "personID2", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"));
-            Event event3 = new Event("eventID3", "userID", "personID3", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"));
-            Event event4 = new Event("eventID4", "userID2", "personID2", "1994", "Birth2", new Location( "213.7", "123.7","Provo",  "USA"));
+            Event event = new Event("eventID", "userID", "personID", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth");
+            Event event2 = new Event("eventID2", "userID", "personID2", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth");
+            Event event3 = new Event("eventID3", "userID", "personID3", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth");
+            Event event4 = new Event("eventID4", "userID2", "personID2", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth2");
             ArrayList<String> expected = new ArrayList<>(Arrays.asList("eventID", "userID", "personID", "1994", "Birth",  "213.7", "123.7","Provo", "USA"));
             ArrayList<String> expected2 = new ArrayList<>(Arrays.asList("eventID2", "userID", "personID2", "1994", "Birth",  "213.7", "123.7","Provo", "USA"));
             ArrayList<String> expected3 = new ArrayList<>(Arrays.asList("eventID3", "userID", "personID3", "1994", "Birth",  "213.7", "123.7","Provo",  "USA"));

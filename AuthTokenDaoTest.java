@@ -32,14 +32,14 @@ public class AuthTokenDaoTest {
     private Connection connection;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws IOException,SQLException {
         aDao = new AuthTokenDao();
         db = new DataBase();
         connection = db.openConnection();
         db.createTables(connection);
         //to Setup
         uDao = new UserDao();
-        User user = new User("5", "name", "password", "email", "first", "last", "m");
+        User user = new User("name", "password", "email", "first", "last", "m");
         try {
             assertTrue(uDao.register(user));
             assertEquals(uDao.getUserIDWithNames("first", "last"), "5");
@@ -49,7 +49,7 @@ public class AuthTokenDaoTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         connection = db.openConnection();
         try {
             db.dropTables(connection);

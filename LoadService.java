@@ -1,7 +1,9 @@
 package service;
 
 import java.sql.SQLException;
+import java.util.IllegalFormatCodePointException;
 
+import dataAccess.AuthTokenDao;
 import dataAccess.EventDao;
 import dataAccess.MultiDao;
 import dataAccess.PersonDao;
@@ -25,29 +27,16 @@ public class LoadService {
     /**
      * This function returns the result of attempting to load arrays of users,events, and persons into the database
      *
-     * @PARAM request, contains the data that needs to be inputted into the Database
+     * @PARAM LoadRequest, contains the data that needs to be inputted into the Database
      * @RETURN the result, successful or not, of attempting to load in data into the database
      */
-    public LoadResult load(LoadRequest request){
-        UserDao uDao = new UserDao();
-        PersonDao pDao = new PersonDao();
-        EventDao eDao = new EventDao();
-        try {
-            for (User user : request.getUsers()) {
-                uDao.register(user);
-            }
-            for (Person person : request.getPersons()) {
-                pDao.insertPerson(person);
-            }
-            for (Event event : request.getEvents()) {
-                eDao.insertEvent(event);
-            }
-        } catch (SQLException e) {
-            return new LoadResult(e);
-            //return result;
+    public LoadResult load(LoadRequest request) throws SQLException{
+        MultiDao mDao = new MultiDao();
+        if (request.isValidRequest()) {//if its a valid request
+            mDao.doClear();
+            return new MultiDao().loadDataBase(request);
         }
+        return new LoadResult(new IllegalArgumentException("Invalid request"));
 
-        return new LoadResult(request.getUsers().length,request.getPersons().length,request.getEvents().length);
-       // return load;
     }
 }

@@ -32,7 +32,7 @@ public class RegisterServiceTest {
     private Connection connection;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws IOException, SQLException {
         rService = new RegisterService();
         db = new DataBase();
         connection = db.openConnection();
@@ -40,7 +40,7 @@ public class RegisterServiceTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         connection = db.openConnection();
         try {
             db.dropTables(connection);

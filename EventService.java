@@ -32,7 +32,7 @@ public class EventService {
         }
         if(result != null){
             Event event = create.createEvent(result);
-            return new EventResult(event.getUserID(),event,event.getPersonID());
+            return new EventResult(event.getDescendent(),event,event.getPersonID());
         }
         return null;
     }

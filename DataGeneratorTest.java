@@ -20,6 +20,7 @@ import models.Location;
 import models.Person;
 import models.User;
 import service.DataGenerator;
+import service.FillService;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -38,21 +39,17 @@ public class DataGeneratorTest {
     private String[] mNames = {"Bob","Bobby","billy"};
     private String[] lNames = {"Matthews","Brady","Spicer"};
     private UserDao uDao;
-    private PersonDao pDao;
-    private EventDao eDao;
     private FillRequest request;
 
     @Before
     public void setUp(){
         try {
-            dGen = new DataGenerator("userID");
+            dGen = new DataGenerator();
             uDao = new UserDao();
             db = new DataBase();
-            pDao = new PersonDao();
-            eDao = new EventDao();
             connection = db.openConnection();
             db.createTables(connection);
-            User user = new User("userID","userName","password","email","first","last","m");
+            User user = new User("userName","password","email","first","last","m");
             assertTrue(uDao.register(user));
             request = new FillRequest(4, "userName");
             request.setfNames(fNames);
@@ -63,7 +60,7 @@ public class DataGeneratorTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         connection = db.openConnection();
         try {
             db.dropTables(connection);
@@ -75,61 +72,14 @@ public class DataGeneratorTest {
     @Test
     public void genData() {
         try {
-            FillResult result = new FillResult(31,123);
-            FillResult actual = dGen.genData(request);
-            assertEquals(result.getNumOfEvents(),actual.getNumOfEvents());
-            assertEquals(result.getNumOfPersons(),actual.getNumOfPersons());
-            assertEquals(result.getResult(),actual.getResult());
-        } catch (SQLException e) {
+            FillResult result = new FillResult(31, 123);
+            FillService fill = new FillService();
+            FillResult actual = fill.fill(request);
+            assertEquals(result.getNumOfEvents(), actual.getNumOfEvents());
+            assertEquals(result.getNumOfPersons(), actual.getNumOfPersons());
+            assertEquals(result.getResult(), actual.getResult());
+        }catch (Exception e) {
             e.printStackTrace();
-        } catch (Exception e) {
-
         }
     }
-
-
-    /*@Test
-    private void genPeopleTest(){
-
-    }
-
-    @Test
-    private void getFemaleTest(){
-
-    }
-
-    @Test
-    private void getMaleTest(){
-    }
-
-    @Test
-    private void genEventsTest(){
-
-    }
-    @Test
-    private void getYearTest(){
-
-    }
-    @Test
-    private void getBirthDatesTest(){
-
-    }
-
-    @Test
-    private void getBaptismDatesTest(){
-
-    }
-
-    @Test
-    private void createMarriageTest(){
-    }
-    @Test
-    private void getDeathDatesTest(){
-
-    }
-
-    @Test
-    private void insertDataTest(){
-
-    }*/
 }

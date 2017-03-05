@@ -40,10 +40,10 @@ public class EventServiceTest {
             db = new DataBase();
             connection = db.openConnection();
             db.createTables(connection);
-            Event event = new Event("eventID", "userID", "personID", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"));
-            Event event2 = new Event("eventID2", "userID", "personID2", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"));
-            Event event3 = new Event("eventID3", "userID", "personID3", "1994", "Birth", new Location("213.7", "123.7","Provo",  "USA"));
-            Event event4 = new Event("eventID4", "userID2", "personID4", "1994", "Birth2", new Location( "213.7", "123.7","Provo", "USA"));
+            Event event = new Event("eventID", "userID", "personID", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth");
+            Event event2 = new Event("eventID2", "userID", "personID2", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth");
+            Event event3 = new Event("eventID3", "userID", "personID3", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth");
+            Event event4 = new Event("eventID4", "userID2", "personID4", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth2");
             assertTrue(eDao.insertEvent(event));
             assertTrue(eDao.insertEvent(event2));
             assertTrue(eDao.insertEvent(event3));
@@ -54,7 +54,7 @@ public class EventServiceTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         connection = db.openConnection();
         try {
             db.dropTables(connection);
@@ -67,7 +67,7 @@ public class EventServiceTest {
     @Test
     public void testGetEvent() {
        //try {
-            Event event3 = new Event("eventID3", "userID", "personID3", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"));
+            Event event3 = new Event("eventID3", "userID", "personID3", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth");
             EventRequest request = new EventRequest("eventID3");
             EventResult result = new EventResult("userID", event3, "personID3");
             assertEquals(eService.getEvent(request).getUserID(), result.getUserID());

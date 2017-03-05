@@ -45,7 +45,7 @@ public class MultiDaoTest {
     private AuthToken authToken2;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws IOException, SQLException {
         mDao = new MultiDao();
         pDao = new PersonDao();
         eDao = new EventDao();
@@ -56,22 +56,22 @@ public class MultiDaoTest {
         connection = db.openConnection();
         db.createTables(connection);
         try {
-            User user = new User("userID", "name", "password", "email", "first", "last", "m");
-            User user2 = new User("userID2", "name2", "password2", "email2", "first2", "last2", "f");
+            User user = new User("name", "password", "email", "first", "last", "m");
+            User user2 = new User( "name2", "password2", "email2", "first2", "last2", "f");
             assertTrue(uDao.register(user));
             assertTrue(uDao.register(user2));
             assertTrue(aDao.insertAuthToken("userID", new AuthToken()));
             authToken2 = new AuthToken();
             assertTrue(aDao.insertAuthToken("userID2", authToken2));
-            assertTrue(pDao.insertPerson(new Person("personID", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
-            assertTrue(pDao.insertPerson(new Person("personID2", "userID", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2")));
-            assertTrue(pDao.insertPerson(new Person("personID3", "userID", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3")));
-            assertTrue(pDao.insertPerson(new Person("personID4", "userID2", "fName4", "lName4", "f", "fatherID4", "motherID4", "spouseID4")));
+            assertTrue(pDao.insertPerson(new Person("personID", "name", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
+            assertTrue(pDao.insertPerson(new Person("personID2", "name", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2")));
+            assertTrue(pDao.insertPerson(new Person("personID3", "name", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3")));
+            assertTrue(pDao.insertPerson(new Person("personID4", "name2", "fName4", "lName4", "f", "fatherID4", "motherID4", "spouseID4")));
 
-            assertTrue(eDao.insertEvent(new Event("eventID", "userID", "personID", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"))));
-            assertTrue(eDao.insertEvent(new Event("eventID2", "userID", "personID2", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"))));
-            assertTrue(eDao.insertEvent(new Event("eventID3", "userID", "personID3", "1994", "Birth", new Location( "213.7", "123.7","Provo", "USA"))));
-            assertTrue(eDao.insertEvent(new Event("eventID4", "userID2", "personID4", "1994", "Birth2", new Location( "213.7", "123.7","Provo", "USA"))));
+            assertTrue(eDao.insertEvent(new Event("eventID", "name", "personID", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth")));
+            assertTrue(eDao.insertEvent(new Event("eventID2", "name", "personID2", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth")));
+            assertTrue(eDao.insertEvent(new Event("eventID3", "name", "personID3", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth")));
+            assertTrue(eDao.insertEvent(new Event("eventID4", "name2", "personID4", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth2")));
 
             assertNotEquals(eDao.getEvent(new EventRequest("eventID")),null);
             assertNotEquals(eDao.getEvent(new EventRequest("eventID2")),null);
@@ -84,7 +84,7 @@ public class MultiDaoTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         connection = db.openConnection();
         try {
             db.dropTables(connection);

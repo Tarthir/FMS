@@ -25,17 +25,24 @@ public class FillHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         OutputStream respBody = exchange.getResponseBody();
+        FillService service = new FillService();
+        Encoder encode = new Encoder();
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                String[] params  = exchange.getRequestURI().toString().split("/");
+                FillRequest request = null;
 
-                //Headers reqHeaders = exchange.getRequestHeaders();
-                FillService service = new FillService();
-                Encoder encode = new Encoder();
-                FillRequest request = encode.decodeFill(exchange);
+                if(params.length == 4) {//Index three holds the integer and param two holds the userName
+                    request = new FillRequest(Integer.valueOf(params[3]), params[2]);
+                }
+                else{//default to four as num of generations
+                    request = new FillRequest(4, params[2]);
+                }
+
                 request = (FillRequest) new JsonData().setupJSONArrays(request);//grabs the arrays we need
 
                 if(request.isValidRequest()) {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                     FillResult result = service.fill(request);
                     if (result.getE() != null) {
                         encode.encode(result.getE(), respBody);
@@ -45,13 +52,20 @@ public class FillHandler implements HttpHandler {
                     respBody.close();
                     return;
                 }
+                else{//not a valid request
+                    throw new IllegalArgumentException("Not a valid request");
+                }
             }
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             respBody.close();
         } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
-            e.printStackTrace();
+            //e.printStackTrace();
+        }
+        catch(IllegalArgumentException e){
+            encode.encode(e.getMessage(),respBody);
+            respBody.close();
         }
     }
 }

@@ -1,11 +1,12 @@
 package service;
 
-import java.sql.SQLException;
+        import java.sql.SQLException;
 
-import dataAccess.MultiDao;
-import dataAccess.UserDao;
-import infoObjects.FillRequest;
-import infoObjects.FillResult;
+        import dataAccess.MultiDao;
+        import dataAccess.UserDao;
+        import encode.JsonData;
+        import infoObjects.FillRequest;
+        import infoObjects.FillResult;
 
 /**
  * Created by tyler on 2/14/2017.
@@ -23,24 +24,24 @@ public class FillService {
      * @PARAM request, the request to fill the database
      * @RETURN the result of attempting to fill the database
      */
-    public FillResult fill(FillRequest request){
+    public FillResult fill(FillRequest request) {
         try {
             if (request.getNumOfGenerations() > 0) {//if given a non negative integer
                 MultiDao multiDao = new MultiDao();
-                if (multiDao.deleteFromDataBase(request.getUsername())) {//if the deletion works right
-                    UserDao uDao = new UserDao();
-                    String userID = uDao.getUserIDWithUserName(request.getUsername());//get the userID
-                    if(!userID.equals("")) {//if we found a userID
-                        DataGenerator dataGenerator = new DataGenerator(userID);
+                UserDao uDao = new UserDao();
+                if (uDao.checkUserName(request.getUsername())) {
+                   request = (FillRequest) new JsonData().setupJSONArrays(request);
+                    if (multiDao.deleteFromDataBase(request.getUsername())) {//if the deletion works right
+                        DataGenerator dataGenerator = new DataGenerator();
                         return dataGenerator.genData(request);//if it generates right
                     }
                 }
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             return new FillResult(e);//return the error
-        }
-        catch(Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return new FillResult(e);
         }
         return null;
     }

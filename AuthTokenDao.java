@@ -17,9 +17,9 @@ import models.AuthToken;
 
 public class AuthTokenDao {
     /**Our insert string to fill our authtoken table*/
-    private String insertIntoAuth = "insert into authToken (userID, authToken, timeStamp) values ( ?, ?, ? )";
+    private String insertIntoAuth = "insert into authToken (descendant, authToken, timeStamp) values ( ?, ?, ? )";
     /**Our insert string to get an authToken*/
-    private String getAuthToken = "SELECT authToken FROM authToken WHERE userID = ?";
+    private String getAuthToken = "SELECT authToken FROM authToken WHERE descendant = ?";
     /**Our Database object*/
     private DataBase db;
     public AuthTokenDao() {
@@ -68,7 +68,7 @@ public class AuthTokenDao {
         try {
             conn = db.openConnection();
             //TODO:HAVE IT DEPEND ON TIMESTAMP PASSED IN
-            stmt = conn.prepareStatement("DELETE FROM authToken WHERE userID = ?");
+            stmt = conn.prepareStatement("DELETE FROM authToken WHERE descendant = ?");
             stmt.setString(1, userID);
             if (stmt.executeUpdate() >= 1) {//execute the statement
                 db.closeConnection(true, conn);
@@ -130,7 +130,7 @@ public class AuthTokenDao {
      * @EXCEPTION throws SQLException
      */
     public String getUserIDFromAuthToken(String authToken) throws SQLException{
-        String SQLString = "SELECT userID FROM authToken WHERE authToken = ?";
+        String SQLString = "SELECT descendant FROM authToken WHERE authToken = ?";
         Connection conn = null;
         PreparedStatement stmt = null;//insert statement
         ResultSet rs = null;

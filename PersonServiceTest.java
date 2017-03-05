@@ -43,12 +43,12 @@ public class PersonServiceTest {
             db = new DataBase();
             connection = db.openConnection();
             db.createTables(connection);
-            User user = new User("userID2","name","password","email","first","last","m");
+            User user = new User("name","password","email","first","last","m");
             assertTrue(new UserDao().register(user));
             authTok = new AuthToken();
-            new AuthTokenDao().insertAuthToken("userID2",authTok);
-            Person person1 = new Person("1", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
-            Person person2 = new Person("2", "userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
+            new AuthTokenDao().insertAuthToken("name2",authTok);
+            Person person1 = new Person("1", "name", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
+            Person person2 = new Person("2", "name2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
             assertTrue(pDao.insertPerson(person1));
             assertTrue(pDao.insertPerson(person2));
         } catch (SQLException e) {
@@ -58,7 +58,7 @@ public class PersonServiceTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         connection = db.openConnection();
         try {
             db.dropTables(connection);
@@ -72,7 +72,7 @@ public class PersonServiceTest {
     public void getPerson() {
         try {
             PersonRequest request = new PersonRequest("2");
-            Person personExpected = new Person("2", "userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
+            Person personExpected = new Person("2", "name2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
             pService = new PersonService();
             Person personResult = pService.getPerson(request,authTok.getAuthToken());
             assertEquals(personResult, personExpected);

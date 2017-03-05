@@ -21,13 +21,6 @@ public class RegisterRequest {
     /** f or m*/
     private String gender;
     /**Array of possible locations*/
-    private Location[] locations;
-    /**Array of possible female names*/
-    private String[] fNames;
-    /**Array of possible last names*/
-    private String[] lNames;
-    /**Array of possible male names*/
-    private String[] mNames;
 
     public RegisterRequest(String username, String password, String email, String firstname, String lastname, String gender) {
         this.username = username;
@@ -44,8 +37,7 @@ public class RegisterRequest {
     public boolean isValidRequest(){
         return  (!username.isEmpty()) && (!password.isEmpty()) && (!email.isEmpty()) &&
                 (!email.isEmpty()) && (!firstname.isEmpty()) && (!lastname.isEmpty()) &&
-                (!gender.isEmpty()) &&(gender.toLowerCase().equals("f") || gender.toLowerCase().equals("m"))&&
-                (locations != null) && (fNames != null) && (lNames != null) && (mNames != null);
+                (!gender.isEmpty()) &&(gender.toLowerCase().equals("f") || gender.toLowerCase().equals("m"));
     }
     /**@RETURN Gets the username of this registerRequest*/
     public String getUserName() {
@@ -72,35 +64,4 @@ public class RegisterRequest {
         return gender;
     }
 
-    public Location[] getLocations() {
-        return locations;
-    }
-
-    public void setLocations(Location[] locations) {
-        this.locations = locations;
-    }
-
-    public String[] getfNames() {
-        return fNames;
-    }
-
-    public void setfNames(String[] fNames) {
-        this.fNames = fNames;
-    }//female names
-
-    public String[] getlNames() {
-        return lNames;
-    }
-
-    public void setlNames(String[] lNames) {
-        this.lNames = lNames;
-    }
-
-    public String[] getmNames() {
-        return mNames;
-    }
-
-    public void setmNames(String[] mNames) {
-        this.mNames = mNames;
-    }
 }

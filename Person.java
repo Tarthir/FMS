@@ -6,21 +6,21 @@ package models;
 
 public class Person {
     /**
-     * None empty string containing a ID to reference this person
-     * */
-    private String ID;
-    /**
-     * The user object of the user to which this person belongs
+     * The userName of the user to which this person belongs
      */
-    private String userID;
+    private String descendant;
+    /**
+     * The personID of this person
+     */
+    private String personID;
     /**
      * The first name of the person
      * */
-    private String fName;
+    private String firstname;
     /**
      * The last name of the person
      * */
-    private String lName;
+    private String lastname;
     /**
      * The gender of the person, "m" or "f"
      * */
@@ -38,21 +38,21 @@ public class Person {
      * */
     private String spouseID;
 
-    public Person(String ID, String userID, String fName, String lName, String gender, String fatherID, String motherID, String spouseID) {
-        this.ID = ID;
-        this.userID = userID;
-        this.fName = fName;
-        this.lName = lName;
+    public Person(String personID,String descendant, String firstName, String lastName, String gender, String fatherID, String motherID, String spouseID) {
+        this.descendant = descendant;
+        this.personID = personID;
+        this.firstname = firstName;
+        this.lastname = lastName;
         this.gender = gender;
         this.fatherID = fatherID;
         this.motherID = motherID;
         this.spouseID = spouseID;
     }
-    public Person(String ID, String userID, String fName, String lName, String gender) {
-        this.ID = ID;
-        this.userID = userID;
-        this.fName = fName;
-        this.lName = lName;
+    public Person(String personID,String descendant, String firstname, String lastname, String gender) {
+        this.descendant = descendant;
+        this.personID = personID;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.gender = gender;
         this.fatherID = "";
         this.motherID = "";
@@ -62,21 +62,16 @@ public class Person {
     public Person() {
     }
 
-
-    public String getID() {
-        return ID;
-    }
-
-    public String getUserID() {
-        return userID;
+    public String getPersonID() {
+        return personID;
     }
 
     public String getfName() {
-        return fName;
+        return firstname;
     }
 
     public String getlName() {
-        return lName;
+        return lastname;
     }
 
     public String getGender() {
@@ -106,6 +101,10 @@ public class Person {
     public void setSpouseID(String spouseID) {
         this.spouseID = spouseID;
     }
+
+    public String getDescendant() {
+        return descendant;
+    }
     /**
      * Compares the contents of person objects to see if they are equal
      * @RETURN true if they are equal, false otherwise
@@ -114,8 +113,8 @@ public class Person {
     public boolean equals(Object o) {
         if(this.getClass() != o.getClass()){return false;}
         Person other = (Person)o;
-        if(!other.getUserID().equals(this.getUserID())){return false;}
-        if(!other.getID().equals(this.getID())){return false;}
+        if(!other.getDescendant().equals(this.getDescendant())){return false;}
+        if(!other.getPersonID().equals(this.getPersonID())){return false;}
         if(!other.getGender().equals(this.getGender())){return false;}
         if(!other.getMotherID().equals(this.getMotherID())){return false;}
         if(!other.getfName().equals(this.getfName())){return false;}
@@ -124,5 +123,26 @@ public class Person {
         if(!other.getFatherID().equals(this.getFatherID())){return false;}
         return true;
 
+    }
+
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setDescendant(String descendant) {
+        this.descendant = descendant;
+    }
+
+    public void setPersonID(String personID) {
+        this.personID = personID;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstname = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastname = lastName;
     }
 }

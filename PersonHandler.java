@@ -40,14 +40,13 @@ public class PersonHandler implements HttpHandler {
         PersonService service = new PersonService();
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("get")) {
-
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 String authToken = exchange.getRequestHeaders().getFirst("Authorization");
                 String[] params  = exchange.getRequestURI().toString().split("/");
-                System.out.println(params[2]);
-                PersonRequest request = new PersonRequest(params[2]);
 
+                PersonRequest request = new PersonRequest(params[2]);
                 Person person = service.getPerson(request, authToken);
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+
                 if (person == null) {//if no person was made because the given ID isnt in our Databse
                     throw new IllegalArgumentException("Invalid PersonID");
                 }
@@ -58,27 +57,28 @@ public class PersonHandler implements HttpHandler {
             }
             else {
                 //if we got an Error in the request we will reach here
-                System.out.println("errorPerson");
+                //System.out.println("errorPerson");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                //encode.encode(new RegisterResult(new IllegalArgumentException()), respBody);
+                encode.encode("Should get GET not POST", respBody);
                 exchange.getRequestBody().close();
             }
-        } catch(IllegalArgumentException e){
-            System.out.println("errorPersonIllegal");
-            encode.encode(e,respBody);
-            exchange.getRequestBody().close();
         }
-        catch (IOException e) {
-            System.out.println("errorPersonIO");
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            encode.encode(e,respBody);
-            exchange.getResponseBody().close();
-            e.printStackTrace();
-        }
-        catch (SQLException e) {
-            System.out.println("errorPersonSQL");
-            encode.encode(e, respBody);
+        catch(IllegalArgumentException e){
+            // System.out.println("errorPersonIllegal");
+            encode.encode(e.getMessage(),respBody);
             respBody.close();
         }
+        catch (SQLException e) {
+            encode.encode(e.getMessage(), respBody);
+            respBody.close();
+        }
+        catch (IOException e) {
+            //System.out.println("errorPersonIO");
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+            encode.encode(e.getMessage(),respBody);
+            respBody.close();
+            //e.printStackTrace();
+        }
+
     }
 }

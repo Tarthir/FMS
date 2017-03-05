@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.sql.SQLException;
 
 import encode.Encoder;
 import encode.JsonData;
@@ -24,35 +25,42 @@ public class LoadHandler implements HttpHandler{
     @Override
     /**This method handles the load request from the server*/
     public void handle(com.sun.net.httpserver.HttpExchange exchange) throws IOException {
-        OutputStream respBody;
+        OutputStream respBody = exchange.getResponseBody();
+        Encoder encode = new Encoder();
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
 
-                //Headers reqHeaders = exchange.getRequestHeaders();
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 LoadService service = new LoadService();
-                respBody = exchange.getResponseBody();
-                Encoder encode = new Encoder();
-                //DO I NEED TO MANUALLY GET THESE ARRAYS?
-                LoadRequest request = encode.decodeLoad(exchange);
+                LoadRequest request = encode.decodeLoad(exchange);//new JsonData().getLoadData();
 
-                request = (LoadRequest) new JsonData().setupJSONArrays(request);//grabs the arrays we need
                 LoadResult result = service.load(request);
-                if(result.getE() != null){
-                    encode.encode(result.getE(),respBody);
+
+                if(result.getE() != null){//if we got an error
+                    encode.encode(result.getResultMessage(),respBody);
                 }
                 else {
-                    encode.encode(result, respBody);
+                    encode.encode(result.getResultMessage(), respBody);
                 }
                 respBody.close();
             }
             else{
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                encode.encode("Should be a post request, not get",respBody);
+                respBody.close();
             }
-        } catch (IOException e) {
+        } catch(SQLException e){
+            encode.encode(e.getMessage(),respBody);
+            respBody.close();
+        }
+        catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            exchange.getResponseBody().close();
-            // e.printStackTrace();
+            encode.encode(e.getMessage(),respBody);
+            respBody.close();
+        }
+        catch(Exception e){
+            encode.encode(e.getMessage(),respBody);
+            respBody.close();
         }
     }
 }

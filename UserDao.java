@@ -20,7 +20,7 @@ import javax.xml.crypto.Data;
 
 public class UserDao {
     /**Our insert string to create a user*/
-    private String insertIntoUser = "insert into user (userID, userName, password, email, firstName, lastName, gender) values ( ?, ?, ?, ?, ?, ?, ?)";
+    private String insertIntoUser = "insert into user (userName, password, email, firstName, lastName, gender) values ( ?, ?, ?, ?, ?, ?)";
     /**A database object to use to get our connection*/
     private DataBase db;
     public UserDao() {
@@ -39,13 +39,12 @@ public class UserDao {
         try {
             conn = db.openConnection();
             stmt = conn.prepareStatement(insertIntoUser);
-            stmt.setString(1,newUser.getID());
-            stmt.setString(2,newUser.getUserName());
-            stmt.setString(3,newUser.getPassWord());
-            stmt.setString(4,newUser.getEmail());
-            stmt.setString(5,newUser.getfName());
-            stmt.setString(6,newUser.getlName());
-            stmt.setString(7,newUser.getGender());
+            stmt.setString(1,newUser.getUserName());
+            stmt.setString(2,newUser.getPassWord());
+            stmt.setString(3,newUser.getEmail());
+            stmt.setString(4,newUser.getfName());
+            stmt.setString(5,newUser.getlName());
+            stmt.setString(6,newUser.getGender());
             if(stmt.executeUpdate() == 1){//execute the statement
                 db.closeConnection(true, conn);
                 return true;
@@ -70,7 +69,7 @@ public class UserDao {
      * @EXCEPTION throws SQLException
      */
     public String login(LoginRequest request)throws SQLException{
-        return getUserID(request.getUserName(),request.getPassWord(),"SELECT userID FROM user WHERE userName = ? AND password = ?");
+        return getUserID(request.getUserName(),request.getPassWord(),"SELECT userName FROM user WHERE userName = ? AND password = ?");
     }
 
     /**
@@ -81,16 +80,7 @@ public class UserDao {
      * @EXCEPTION throws SQLException
      */
     public String getUserIDWithNames(String fName,String lName)throws SQLException{
-        return getUserID(fName,lName,"SELECT userID FROM user WHERE firstName = ? AND lastName = ?");
-    }
-    /**
-     * A method get a user ID from the userName of a user
-     * @Param String, the userName of the user
-     * @RETURN the userID
-     * @EXCEPTION throws SQLException
-     */
-    public String getUserIDWithUserName(String userName)throws SQLException{
-        return getUserID(userName,"SELECT userID FROM user WHERE userName = ?");
+        return getUserID(fName,lName,"SELECT userName FROM user WHERE firstName = ? AND lastName = ?");
     }
     /**
      * A method get a user ID from the database from two inputs
@@ -127,32 +117,6 @@ public class UserDao {
         return output;
     }
 
-    private String getUserID(String userName,String SQLString)throws SQLException{
-        Connection conn = null;
-        PreparedStatement stmt = null;//insert statement
-        ResultSet rs = null;
-        String output = "";
-        try {
-            conn = db.openConnection();
-            stmt = conn.prepareStatement(SQLString);
-            stmt.setString(1,userName);
-            rs = stmt.executeQuery();//execute the statement
-            if(rs.next()){
-                output = rs.getString(1);
-                db.closeConnection(true, conn);
-            }
-            if(!conn.isClosed()){db.closeConnection(false, conn);}
-        }catch(SQLException e){
-            //e.printStackTrace();
-            db.closeConnection(false, conn);
-            throw e;
-        }
-        finally {
-            DataBase.safeClose(rs);
-            DataBase.safeClose(stmt);
-        }
-        return output;
-    }
     //DO DELETES
     /**
      * Checks if this userName alreadyExists
@@ -197,7 +161,7 @@ public class UserDao {
         ResultSet rs = null;
         try {
             conn = db.openConnection();
-            stmt = conn.prepareStatement("SELECT userID,userName,password,email,firstName,lastName,gender FROM user WHERE userName = ?");
+            stmt = conn.prepareStatement("SELECT userName,password,email,firstName,lastName,gender FROM user WHERE userName = ?");
             stmt.setString(1,userName);
             rs = stmt.executeQuery();//execute the statement
             int columns = rs.getMetaData().getColumnCount();

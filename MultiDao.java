@@ -6,6 +6,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import infoObjects.FillRequest;
+import infoObjects.LoadRequest;
+import infoObjects.LoadResult;
+import models.Event;
+import models.Person;
+import models.User;
+
 /**
  * Created by tyler on 2/24/2017.
  * Used when we need to access the Database from multiple Daos in a particular order or at the same time
@@ -30,10 +37,28 @@ public class MultiDao {
     public boolean deleteFromDataBase(String userName) throws SQLException{
         //boolean delete = true;//If we ever return false, then this failed
         UserDao uDao = new UserDao();
-        String userID = null;
+        return (eDao.deleteEvents(userName) && pDao.deletePerson(userName));
+    }
 
-        userID = uDao.getUserIDWithUserName(userName);
-        return (eDao.deleteEvents(userID) && pDao.deletePerson(userID));
+    public LoadResult loadDataBase(LoadRequest request) throws SQLException{
+        UserDao uDao = new UserDao();
+        PersonDao pDao = new PersonDao();
+        EventDao eDao = new EventDao();
+        System.out.println(true);
+        //TODO: CHECK FOR INVALID INPUTS? OR LET DAO THROW SQL
+            for (User user : request.getUsers()) {
+                uDao.register(user);
+            }
+            for (Person person : request.getPersons()) {
+                pDao.insertPerson(person);
+            }
+            for (Event event : request.getEvents()) {
+                eDao.insertEvent(event);
+            }
+        System.out.println("gsd");
+        int num = request.getEvents().length + request.getUsers().length + request.getPersons().length;
+        System.out.println(num);
+        return new LoadResult(request.getUsers().length,request.getPersons().length,request.getEvents().length);
     }
 
     /**
@@ -44,15 +69,8 @@ public class MultiDao {
     public void doClear()throws SQLException{
         DataBase db = new DataBase();
         Connection conn = null;
-        try {
-            conn = db.openConnection();
-            db.dropTables(conn);//connection is closed in the method. drops the tables
-            conn = db.openConnection();//creats new empty tables
-            db.createTables(conn);
-        }catch(SQLException e){
-            db.closeConnection(false,conn);
-            throw e;
-        }
+        db.dropTables(db.openConnection());//connection is closed in the method. drops the tables
+        db.createTables(db.openConnection());
 
     }
     /**
@@ -67,7 +85,6 @@ public class MultiDao {
         AuthTokenDao aDao = new AuthTokenDao();
         String userID = pDao.getUserIDWithPersonID(personID);
         ArrayList<String> authTokens = aDao.getAuthToken(userID);
-        System.out.println(authTokens.size());
         for(String tok : authTokens){
             if(tok.equals(authTok)){
                 System.out.println(true);

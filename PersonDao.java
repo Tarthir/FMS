@@ -19,9 +19,9 @@ import models.Person;
 
 public class PersonDao {
     DataBase db;
-    private String INSERT = "INSERT into person (personID, userID, firstName, lastName, gender, fatherID, motherID, spouseID) values (?,?,?,?,?,?,?,?)";
-    private String SELECT = "SELECT personID,userID,firstName,lastName, gender,fatherID,motherID,spouseID FROM person WHERE personID = ?";
-    private String SELECT_ON_USER = "SELECT personID, userID, firstName,lastName,gender,fatherID,motherID,spouseID FROM person WHERE userID = ?";
+    private String INSERT = "INSERT into person (personID, descendant, firstName, lastName, gender, fatherID, motherID, spouseID) values (?,?,?,?,?,?,?,?)";
+    private String SELECT = "SELECT personID,descendant,firstName,lastName, gender,fatherID,motherID,spouseID FROM person WHERE personID = ?";
+    private String SELECT_ON_USER = "SELECT personID,descendant,firstName,lastName,gender,fatherID,motherID,spouseID FROM person WHERE descendant = ?";
     public PersonDao() {
         db = new DataBase();
     }
@@ -40,8 +40,8 @@ public class PersonDao {
         try {
             conn = db.openConnection();
             stmt = conn.prepareStatement(INSERT);
-            stmt.setString(1,person.getID());
-            stmt.setString(2,person.getUserID());
+            stmt.setString(1,person.getPersonID());
+            stmt.setString(2,person.getDescendant());
             stmt.setString(3,person.getfName());
             stmt.setString(4,person.getlName());
             stmt.setString(5,person.getGender());
@@ -73,15 +73,15 @@ public class PersonDao {
      * @RETURN boolean
      * @EXCEPTION throws SQLException
      */
-    public boolean deletePerson(String userID)throws SQLException{
+    public boolean deletePerson(String userName)throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;//insert statement
         //CHECK TO SEE if USER IS UNIQUE
         try {
             conn = db.openConnection();
-            stmt = conn.prepareStatement("DELETE FROM person WHERE userID =?");
-            stmt.setString(1,userID);
-            if(stmt.executeUpdate() >= 1){//execute the statement
+            stmt = conn.prepareStatement("DELETE FROM person WHERE descendant =?");
+            stmt.setString(1,userName);
+            if(stmt.executeUpdate() >= 0){//execute the statement
                 db.closeConnection(true, conn);
                 //ALSO LOG US ON
                 return true;
@@ -153,7 +153,7 @@ public class PersonDao {
         String output = "";
         try {
             conn = db.openConnection();
-            stmt = conn.prepareStatement("SELECT userID FROM person WHERE personID = ?");
+            stmt = conn.prepareStatement("SELECT descendant FROM person WHERE personID = ?");
             stmt.setString(1,personID);
             rs = stmt.executeQuery();//execute the statement
             if(rs.next()){

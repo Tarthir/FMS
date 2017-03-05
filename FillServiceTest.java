@@ -51,13 +51,13 @@ public class FillServiceTest {
             eDao = new EventDao();
             connection = db.openConnection();
             db.createTables(connection);
-            User user = new User("userID","userName","password","email","first","last","m");
+            User user = new User("userName","password","email","first","last","m");
             assertTrue(uDao.register(user));
         }catch(SQLException e){e.printStackTrace();}
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         connection = db.openConnection();
         try {
             db.dropTables(connection);
@@ -70,12 +70,12 @@ public class FillServiceTest {
     public void genDataAndDeletion() {
         try {
             //setup
-            User user = new User("userID2","userName2","password","email","first","last","m");
+            User user = new User("userName2","password","email","first","last","m");
             assertTrue(uDao.register(user));
-            assertTrue(pDao.insertPerson(new Person("personID", "userID2", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
-            assertTrue(pDao.insertPerson(new Person("personID2", "userID2", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2")));
-            assertTrue(eDao.insertEvent(new Event("eventID", "userID2", "personID", "1994", "Birth", new Location( "213.7", "123.7", "Provo","USA"))));
-            assertTrue(eDao.insertEvent(new Event("eventID2", "userID2", "personID2", "1994", "Birth", new Location( "213.7", "123.7", "Provo", "USA"))));
+            assertTrue(pDao.insertPerson(new Person("personID", "userName2", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
+            assertTrue(pDao.insertPerson(new Person("personID2", "userName2", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2")));
+            assertTrue(eDao.insertEvent(new Event("eventID", "userName2", "personID", new Location( "213.7", "123.7", "Provo","USA"), "1994", "Birth")));
+            assertTrue(eDao.insertEvent(new Event("eventID2", "userName2", "personID2", new Location( "213.7", "123.7", "Provo","USA"), "1994", "Birth")));
             //setup end
             FillRequest request = new FillRequest(4, "userName2");
             request.setfNames(fNames);

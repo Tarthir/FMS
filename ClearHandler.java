@@ -25,7 +25,6 @@ public class ClearHandler implements HttpHandler {
     @Override
     /**This method handles the clear request from the server*/
     public void handle(HttpExchange exchange) throws IOException {
-        System.out.println("1");
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
                 //System.out.println("2");
@@ -37,7 +36,7 @@ public class ClearHandler implements HttpHandler {
                 OutputStream respBody = exchange.getResponseBody();
                 if(result.getE() != null){
                     //System.out.println("Null");
-                   encoder.encode(result.getE(),respBody);
+                   encoder.encode(result.getE().getMessage(),respBody);
                 }
                 else{
                     //System.out.println("Not Null");
@@ -54,7 +53,7 @@ public class ClearHandler implements HttpHandler {
         } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 }

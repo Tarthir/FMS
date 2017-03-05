@@ -9,35 +9,48 @@ public class Event {
     /**The unique event ID for this event*/
     private String eventID;
     /**The user this event belongs to*/
-    private String userID;
+    private String descendent;
     /**The person this event belongs to*/
     private String personID;
     /**The latitude this event occurred at*/
     private Location location;
     /**The eventType of this event*/
-    private String eventType;
+    private String description;
     /**The year this event took place*/
     private String year;
-    /**The location of this event*/
 
-    public Event(String eventID, String userID, String personID, String year, String eventType, Location location) {
+    public Event(String eventID, String descendent, String personID, Location location, String eventType, String year) {
         this.eventID = eventID;
-        this.userID = userID;
+        this.descendent = descendent;
         this.personID = personID;
         this.location = location;
-        this.eventType = eventType;
+        this.description = eventType;
         this.year = year;
     }
 
-    public Event() {
+    /**The location of this event*/
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if(this.getClass() != o.getClass()){return false;}
+        Event other = (Event)o;
+        if(!other.getDescendent().equals(this.getDescendent())){return false;}
+        if(!other.getEventID().equals(this.getEventID())){return false;}
+        if(!other.getEventType().equals(this.getEventType())){return false;}
+        if(!other.getLocation().equals(this.getLocation())){return false;}
+        if(!other.getYear().equals(this.getYear())){return false;}
+        if(!other.getPersonID().equals(this.getPersonID())){return false;}
+        return true;
     }
 
     public String getEventID() {
         return eventID;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getDescendent() {
+        return descendent;
     }
 
     public String getPersonID() {
@@ -49,23 +62,10 @@ public class Event {
     }
 
     public String getEventType() {
-        return eventType;
+        return description;
     }
 
     public String getYear() {
         return year;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if(this.getClass() != o.getClass()){return false;}
-        Event other = (Event)o;
-        if(!other.getUserID().equals(this.getUserID())){return false;}
-        if(!other.getEventID().equals(this.getEventID())){return false;}
-        if(!other.getEventType().equals(this.getEventType())){return false;}
-        if(!other.getLocation().equals(this.getLocation())){return false;}
-        if(!other.getYear().equals(this.getYear())){return false;}
-        if(!other.getPersonID().equals(this.getPersonID())){return false;}
-        return true;
     }
 }

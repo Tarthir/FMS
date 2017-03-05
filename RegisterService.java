@@ -36,57 +36,52 @@ public class RegisterService {
             User newUser = makeUserModel(request);
             UserDao dao = new UserDao();
             if (!dao.checkUserName(request.getUserName())) {//check to see if the userName already exists then if register is successful
-               // System.out.println("Checked userName");
+               //System.out.println("Checked userName");
                 if (dao.register(newUser)) {
                     //System.out.println("register worked");
-                    return getResult(request,newUser);
+                    return getResult(newUser);
                 }
             }
             else {
-                return new RegisterResult(new IllegalArgumentException());
+                return new RegisterResult(new IllegalArgumentException("UserName already in use"));
             }
         } catch (SQLException e) {
             return new RegisterResult(e);
         }
-        return new RegisterResult(new Exception());
+        return new RegisterResult(new Exception("Error"));
     }
     /**
      * Gets the result of registering a user
      *
-     * @PARAM request: to register a new user
      * @RETURN Gets the result of trying to register a new user
      * @PARAM the user that was made
      * @Exception throws SQLException
      */
-    private RegisterResult getResult(RegisterRequest request,User newUser)throws SQLException{
-        AuthTokenDao authDao = new AuthTokenDao();
+    private RegisterResult getResult(User newUser)throws SQLException{
         AuthToken authToken = new AuthToken();//gets the timestamp and UUID in the model object
-        if (authDao.insertAuthToken(newUser.getID(), authToken)) {
-            DataGenerator dataGenerator = new DataGenerator(newUser.getID());
-            //Generates my data right here Setting up the request first
+        if (new AuthTokenDao().insertAuthToken(newUser.getUserName(), authToken)) {
             int numOfGenerations = 4;
             FillRequest fillRequest = new FillRequest(numOfGenerations, newUser.getUserName());
-            fillRequest.setLocations(request.getLocations());
-            fillRequest.setfNames(request.getfNames());
-            fillRequest.setmNames(request.getmNames());
-            fillRequest.setlNames(request.getlNames());
-
             FillResult result = null;
             try {
-                result = dataGenerator.genData(fillRequest);
+                result = new FillService().fill(fillRequest);//dataGenerator.genData(fillRequest);
             } catch (Exception e) {
                 e.printStackTrace();
+                return new RegisterResult(e);
+
             }
 
+            if(result == null){
+                return new RegisterResult(new Exception("Invalid Request Data"));
+            }
             if (result.getE() == null) {//if we didnt have an error
                 return new RegisterResult(authToken.getAuthToken(), newUser.getUserName(),result.getUserPersonID());
             }
-            else {
+            else {//we had an error
                 return new RegisterResult(result.getE());
-            }//we had an error
+            }
         }
-        //System.out.println("bad");
-        return new RegisterResult(new ServerError("Inserting the authtoken failed",new Error()));
+        return new RegisterResult(new IllegalArgumentException("Inserting the authtoken failed"));
     }
     /**
      * Makes the user for the register method to use
@@ -94,8 +89,7 @@ public class RegisterService {
      * @RETURN The user object
      * */
     private User makeUserModel(RegisterRequest request) {
-        UUID uuid = UUID.randomUUID();
-        return new User(uuid.toString(), request.getUserName(), request.getPassWord(),
+        return new User(request.getUserName(), request.getPassWord(),
                 request.getEmail(), request.getfName(), request.getlName(), request.getGender());
     }
 

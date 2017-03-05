@@ -21,11 +21,11 @@ import models.Event;
 public class EventDao {
     DataBase db;
     /**Select on the whole table where eventID = ?*/
-    private String SELECT = "SELECT eventID,userID,personID,year,eventType,city,latitude,longitude,country FROM events WHERE eventID = ?";
-    /**Select on the whole table where userID = ?*/
-    private String SELECT_STAR = "SELECT eventID,userID,personID,year,eventType,city,latitude,longitude,country FROM events WHERE userID = ?";
+    private String SELECT = "SELECT eventID,descendant,personID,year,eventType,city,latitude,longitude,country FROM events WHERE eventID = ?";
+    /**Select on the whole table where descendant = ?*/
+    private String SELECT_STAR = "SELECT eventID,descendant,personID,year,eventType,city,latitude,longitude,country FROM events WHERE descendant = ?";
     /**Insert into every column of the table the table creating a new row*/
-    private String insertEvents = "insert into events (eventID,userID,personID,year,eventType,city,latitude,longitude,country) values (?,?,?,?,?,?,?,?,?)";
+    private String insertEvents = "insert into events (eventID,descendant,personID,year,eventType,city,latitude,longitude,country) values (?,?,?,?,?,?,?,?,?)";
     public EventDao() {
         db = new DataBase();
     }
@@ -42,7 +42,7 @@ public class EventDao {
             conn = db.openConnection();
             stmt = conn.prepareStatement(insertEvents);
             stmt.setString(1,event.getEventID());
-            stmt.setString(2, event.getUserID());
+            stmt.setString(2, event.getDescendent());
             stmt.setString(3, event.getPersonID());
             stmt.setString(4, event.getYear());
             stmt.setString(5, event.getEventType());
@@ -54,7 +54,7 @@ public class EventDao {
                 db.closeConnection(true, conn);
                 return true;
             }
-            if(!conn.isClosed()){db.closeConnection(false, conn);}
+            if(!conn.isClosed()){db.closeConnection(false, conn); }
         }
         catch(SQLException e){
            // e.printStackTrace();
@@ -110,18 +110,18 @@ public class EventDao {
     /***
      * A method to get all of a user's ancestor's events
      *
-     * @PARAM the userID we are getting all the events from
+     * @PARAM the descendant we are getting all the events from
      * @RETURN gets the result of attempting to get all the users ancestor's events
      * @EXCEPTION throws SQL exception
      */
-    public ArrayList<ArrayList<String>> getEvents(String userID) throws SQLException{
+    public ArrayList<ArrayList<String>> getEvents(String descendant) throws SQLException{
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement stmt = null;//insert statement
         try {
             conn = db.openConnection();
             stmt = conn.prepareStatement(SELECT_STAR);
-            stmt.setString(1,userID);
+            stmt.setString(1,descendant);
             rs = stmt.executeQuery();//execute the statement
             ResultSetMetaData metadata = rs.getMetaData();
             int columnCount = metadata.getColumnCount();
@@ -152,18 +152,18 @@ public class EventDao {
 
     /**
      * deletes from the event table
-     * @PARAM the user ID of event that needs to be deleted
+     * @PARAM String descendant,the user ID of event that needs to be deleted
      * @RETURN whether the deletion was successful or not
      * @EXCEPTION throws SQLException
      * */
-    public boolean deleteEvents(String userID)throws SQLException{
+    public boolean deleteEvents(String descendant)throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = db.openConnection();
-            stmt = conn.prepareStatement("DELETE FROM events WHERE userID = ?");
-            stmt.setString(1,userID);
-            if(stmt.executeUpdate() >=  1){//execute the statement
+            stmt = conn.prepareStatement("DELETE FROM events WHERE descendant = ?");
+            stmt.setString(1,descendant);
+            if(stmt.executeUpdate() >=0 ){//execute the statement
                 db.closeConnection(true, conn);
                 return true;
             }

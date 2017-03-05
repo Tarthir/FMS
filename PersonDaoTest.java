@@ -34,7 +34,7 @@ public class PersonDaoTest {
     private Connection connection;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws IOException, SQLException {
         pDao = new PersonDao();
         db = new DataBase();
         connection = db.openConnection();
@@ -42,7 +42,7 @@ public class PersonDaoTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         connection = db.openConnection();
         try {
             db.dropTables(connection);
@@ -55,8 +55,8 @@ public class PersonDaoTest {
     @Test
     public void testInsertPerson() {
         try {
-            Person person1 = new Person("1", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
-            Person person2 = new Person("2", "userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
+            Person person1 = new Person("5","userName", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
+            Person person2 = new Person("6","userName2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
             assertTrue(pDao.insertPerson(person1));
             assertTrue(pDao.insertPerson(person2));
         } catch (SQLException e) {
@@ -69,8 +69,8 @@ public class PersonDaoTest {
     public void testDeletePerson() {
         try {
             UserDao userDao = new UserDao();
-            assertTrue(userDao.register(new User("userID","userName","password","email","fName","lName","f")));
-            assertTrue(userDao.register(new User("userID2","userName2","password","email","fName","lName","f")));
+            assertTrue(userDao.register(new User("userName","password","email","fName","lName","f")));
+            assertTrue(userDao.register(new User("userName2","password","email","fName","lName","f")));
             assertTrue(pDao.insertPerson(new Person("personID", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
             assertTrue(pDao.insertPerson(new Person("personID2", "userID", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2")));
             assertTrue(pDao.insertPerson(new Person("personID3", "userID", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3")));
@@ -91,15 +91,15 @@ public class PersonDaoTest {
     @Test
     public void testGetPerson() {
         try {
-            Person person1 = new Person("1", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
-            Person person2 = new Person("2", "userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
-            PersonRequest request = new PersonRequest("1");
-            PersonRequest request2 = new PersonRequest("2");
+            Person person1 = new Person("5","userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
+            Person person2 = new Person("6","userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
+            PersonRequest request = new PersonRequest("5");
+            PersonRequest request2 = new PersonRequest("6");
             assertTrue(pDao.insertPerson(person1));
             assertTrue(pDao.insertPerson(person2));
-            ArrayList<String> dataExpected = new ArrayList<>(Arrays.asList("1", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID"));
+            ArrayList<String> dataExpected = new ArrayList<>(Arrays.asList("5","userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID"));
             assertEquals(dataExpected, pDao.getPerson(request));
-            ArrayList<String> dataExpected2 = new ArrayList<>(Arrays.asList("2", "userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2"));
+            ArrayList<String> dataExpected2 = new ArrayList<>(Arrays.asList("6","userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2"));
             assertEquals(dataExpected2, pDao.getPerson(request2));
         } catch (SQLException e) {
             e.printStackTrace();

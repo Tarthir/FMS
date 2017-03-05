@@ -11,15 +11,15 @@ public class LoginResult {
     /** User name passed in with request*/
     private String userName;
     /** Non-empty string containing the userID  of the user’s generated object*/
-    private String userID;
+    private String personID;
     /**The exception thrown object*/
     private Exception e;
 
 
-    public LoginResult(String authToken, String userName, String userID) {
+    public LoginResult(String authToken, String userName, String personID) {
         this.authToken = authToken;
         this.userName = userName;
-        this.userID = userID;
+        this.personID = personID;
     }
 
     public LoginResult(Exception e) {
@@ -38,8 +38,8 @@ public class LoginResult {
         return userName;
     }
     /**@RETURN The personID of this login result*/
-    public String getuserID() {
-        return userID;
+    public String getPersonID() {
+        return personID;
     }
 
     public Exception getE() {

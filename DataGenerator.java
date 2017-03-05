@@ -24,10 +24,6 @@ import models.User;
 
 public class DataGenerator {
     /**
-     * THe userID for the user we are genning data for
-     */
-    private String userID;
-    /**
      * Total amount of generations we are making
      */
     private int TOTAL_GENERATIONS;
@@ -35,29 +31,12 @@ public class DataGenerator {
      * The people we are generating
      */
     private ArrayList<Person> people;
-    /**
-     * The last Names we will use in our generated data
-     */
-    private String[] lNames;
-    /**
-     * The male Names we will use in our generated data
-     */
-    private String[] mNames;
-    /**
-     * The female Names we will use in our generated data
-     */
-    private String[] fNames;
-    /**
-     * The loactions we will use in our generated data
-     */
-    private Location[] locations;
 
-    public DataGenerator(String userID) {
-        this.userID = userID;
+    public DataGenerator() {
         events = new ArrayList<>();
         people = new ArrayList<>();//one arraylist per generation
     }
-
+    /**Holds our events*/
     private ArrayList<Event> events;
 
     /**
@@ -80,12 +59,22 @@ public class DataGenerator {
             adderIndex = genPeople(j, request, adderIndex);
         }
         //put the user in the table
-        UUID uuid = UUID.randomUUID();
-        String father = people.get(people.size() - 2).getID();
-        String mother = people.get(people.size() - 1).getID();
-        people.add(new Person(uuid.toString(), user.getID(), user.getfName(), user.getlName(), user.getGender(), father, mother, ""));
-        genEvents(people.get(people.size() - 1), request.getLocations(), 0);
+        genUserData(user,request);
         return insertData();
+    }
+    /**
+     * Used to generate data for the user
+     * @PARAM User, the user
+     * @PARAM FillRequest, the request holding info needed to gen this user's data
+     * @RETURN void
+     * @EXCEPTION Exception
+     * */
+    private void genUserData(User user, FillRequest request) throws Exception {
+        UUID uuid = UUID.randomUUID();
+        String father = people.get(people.size() - 2).getPersonID();
+        String mother = people.get(people.size() - 1).getPersonID();
+        people.add(new Person(uuid.toString(),user.getUserName(), user.getfName(), user.getlName(), user.getGender(), father, mother, ""));
+        genEvents(people.get(people.size() - 1), request.getLocations(), 0,user.getUserName());
     }
 
     /**
@@ -114,17 +103,20 @@ public class DataGenerator {
         int numOfPeople = (int) Math.pow(2, currGeneration);
         for (int i = 0; i < numOfPeople; i++) {//create all people of this generation with all their connections
             if (i % 2 == 0) {//male
-                people.add(getMale(request.getmNames(), request.getlNames()));
-                genEvents(people.get(people.size() - 1), request.getLocations(), currGeneration);
+                people.add(getMale(request.getmNames(), request.getlNames(),request.getUsername()));
+                genEvents(people.get(people.size() - 1), request.getLocations(), currGeneration,request.getUsername());
+
             } else {//female
-                people.add(getFemale(request.getfNames(), request.getlNames()));
-                genEvents(people.get(people.size() - 1), request.getLocations(), currGeneration);
+                people.add(getFemale(request.getfNames(), request.getlNames(),request.getUsername()));
+                genEvents(people.get(people.size() - 1), request.getLocations(), currGeneration,request.getUsername());
+
                 //add spouses together
                 if (currGeneration == TOTAL_GENERATIONS) {
-                    people.get(i - 1).setSpouseID(people.get(i).getID());
-                    people.get(i).setSpouseID(people.get(i - 1).getID());
+                    people.get(i - 1).setSpouseID(people.get(i).getPersonID());
+                    people.get(i).setSpouseID(people.get(i - 1).getPersonID());
                 }
-                createMarriage(currGeneration, people.get(i - 1), people.get(i), request.getLocations());//marry this couple
+
+                createMarriage(currGeneration, people.get(i - 1), people.get(i), request.getLocations(),request.getUsername());//marry this couple
 
                 if (currGeneration < TOTAL_GENERATIONS) {//once we are past the oldest generation
                     setMothersAndFathers(adderIndex);
@@ -140,15 +132,15 @@ public class DataGenerator {
      * @RETURN int, the adderindex so its parent can keep it updated
      * */
     private int setMothersAndFathers(int adderIndex){
-        people.get(people.size() - 2).setSpouseID(people.get(people.size() - 1).getID());
-        people.get(people.size() - 1).setSpouseID(people.get(people.size() - 2).getID());
-        people.get(people.size() - 2).setFatherID(people.get(adderIndex).getID());
+        people.get(people.size() - 2).setSpouseID(people.get(people.size() - 1).getPersonID());
+        people.get(people.size() - 1).setSpouseID(people.get(people.size() - 2).getPersonID());
+        people.get(people.size() - 2).setFatherID(people.get(adderIndex).getPersonID());
         adderIndex++;
-        people.get(people.size() - 2).setMotherID(people.get(adderIndex).getID());
+        people.get(people.size() - 2).setMotherID(people.get(adderIndex).getPersonID());
         adderIndex++;
-        people.get(people.size() - 1).setFatherID(people.get(adderIndex).getID());
+        people.get(people.size() - 1).setFatherID(people.get(adderIndex).getPersonID());
         adderIndex++;
-        people.get(people.size() - 1).setMotherID(people.get(adderIndex).getID());
+        people.get(people.size() - 1).setMotherID(people.get(adderIndex).getPersonID());
         adderIndex++;
         return adderIndex;
     }
@@ -160,11 +152,11 @@ public class DataGenerator {
      * @RETURN whether the generation process was successful or not
      * @EXCEPTION Exception
      */
-    private Person getFemale(String[] fNames, String[] lNames) throws Exception {
+    private Person getFemale(String[] fNames, String[] lNames,String userName) throws Exception {
         UUID uuid = UUID.randomUUID();
         Random lNameRand = new Random();
         Random fNameRand = new Random();
-        return new Person(uuid.toString(), userID, fNames[fNameRand.nextInt(fNames.length)],
+        return new Person(uuid.toString(),userName, fNames[fNameRand.nextInt(fNames.length)],
                 lNames[lNameRand.nextInt(lNames.length)], "m", null, null, null);
     }
 
@@ -176,11 +168,11 @@ public class DataGenerator {
      * @RETURN whether the generation process was successful or not
      * @EXCEPTION Exception
      */
-    private Person getMale(String[] mNames, String[] lNames) throws Exception {
+    private Person getMale(String[] mNames, String[] lNames,String userName) throws Exception {
         Random mNameRand = new Random();
         Random lNameRand = new Random();
         UUID uuid = UUID.randomUUID();
-        return new Person(uuid.toString(), userID, mNames[mNameRand.nextInt(mNames.length)],
+        return new Person(uuid.toString(),userName, mNames[mNameRand.nextInt(mNames.length)],
                 lNames[lNameRand.nextInt(lNames.length)], "f", null, null, null);
     }
 
@@ -192,7 +184,7 @@ public class DataGenerator {
      * @RETURN void
      * @EXCEPTION Exception
      */
-    private void genEvents(Person person, Location[] locations, int currGeneration) throws Exception {
+    private void genEvents(Person person, Location[] locations, int currGeneration,String userName) throws Exception {
         int startYear = 1970 - (currGeneration * 50);
         String[] eventType = {"Birth", "Baptism", "Death"};
         Random locRand = new Random();
@@ -201,7 +193,7 @@ public class DataGenerator {
             int location = locRand.nextInt(locations.length - 1);
             int year = getYear(eventT, startYear);
             //NEED TO HAVE MARRIAGES AT SAME LOCATION/YEAR
-            events.add(new Event(uuid.toString(), userID, person.getID(), Integer.toString(year), eventT, locations[location]));
+            events.add(new Event(uuid.toString(), userName, person.getPersonID(), locations[location], Integer.toString(year), eventT));
         }
     }
 
@@ -258,16 +250,18 @@ public class DataGenerator {
      * @RETURN the year for said event
      * @EXCEPTION Exception
      */
-    private void createMarriage(int currGeneration, Person father, Person mother, Location[] location) throws Exception {
+    private void createMarriage(int currGeneration, Person father, Person mother, Location[] location,String userName) throws Exception {
         UUID uuid = UUID.randomUUID();
         UUID uuid2 = UUID.randomUUID();
         Random locRand = new Random();
+
         int loc = locRand.nextInt(location.length);
         int startYear = 2017 - (currGeneration * 50);
         Random yearRand = new Random();
+
         int marriageYear = (yearRand.nextInt((startYear + 35) - (startYear + 18)) + (startYear + 18));//getting married between 18-35
-        events.add(new Event(uuid.toString(), userID, father.getID(), Integer.toString(marriageYear), "Marriage", location[loc]));
-        events.add(new Event(uuid2.toString(), userID, father.getID(), Integer.toString(marriageYear), "Marriage", location[loc]));
+        events.add(new Event(uuid.toString(), userName, father.getPersonID(), location[loc], Integer.toString(marriageYear), "Marriage"));
+        events.add(new Event(uuid2.toString(), userName, father.getPersonID(), location[loc], Integer.toString(marriageYear), "Marriage"));
     }
 
     /**
@@ -299,8 +293,9 @@ public class DataGenerator {
         for (int i = 0; i < people.size(); i++) {
             pDao.insertPerson(people.get(i));
             if(i == people.size()-1){//if the last person(Which is the user)
-                userPersonID = people.get(i).getID();
+                userPersonID = people.get(i).getPersonID();
             }
+
         }
         for (Event e : events) {
             eDao.insertEvent(e);

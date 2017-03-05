@@ -58,8 +58,8 @@ public class EventsServiceTest {
             db = new DataBase();
             connection = db.openConnection();
             db.createTables(connection);
-            User user = new User("userID", "name", "password", "email", "first", "last", "m");
-            User user2 = new User("userID2", "name2", "password2", "email2", "first2", "last2", "f");
+            User user = new User("name", "password", "email", "first", "last", "m");
+            User user2 = new User("name2", "password2", "email2", "first2", "last2", "f");
             ;
             assertTrue(uDao.register(user));
             assertTrue(uDao.register(user2));
@@ -69,18 +69,18 @@ public class EventsServiceTest {
             assertTrue(aDao.insertAuthToken("userID2", auth2));
             authToken = aDao.getAuthToken("userID");
             authToken2 = aDao.getAuthToken("userID2");
-            Person person1 = new Person("personID", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
-            Person person2 = new Person("personID2", "userID", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2");
-            Person person3 = new Person("personID3", "userID", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3");
-            Person person4 = new Person("personID4", "userID2", "fName4", "lName4", "f", "fatherID4", "motherID4", "spouseID4");
+            Person person1 = new Person("personID", "name", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
+            Person person2 = new Person("personID2", "name", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2");
+            Person person3 = new Person("personID3", "name", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3");
+            Person person4 = new Person("personID4", "name2", "fName4", "lName4", "f", "fatherID4", "motherID4", "spouseID4");
             assertTrue(pDao.insertPerson(person1));
             assertTrue(pDao.insertPerson(person2));
             assertTrue(pDao.insertPerson(person3));
             assertTrue(pDao.insertPerson(person4));
-            event = new Event("eventID", "userID", "personID", "1994", "Birth", new Location("213.7", "123.7","Provo", "USA"));
-            event2 = new Event("eventID2", "userID", "personID2", "1994", "Birth", new Location("213.7", "123.7","Provo", "USA"));
-            event3 = new Event("eventID3", "userID", "personID3", "1994", "Birth", new Location("213.7", "123.7","Provo", "USA"));
-            event4 = new Event("eventID4", "userID2", "personID4", "1994", "Birth2", new Location("213.7", "123.7","Provo", "USA"));
+            event = new Event("eventID", "name", "personID", new Location("213.7", "123.7","Provo", "USA"), "1994", "Birth");
+            event2 = new Event("eventID2", "name", "personID2", new Location("213.7", "123.7","Provo", "USA"), "1994", "Birth");
+            event3 = new Event("eventID3", "name", "personID3", new Location("213.7", "123.7","Provo", "USA"), "1994", "Birth");
+            event4 = new Event("eventID4", "name2", "personID4", new Location("213.7", "123.7","Provo", "USA"), "1994", "Birth2");
             assertTrue(eDao.insertEvent(event));
             assertTrue(eDao.insertEvent(event2));
             assertTrue(eDao.insertEvent(event3));
@@ -89,7 +89,7 @@ public class EventsServiceTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         connection = db.openConnection();
         try {
             db.dropTables(connection);
