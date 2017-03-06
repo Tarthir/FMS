@@ -80,18 +80,9 @@ public class MultiDao {
      * @RETURN boolean, if is validated
      * @EXCEPTION SQLException
      * */
-    public boolean ValidateAuthToken(String personID,String authTok)throws SQLException{
-        PersonDao pDao = new PersonDao();
+    public boolean validate(String authTok)throws SQLException{
         AuthTokenDao aDao = new AuthTokenDao();
-        String userID = pDao.getUserIDWithPersonID(personID);
-        ArrayList<String> authTokens = aDao.getAuthToken(userID);
-        for(String tok : authTokens){
-            if(tok.equals(authTok)){
-                System.out.println(true);
-                return true;
-            }
-        }
-        return false;
+        return aDao.validateAuthToken(authTok);
     }
 
 }

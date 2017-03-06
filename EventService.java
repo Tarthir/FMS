@@ -3,6 +3,7 @@ package service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import dataAccess.AuthTokenDao;
 import dataAccess.EventsCreator;
 import dataAccess.EventDao;
 import infoObjects.EventRequest;
@@ -19,21 +20,27 @@ public class EventService {
     public EventService() {}
     /**Gets the result of trying to get one particular event
      * @PARAM request, the request to get a particular event
+     * @PARAM String, an authToken
      * @RETURN The result of attempting to get a particular event. May return an error
      * */
-    public EventResult getEvent(EventRequest request){
-        EventDao eDao = new EventDao();
-        EventsCreator create = new EventsCreator();
-        ArrayList<String> result = null;
+    public EventResult getEvent(EventRequest request,String authToken){
         try {
-            result = eDao.getEvent(request);
-        } catch (SQLException e) {
+            EventDao eDao = new EventDao();
+            EventsCreator create = new EventsCreator();
+            AuthTokenDao aDao = new AuthTokenDao();
+            Event event = null;
+            if (aDao.validateAuthToken(authToken)){
+                event = create.createEvent(eDao.getEvent(request));
+                if (event != null) {
+                    return new EventResult(event.getDescendent(), event, event.getPersonID());
+                }
+            }
+            else{
+                return new EventResult(new Exception("Invalid AuthToken"));
+            }
+        }catch(SQLException e){
             return new EventResult(e);
         }
-        if(result != null){
-            Event event = create.createEvent(result);
-            return new EventResult(event.getDescendent(),event,event.getPersonID());
-        }
-        return null;
+        return new EventResult(new Exception("No such Event found"));
     }
 }

@@ -52,43 +52,6 @@ public class Encoder {
         writer.flush();
     }
 
-    public void sendMessage(String message,OutputStream resBody) throws IOException {
-        OutputStreamWriter writer = new OutputStreamWriter(resBody);
-        writer.write(gson.toJson(message));
-        writer.flush();
-    }
-
-
-    /***
-     * This decodes java objects from JSON
-     * @PARAM HttpExchange object
-     * @RETURN String object
-     * @EXCEPTION IOException
-     * */
-    public String[] decodeStringArray(HttpExchange exchange)throws IOException{
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, String[].class);
-    }
-    /***
-     * This decodes java objects from JSON
-     * @PARAM HttpExchange object
-     * @RETURN String object
-     * @EXCEPTION IOException
-     * */
-    public String decodeString(HttpExchange exchange)throws IOException{
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, String.class);
-    }
-   /***
-     * This decodes java objects from JSON
-    * @PARAM HttpExchange object
-     * @RETURN Person object
-    * @EXCEPTION IOException
-    * */
-    public Person decodePersonObj(HttpExchange exchange) throws IOException {
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, Person.class);
-    }
     /***
      * This decodes java objects from JSON
      * @PARAM HttpExchange object
@@ -118,57 +81,6 @@ public class Encoder {
     public LoginRequest decodeLogin(HttpExchange exchange)throws IOException{
         Reader reader = new InputStreamReader(exchange.getRequestBody());
         return gson.fromJson(reader, LoginRequest.class);
-    }
-    /**
-     * This decodes java objects from JSON
-     * @PARAM HttpExchange object
-     * @RETURN FillRequest object
-     * @EXCEPTION IOException
-     * */
-    public FillRequest decodeFill(HttpExchange exchange)throws IOException{
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, FillRequest.class);
-    }
-    /**
-     * This decodes java objects from JSON
-     * @PARAM HttpExchange object
-     * @RETURN PeopleRequest object
-     * @EXCEPTION IOException
-     * */
-    public PeopleRequest decodePeople(HttpExchange exchange)throws IOException{
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, PeopleRequest.class);
-    }
-    /**
-     * This decodes java objects from JSON
-     * @PARAM HttpExchange object
-     * @RETURN PersonRequest object
-     * @EXCEPTION IOException
-     *
-    public PersonRequest decodePerson(HttpExchange exchange)throws IOException{
-        Iterator<List<String>> itr = exchange.getRequestHeaders().values().iterator();
-        List<String> header = itr.next();
-        return new PersonRequest(header.get(1));
-    }*/
-    /**
-     * This decodes java objects from JSON
-     * @PARAM HttpExchange object
-     * @RETURN PersonRequest object
-     * @EXCEPTION IOException
-     * */
-    public EventsRequest decodeEvents(HttpExchange exchange)throws IOException{
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, EventsRequest.class);
-    }
-    /**
-     * This decodes java objects from JSON
-     * @PARAM HttpExchange object
-     * @RETURN PersonRequest object
-     * @EXCEPTION IOException
-     * */
-    public PersonRequest decodeEvent(HttpExchange exchange)throws IOException{
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, PersonRequest.class);
     }
     /**
      * This decodes java objects from JSON

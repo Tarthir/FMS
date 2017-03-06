@@ -3,10 +3,12 @@ package service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import dataAccess.AuthTokenDao;
 import dataAccess.MultiDao;
 import dataAccess.PersonDao;
 import infoObjects.PersonRequest;
 import dataAccess.PeopleCreator;
+import infoObjects.PersonResult;
 import models.Person;
 
 /**
@@ -25,17 +27,19 @@ public class PersonService {
      * @PARAM String, an authtoken
      * @RETURN Gets the person requested
      */
-    public Person getPerson(PersonRequest p,String authToken) throws SQLException,IllegalArgumentException{
-        PersonDao pDao = new PersonDao();
-        MultiDao multi = new MultiDao();
-        PeopleCreator maker = new PeopleCreator();
-        if(multi.ValidateAuthToken(p.getPersonID(),authToken)) {
-            ArrayList<String> personData = pDao.getPerson(p);
-            return maker.createPerson(personData);
-        }
-        else{
-           // System.out.print("invalid");
-            throw new IllegalArgumentException("Invalid Authtoken");
+    public PersonResult getPerson(PersonRequest p, String authToken){
+        try {
+            PersonDao pDao = new PersonDao();
+            AuthTokenDao aDao = new AuthTokenDao();
+            PeopleCreator maker = new PeopleCreator();
+            if (aDao.validateAuthToken(authToken)) {//if is valid authtoken
+                ArrayList<String> personData = pDao.getPerson(p);
+                return new PersonResult(maker.createPerson(personData));
+            } else {
+                return new PersonResult(new IllegalArgumentException("Invalid Authtoken"));
+            }
+        }catch(SQLException e){
+            return new PersonResult(e);
         }
     }
 }

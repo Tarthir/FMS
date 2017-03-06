@@ -17,6 +17,7 @@ import models.Event;
 
 public class EventsService {
     public EventsService() {}
+
     /**Gets the result of trying to get all events of all of the users ancestors
      * @PARAM request, the request to get all events
      * @RETURN The result of attempting to get all events
@@ -25,15 +26,20 @@ public class EventsService {
         try {
             EventDao eDao = new EventDao();
             EventsCreator create = new EventsCreator();
-            AuthTokenDao authDao = new AuthTokenDao();
-            ;
-            String userID = authDao.getUserIDFromAuthToken(request.getAuthToken());
-            ArrayList<ArrayList<String>> result = eDao.getEvents(userID);
-            if (result != null) {
-                ArrayList<Event> events = create.createEvents(result);
-                return new EventsResult(events);
+            AuthTokenDao aDao = new AuthTokenDao();
+            if (aDao.validateAuthToken(request.getAuthToken())) {
+                String userID = aDao.getUserIDFromAuthToken(request.getAuthToken());
+                ArrayList<ArrayList<String>> result = eDao.getEvents(userID);
+                if (result != null) {
+                    ArrayList<Event> events = create.createEvents(result);
+                    return new EventsResult(events);
+                } else {//found nothing
+                    return new EventsResult(new Exception("No such events found"));
+                }
             }
-            else{ return null;}//found nothing
+            else{
+                return new EventsResult(new Exception("Invalid AuthToken"));
+            }
         }catch(SQLException e){
             return new EventsResult(e);//SQL error
         }

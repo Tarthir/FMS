@@ -3,6 +3,7 @@ import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.sql.SQLException;
 
 import javax.xml.crypto.Data;
 
@@ -46,16 +47,20 @@ public class MainServer {
         }
 
         server.setExecutor(null); // use the default executor
-
-        server.createContext("/uer/register",new RegisterHandler());
+        server.createContext("/user/register",new RegisterHandler());
         server.createContext("/user/login",new LoginHandler());
         server.createContext("/fill",new FillHandler());//gives username/generations
         server.createContext("/load",new LoadHandler());
+        server.createContext("/clear",new ClearHandler());
         server.createContext("/person",new PersonHandler());//gives all people
         server.createContext("/event",new EventHandler());//gives personID
         server.createContext("/",new IndexHandler());//for CSS and index handler
         DataBase db = new DataBase();
-        db.createTables(db.openConnection());//initialize the DB
+        try {
+            db.createTables(db.openConnection());//initialize the DB
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         server.start();
     }

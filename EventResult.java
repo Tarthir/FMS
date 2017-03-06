@@ -19,6 +19,7 @@ public class EventResult {
     private String personID;
     /**The exception thrown object*/
     private Exception e;
+    private String message;
 
 
     public EventResult(String userID,Event event, String personID) {
@@ -29,6 +30,7 @@ public class EventResult {
 
     public EventResult(Exception e) {
         this.e = e;
+        message = e.getMessage();
     }
 
     public EventResult() {
@@ -47,4 +49,7 @@ public class EventResult {
     }
     public String getUserID(){return userID;}
 
+    public String getMessage() {
+        return message;
+    }
 }

@@ -15,6 +15,8 @@ public class EventsResult {
     ArrayList<Event> events;
     /**The exception thrown object*/
     private Exception e;
+    /**Our exception message*/
+    private String message;
 
     public EventsResult(ArrayList<Event> events) {
         this.events = events;
@@ -22,6 +24,7 @@ public class EventsResult {
 
     public EventsResult(Exception e) {
         this.e = e;
+        message = e.getMessage();
     }
 
     public EventsResult() {
@@ -38,5 +41,9 @@ public class EventsResult {
 
     public void setE(Exception e) {
         this.e = e;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

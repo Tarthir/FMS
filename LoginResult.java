@@ -14,6 +14,9 @@ public class LoginResult {
     private String personID;
     /**The exception thrown object*/
     private Exception e;
+    /**Our exception result*/
+    private String message;
+
 
 
     public LoginResult(String authToken, String userName, String personID) {
@@ -24,6 +27,7 @@ public class LoginResult {
 
     public LoginResult(Exception e) {
         this.e = e;
+        message = e.getMessage();
     }
 
     public LoginResult() {
@@ -46,4 +50,7 @@ public class LoginResult {
         return e;
     }
 
+    public String getMessage() {
+        return message;
+    }
 }

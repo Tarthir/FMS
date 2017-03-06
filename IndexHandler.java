@@ -32,7 +32,7 @@ public class IndexHandler implements HttpHandler {
             if (exchange.getRequestMethod().toLowerCase().equals("get")) {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);//otherwise send Forbidden/BadRequest/etc as needed
                 //Headers reqHeaders = exchange.getRequestHeaders();
-
+//TODO: NEED TO PARSE
                 String filePathStr = "C:\\Users\\tyler\\AndroidStudioProjects\\FamilyMap\\DefaultFiles\\index.html";
                 Path filePath = FileSystems.getDefault().getPath(filePathStr);
                 Files.copy(filePath, exchange.getResponseBody());

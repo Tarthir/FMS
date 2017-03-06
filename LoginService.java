@@ -26,22 +26,26 @@ public class LoginService {
     public LoginResult login(LoginRequest request) {
         try {
             UserDao dao = new UserDao();
-            String userID = dao.login(request);
-            if (!userID.equals("")) {
-                AuthTokenDao authDao = new AuthTokenDao();
-                AuthToken authToken = new AuthToken();//gets the timestamp and UUID in the model object
-                if (authDao.insertAuthToken(userID, authToken)) {
-                    return new LoginResult(authToken.getAuthToken(), request.getUserName(), userID);
+            System.out.print(1);
+            System.out.print(request.getUserName() + request.getPassWord());
+            if (!request.isValidRequest()) {//if this is a valid request
+                System.out.print(2);
+                String userID = dao.login(request);
+                if(!userID.equals("")) {//if founda matching userID
+                    System.out.print(3);
+                    AuthTokenDao authDao = new AuthTokenDao();
+                    AuthToken authToken = new AuthToken();//gets the timestamp and UUID in the model object
+                    if (authDao.insertAuthToken(userID, authToken)) {
+                        System.out.print(4);
+                        return new LoginResult(authToken.getAuthToken(), request.getUserName(), userID);
+                    }
                 }
-                else {return null;}//couldnt insert authtoken??
-            }
-            else{
-                return null;//Can't register a user with a username that is already used.Make custom exception for it?
             }
         }
        catch(SQLException e){
            return new LoginResult(e);
        }
+        return new LoginResult(new Exception("Invalid Request"));
     }
 
 

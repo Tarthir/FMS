@@ -21,14 +21,11 @@ public class ClearService {
      */
     public ClearResult clear(){
         MultiDao mDao = new MultiDao();
-        ClearResult result;
         try {
             mDao.doClear();
-            result = new ClearResult(true);//if worked!
+            return new ClearResult();//if worked!
         } catch (SQLException e) {
-            result = new ClearResult(false);//Exception was thrown
-            result.setE(e);
+            return new ClearResult(e);//Exception was thrown
         }
-        return result;
     }
 }

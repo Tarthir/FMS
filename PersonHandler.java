@@ -18,8 +18,11 @@ import java.util.ListIterator;
 import dataAccess.MultiDao;
 import encode.Encoder;
 import infoObjects.PeopleRequest;
+import infoObjects.PeopleResult;
 import infoObjects.PersonRequest;
+import infoObjects.PersonResult;
 import models.Person;
+import service.PeopleService;
 import service.PersonService;
 
 /**
@@ -37,48 +40,67 @@ public class PersonHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         Encoder encode = new Encoder();
         OutputStream respBody = exchange.getResponseBody();
-        PersonService service = new PersonService();
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("get")) {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 String authToken = exchange.getRequestHeaders().getFirst("Authorization");
                 String[] params  = exchange.getRequestURI().toString().split("/");
-
-                PersonRequest request = new PersonRequest(params[2]);
-                Person person = service.getPerson(request, authToken);
-
-                if (person == null) {//if no person was made because the given ID isnt in our Databse
-                    throw new IllegalArgumentException("Invalid PersonID");
+                if(params.length == 3) {
+                    doPerson(respBody,params[2],authToken);
                 }
                 else {
-                    encode.encode(person, respBody);
+                    doPeople(respBody,authToken);
                 }
-                respBody.close();
+
             }
             else {
                 //if we got an Error in the request we will reach here
                 //System.out.println("errorPerson");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                encode.encode("Should get GET not POST", respBody);
-                exchange.getRequestBody().close();
+                encode.encode(new Exception("Should be a GET request not POST"), respBody);
+                respBody.close();
             }
         }
         catch(IllegalArgumentException e){
             // System.out.println("errorPersonIllegal");
-            encode.encode(e.getMessage(),respBody);
-            respBody.close();
-        }
-        catch (SQLException e) {
-            encode.encode(e.getMessage(), respBody);
+            encode.encode(e,respBody);
             respBody.close();
         }
         catch (IOException e) {
             //System.out.println("errorPersonIO");
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            encode.encode(e.getMessage(),respBody);
+            encode.encode(e,respBody);
             respBody.close();
             //e.printStackTrace();
         }
 
+    }
+    /**
+     * Grabs a single person
+     * @PARAM OutputStream, holds the response body
+     * @PARAM String, the personID
+     * @PARAM authToken, the authtoken to validate
+     * */
+    private void doPerson(OutputStream respBody,String PersonID,String authToken) throws IOException {
+        PersonService service = new PersonService();
+        PersonRequest request = new PersonRequest(PersonID);
+        PersonResult result = service.getPerson(request, authToken);
+
+        new Encoder().encode(result, respBody);
+        respBody.close();
+    }
+
+    /**
+     * Grabs a single person
+     * @PARAM OutputStream, holds the response body
+     * @PARAM authToken, the authtoken to validate
+     * */
+    private void doPeople(OutputStream respBody,String authToken) throws IOException {
+        PeopleService service = new PeopleService();
+        PeopleRequest request = new PeopleRequest(authToken);
+        PeopleResult result = service.getPeople(request);
+
+        new Encoder().encode(result, respBody);
+        respBody.close();
     }
 }

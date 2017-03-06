@@ -33,14 +33,12 @@ public class LoginHandler implements HttpHandler {
                 LoginService service = new LoginService();
                 respBody = exchange.getResponseBody();
                 Encoder encode = new Encoder();
+
                 LoginRequest request = encode.decodeLogin(exchange);
+                //System.out.print(request.getUserName() + request.getPassWord());
                 LoginResult result = service.login(request);
-                if(result.getE() != null){
-                    encode.encode(result.getE(),respBody);
-                }
-                else {
-                    encode.encode(result, respBody);
-                }
+
+                encode.encode(result,respBody);
                 respBody.close();
             }
 

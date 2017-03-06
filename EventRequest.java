@@ -20,7 +20,7 @@ public class EventRequest {
      * @RETURN BOOLEAN, whether request is valid or not
      * */
     public boolean isValidRequest(){
-        return !eventID.isEmpty();
+        return !eventID.equals("");
     }
     /**@RETURN the eventID of this Event Request*/
     public String getEventID() {

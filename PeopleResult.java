@@ -14,6 +14,8 @@ public class PeopleResult {
     private ArrayList<Person> people;
     /**An exception that may have been thrown*/
     private Exception e;
+    /**Our exception result*/
+    private String message;
 
     public PeopleResult(ArrayList<Person> people) {
         this.people = people;
@@ -21,6 +23,7 @@ public class PeopleResult {
 
     public PeopleResult(Exception e) {
         this.e = e;
+        message = e.getMessage();
     }
 
     public PeopleResult() {

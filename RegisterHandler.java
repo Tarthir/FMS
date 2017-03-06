@@ -51,7 +51,6 @@ public class RegisterHandler implements HttpHandler {
                 //request = (RegisterRequest) new JsonData().setupJSONArrays(request);//grabs the arrays we need
                 if (request.isValidRequest()) {
 
-                    System.out.println("good to go");
                     RegisterResult result = service.register(request);
                     if (result.getE() != null) {
                         encode.encode(result.getE().getMessage(), respBody);

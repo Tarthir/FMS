@@ -16,6 +16,8 @@ public class FillResult {
     private Exception e;
     /**Used when a user is registered and the automatic fill command is called. We need to grab the User's personID*/
     private String userPersonID;
+    /**Our error message*/
+    private String message;
 
     public FillResult(int numOfPersons, int numOfEvents) {
         this.numOfPersons = numOfPersons;
@@ -25,6 +27,7 @@ public class FillResult {
 
     public FillResult(Exception e) {
         this.e = e;
+        message = e.getMessage();
     }
 
     public FillResult() {
@@ -56,5 +59,9 @@ public class FillResult {
 
     public String getUserPersonID() {
         return userPersonID;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

@@ -155,5 +155,24 @@ public class AuthTokenDao {
         }
         return output;
     }
-    //DO DELETES
+
+    /**
+     * Validates authtokens given by the user
+     * @PARAM String,A personID
+     * @PARAM String, an Authtoken
+     * @RETURN boolean, if is validated
+     * @EXCEPTION SQLException
+     * */
+    public boolean validateAuthToken(String authTok)throws SQLException{
+        AuthTokenDao aDao = new AuthTokenDao();
+        String userID = aDao.getUserIDFromAuthToken(authTok);
+        ArrayList<String> authTokens = aDao.getAuthToken(userID);
+        for(String tok : authTokens){
+            if(tok.equals(authTok)){
+                //System.out.println(true);
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -20,4 +20,10 @@ public class EventsRequest {
     public String getAuthToken() {
         return authToken;
     }
+    /**IS a valid request
+     * @RETURN boolean
+     * */
+    public boolean isValidRequest(){
+        return !authToken.equals("");
+    }
 }
