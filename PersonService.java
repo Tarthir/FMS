@@ -34,7 +34,9 @@ public class PersonService {
             PeopleCreator maker = new PeopleCreator();
             if (aDao.validateAuthToken(authToken)) {//if is valid authtoken
                 ArrayList<String> personData = pDao.getPerson(p);
-                return new PersonResult(maker.createPerson(personData));
+                PersonResult result = new PersonResult(maker.createPerson(personData));
+                if(result.getPerson() == null){ return new PersonResult("Invalid ID given as input");}
+                return result;
             } else {
                 return new PersonResult("Invalid Authtoken");
             }

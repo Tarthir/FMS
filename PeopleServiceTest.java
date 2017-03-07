@@ -51,8 +51,8 @@ public class PeopleServiceTest {
             db = new DataBase();
             connection = db.openConnection();
             db.createTables(connection);
-            User user = new User( "name", "password", "email", "first", "last", "m");
-            User user2 = new User( "name2", "password2", "email2", "first2", "last2", "f");
+            User user = new User( "name", "password", "email", "first", "last", "m","peep");
+            User user2 = new User( "name2", "password2", "email2", "first2", "last2", "f","peep2");
             ;
             assertTrue(uDao.register(user));
             assertTrue(uDao.register(user2));

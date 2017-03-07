@@ -49,7 +49,7 @@ public class DataGeneratorTest {
             db = new DataBase();
             connection = db.openConnection();
             db.createTables(connection);
-            User user = new User("userName","password","email","first","last","m");
+            User user = new User("userName","password","email","first","last","m","personID");
             assertTrue(uDao.register(user));
             request = new FillRequest(4, "userName");
             request.setfNames(fNames);
@@ -72,12 +72,9 @@ public class DataGeneratorTest {
     @Test
     public void genData() {
         try {
-            FillResult result = new FillResult(31, 123);
             FillService fill = new FillService();
             FillResult actual = fill.fill(request);
-            assertEquals(result.getNumOfEvents(), actual.getNumOfEvents());
-            assertEquals(result.getNumOfPersons(), actual.getNumOfPersons());
-            assertEquals(result.getResult(), actual.getResult());
+            assertEquals(actual.getMessage(), "Successfully added 31 people and 123 events.");
         }catch (Exception e) {
             e.printStackTrace();
         }

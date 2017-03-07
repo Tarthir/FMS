@@ -23,6 +23,7 @@ import service.DataGenerator;
 import service.FillService;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -51,7 +52,7 @@ public class FillServiceTest {
             eDao = new EventDao();
             connection = db.openConnection();
             db.createTables(connection);
-            User user = new User("userName","password","email","first","last","m");
+            User user = new User("userName","password","email","first","last","m","personID");
             assertTrue(uDao.register(user));
         }catch(SQLException e){e.printStackTrace();}
     }
@@ -70,12 +71,16 @@ public class FillServiceTest {
     public void genDataAndDeletion() {
         try {
             //setup
-            User user = new User("userName2","password","email","first","last","m");
+            User user = new User("userName2","password","email","first","last","m","personID");
             assertTrue(uDao.register(user));
-            assertTrue(pDao.insertPerson(new Person("personID", "userName2", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
-            assertTrue(pDao.insertPerson(new Person("personID2", "userName2", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2")));
-            assertTrue(eDao.insertEvent(new Event("eventID", "userName2", "personID", new Location( "213.7", "123.7", "Provo","USA"), "1994", "Birth")));
-            assertTrue(eDao.insertEvent(new Event("eventID2", "userName2", "personID2", new Location( "213.7", "123.7", "Provo","USA"), "1994", "Birth")));
+            Person p = new Person("personID", "userName2", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
+            Person p2 = new Person("personID2", "userName2", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
+            assertTrue(pDao.insertPerson(p));
+            assertTrue(pDao.insertPerson(p2));
+            Event event = new Event("eventID", "userName2", "personID", new Location( "213.7", "123.7", "Provo","USA"), "1994", "Birth");
+            Event event2 = new Event("eventID2", "userName2", "personID2", new Location( "213.7", "123.7", "Provo","USA"), "1994", "Birth");
+            assertTrue(eDao.insertEvent(event));
+            assertTrue(eDao.insertEvent(event2));
             //setup end
             FillRequest request = new FillRequest(4, "userName2");
             request.setfNames(fNames);
@@ -84,16 +89,9 @@ public class FillServiceTest {
             request.setmNames(mNames);
             FillResult actual = fService.fill(request);
 
-            //FillRequest request = new FillRequest(4, "userName2", locations, fNames, lNames, mNames);
-            FillResult result = new FillResult(31,123);
-           // FillResult actual = dGen.genData(request);
-            assertEquals(eDao.getEvent(new EventRequest("eventID")),null);
-            assertEquals(eDao.getEvent(new EventRequest("eventID2")),null);
-            assertEquals(pDao.getPerson(new PersonRequest("personID")),null);
-            assertEquals(pDao.getPerson(new PersonRequest("personID2")),null);
-            assertEquals(result.getNumOfEvents(),actual.getNumOfEvents());
-            assertEquals(result.getNumOfPersons(),actual.getNumOfPersons());
-            assertEquals(result.getResult(),actual.getResult());
+            assertNotEquals(eDao.getEvent(new EventRequest("eventID")),event);
+            assertNotEquals(actual.getUserPersonID(), pDao.getPerson(new PersonRequest("personID2")));
+            assertEquals(actual.getMessage(),"Successfully added 31 people and 123 events.");
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -8,10 +8,7 @@ import models.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-
-import javax.xml.crypto.Data;
 
 /**
  * Created by tyler on 2/10/2017.
@@ -20,7 +17,7 @@ import javax.xml.crypto.Data;
 
 public class UserDao {
     /**Our insert string to create a user*/
-    private String insertIntoUser = "insert into user (userName, password, email, firstName, lastName, gender) values ( ?, ?, ?, ?, ?, ?)";
+    private String insertIntoUser = "insert into user (userName, password, email, firstName, lastName, gender,personID) values ( ?, ?, ?, ?, ?, ?,?)";
     /**A database object to use to get our connection*/
     private DataBase db;
     public UserDao() {
@@ -45,6 +42,7 @@ public class UserDao {
             stmt.setString(4,newUser.getfName());
             stmt.setString(5,newUser.getlName());
             stmt.setString(6,newUser.getGender());
+            stmt.setString(7,newUser.getPersonID());
             if(stmt.executeUpdate() == 1){//execute the statement
                 db.closeConnection(true, conn);
                 return true;
@@ -63,33 +61,13 @@ public class UserDao {
     }
 
     /**
-     * A method to login a user
-     * @Param request, this object holds the info needed to successfully login
-     * @RETURN the userID of the userName/Password combo
-     * @EXCEPTION throws SQLException
-     */
-    public String login(LoginRequest request)throws SQLException{
-        return getUserID(request.getUserName(),request.getPassWord(),"SELECT userName FROM user WHERE userName = ? AND password = ?");
-    }
-
-    /**
-     * A method get a user ID from the fName/lName of a user
-     * @Param fName, the first name of the user
-     * @Param lName, the last name of the user
-     * @RETURN the userID of the fName/lName combo
-     * @EXCEPTION throws SQLException
-     */
-    public String getUserIDWithNames(String fName,String lName)throws SQLException{
-        return getUserID(fName,lName,"SELECT userName FROM user WHERE firstName = ? AND lastName = ?");
-    }
-    /**
      * A method get a user ID from the database from two inputs
      * @Param input1, the first input
      * @Param input2, the second input
      * @RETURN the userID related to these two inputs
      * @EXCEPTION throws SQLException
      */
-    private String getUserID(String input1,String input2,String SQLString)throws SQLException{
+    private String getUserPersonID(String input1, String input2, String SQLString)throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;//insert statement
         ResultSet rs = null;
@@ -117,7 +95,16 @@ public class UserDao {
         return output;
     }
 
-    //DO DELETES
+    /**
+     * A method to login a user
+     * @Param request, this object holds the info needed to successfully login
+     * @RETURN the userID of the userName/Password combo
+     * @EXCEPTION throws SQLException
+     */
+    public String login(LoginRequest request)throws SQLException{
+        return getUserPersonID(request.getUserName(),request.getPassWord(),"SELECT personID FROM user WHERE userName = ? AND password = ?");
+    }
+
     /**
      * Checks if this userName alreadyExists
      * @PARAM userName, the userName to be checked against the databse
@@ -161,7 +148,7 @@ public class UserDao {
         ResultSet rs = null;
         try {
             conn = db.openConnection();
-            stmt = conn.prepareStatement("SELECT userName,password,email,firstName,lastName,gender FROM user WHERE userName = ?");
+            stmt = conn.prepareStatement("SELECT userName,password,email,firstName,lastName,gender,personID FROM user WHERE userName = ?");
             stmt.setString(1,userName);
             rs = stmt.executeQuery();//execute the statement
             int columns = rs.getMetaData().getColumnCount();

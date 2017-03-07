@@ -1,13 +1,13 @@
 package service;
 
-        import java.io.IOException;
         import java.sql.SQLException;
 
         import dataAccess.MultiDao;
+        import dataAccess.UserCreator;
         import dataAccess.UserDao;
-        import encode.JsonData;
         import infoObjects.FillRequest;
         import infoObjects.FillResult;
+        import models.User;
 
 /**
  * Created by tyler on 2/14/2017.
@@ -31,9 +31,10 @@ public class FillService {
                 MultiDao multiDao = new MultiDao();
                 UserDao uDao = new UserDao();
 
-                if (uDao.checkUserName(request.getUsername())) {
-
-                    if (multiDao.deleteFromDataBase(request.getUsername())) {//if the deletion works right
+                if (uDao.checkUserName(request.getUserName())) {
+                    User user = new UserCreator().createUser(uDao.selectAllFromUser(request.getUserName()));
+                    if (multiDao.deleteFromDataBase(request.getUserName())) {//if the deletion works right
+                        if(request.getUser() == null){request.setUser(user);}
                         DataGenerator dataGenerator = new DataGenerator();
                         return dataGenerator.genData(request);//if it generates right
                     }

@@ -6,13 +6,13 @@ package infoObjects;
  */
 
 public class LoginRequest {
-    /**The username of this loginrequest*/
-    String username;
+    /**The userName of this loginrequest*/
+    String userName;
     /**The password of this loginrequest*/
     String password;
 
     public LoginRequest(String userName, String passWord) {
-        this.username = userName;
+        this.userName = userName;
         this.password = passWord;
     }
 
@@ -21,7 +21,7 @@ public class LoginRequest {
 
     /**@RETURN The userName of this loginrequest*/
     public String getUserName() {
-        return username;
+        return userName;
     }
     /**@RETURN The password of this loginrequest*/
     public String getPassWord() {
@@ -31,6 +31,6 @@ public class LoginRequest {
      * @RETURN boolean
      * */
     public boolean isValidRequest(){
-        return (!this.username.equals("")) && (!this.password.equals(""));
+        return (!this.userName.equals("")) && (!this.password.equals(""));
     }
 }

@@ -86,13 +86,8 @@ public class PersonHandler implements HttpHandler {
         PersonRequest request = new PersonRequest(PersonID);
         Encoder encode = new Encoder();
         PersonResult result = service.getPerson(request, authToken);
-        if(result.getPerson() == null){
-            encode.encode(new PersonResult("No person found by given ID"),respBody);
-        }
-        else {
-            encode.encode(result, respBody);
-            respBody.close();
-        }
+        encode.encode(result, respBody);
+        respBody.close();
     }
 
     /**

@@ -139,42 +139,6 @@ public class PersonDao {
         return null;
     }
 
-    /***
-     * A method to get a userID with a personID
-     *
-     * @PARAM PersonRequest, has info needed to make request
-     * @RETURN returns the userID
-     * @EXCEPTION throws SQLException
-     */
-    String getUserIDWithPersonID(String personID)throws SQLException{
-        Connection conn = null;
-        ResultSet rs = null;
-        PreparedStatement stmt = null;//insert statement
-        String output = "";
-        try {
-            conn = db.openConnection();
-            stmt = conn.prepareStatement("SELECT descendant FROM person WHERE personID = ?");
-            stmt.setString(1,personID);
-            rs = stmt.executeQuery();//execute the statement
-            if(rs.next()){
-                output = rs.getString(1);
-            }
-            if(output.length() == 0){db.closeConnection(false, conn);}
-            else{//if we got a result
-                db.closeConnection(true, conn);
-                return output;
-            }
-        }catch(SQLException e){
-            e.printStackTrace();
-            db.closeConnection(false, conn);
-            throw e;
-        }
-        finally {
-            DataBase.safeClose(rs);
-            DataBase.safeClose(stmt);
-        }
-        return null;
-    }
 
     /***
      * A method to get all of a users ancestor's

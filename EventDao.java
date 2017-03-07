@@ -5,12 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
-import infoObjects.EventResult;
 import infoObjects.EventRequest;
-import infoObjects.EventsRequest;
 import models.Event;
 
 /**
@@ -42,14 +39,14 @@ public class EventDao {
             conn = db.openConnection();
             stmt = conn.prepareStatement(insertEvents);
             stmt.setString(1,event.getEventID());
-            stmt.setString(2, event.getDescendent());
+            stmt.setString(2, event.getDescendant());
             stmt.setString(3, event.getPersonID());
             stmt.setString(4, event.getYear());
             stmt.setString(5, event.getEventType());
-            stmt.setString(6, event.getLocation().getCity());
-            stmt.setString(7, event.getLocation().getLatitude());
-            stmt.setString(8, event.getLocation().getLongitude());
-            stmt.setString(9, event.getLocation().getCountry());
+            stmt.setString(6, event.getCity());
+            stmt.setString(7, event.getLatitude());
+            stmt.setString(8, event.getLongitude());
+            stmt.setString(9, event.getCountry());
             if(stmt.executeUpdate() == 1){//execute the statement
                 db.closeConnection(true, conn);
                 return true;

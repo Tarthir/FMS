@@ -117,12 +117,13 @@ public class DataBase {
         try {
             stmt = connection.createStatement();
             stmt.executeUpdate("drop table if exists user");
-            stmt.executeUpdate("create table user ( userName text not null primary key,\n" +
+            stmt.executeUpdate("create table user ( username text not null primary key,\n" +
                     "    password text not null,\n" +
                     "    email text not null,\n" +
                     "    firstName text not null,\n" +
                     "    lastName text not null,\n" +
-                    "    gender text not null)");
+                    "    gender text not null,\n" +
+                    "    personID text not null)");
 
             stmt.executeUpdate("drop table if exists person");
             stmt.executeUpdate("create table person ( personID text not null primary key,\n" +

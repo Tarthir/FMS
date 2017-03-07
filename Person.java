@@ -16,11 +16,11 @@ public class Person {
     /**
      * The first name of the person
      * */
-    private String firstname;
+    private String firstName;
     /**
      * The last name of the person
      * */
-    private String lastname;
+    private String lastName;
     /**
      * The gender of the person, "m" or "f"
      * */
@@ -41,8 +41,8 @@ public class Person {
     public Person(String personID,String descendant, String firstName, String lastName, String gender, String fatherID, String motherID, String spouseID) {
         this.descendant = descendant;
         this.personID = personID;
-        this.firstname = firstName;
-        this.lastname = lastName;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.gender = gender;
         this.fatherID = fatherID;
         this.motherID = motherID;
@@ -51,8 +51,8 @@ public class Person {
     public Person(String personID,String descendant, String firstname, String lastname, String gender) {
         this.descendant = descendant;
         this.personID = personID;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstName = firstname;
+        this.lastName = lastname;
         this.gender = gender;
         this.fatherID = "";
         this.motherID = "";
@@ -67,11 +67,11 @@ public class Person {
     }
 
     public String getfName() {
-        return firstname;
+        return firstName;
     }
 
     public String getlName() {
-        return lastname;
+        return lastName;
     }
 
     public String getGender() {
@@ -139,10 +139,10 @@ public class Person {
     }
 
     public void setFirstName(String firstName) {
-        this.firstname = firstName;
+        this.firstName = firstName;
     }
 
     public void setLastName(String lastName) {
-        this.lastname = lastName;
+        this.lastName = lastName;
     }
 }

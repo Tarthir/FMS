@@ -1,7 +1,6 @@
 package service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import dataAccess.AuthTokenDao;
 import dataAccess.EventsCreator;
@@ -32,7 +31,7 @@ public class EventService {
             if (aDao.validateAuthToken(authToken)){
                 event = create.createEvent(eDao.getEvent(request));
                 if (event != null) {
-                    return new EventResult(event.getDescendent(), event, event.getPersonID());
+                    return new EventResult(event.getDescendant(), event, event.getPersonID());
                 }
             }
             else{

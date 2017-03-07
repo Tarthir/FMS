@@ -35,7 +35,7 @@ public class LoadHandler implements HttpHandler{
                 LoadRequest request = encode.decodeLoad(exchange);//new JsonData().getLoadData();
 
                 LoadResult result = service.load(request);
-                encode.encode(result.getResultMessage(), respBody);
+                encode.encode(result, respBody);
                 respBody.close();
             }
             else{

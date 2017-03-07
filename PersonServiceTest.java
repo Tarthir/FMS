@@ -15,6 +15,7 @@ import dataAccess.DataBase;
 import dataAccess.PersonDao;
 import dataAccess.UserDao;
 import infoObjects.PersonRequest;
+import infoObjects.PersonResult;
 import models.AuthToken;
 import models.Person;
 import models.User;
@@ -43,7 +44,7 @@ public class PersonServiceTest {
             db = new DataBase();
             connection = db.openConnection();
             db.createTables(connection);
-            User user = new User("name","password","email","first","last","m");
+            User user = new User("name","password","email","first","last","m","2");
             assertTrue(new UserDao().register(user));
             authTok = new AuthToken();
             new AuthTokenDao().insertAuthToken("name2",authTok);
@@ -70,14 +71,10 @@ public class PersonServiceTest {
 
     @Test
     public void getPerson() {
-        try {
             PersonRequest request = new PersonRequest("2");
-            Person personExpected = new Person("2", "name2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
+            PersonResult personExpected = new PersonResult(new Person("2", "name2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2"));
             pService = new PersonService();
-            Person personResult = pService.getPerson(request,authTok.getAuthToken());
-            assertEquals(personResult, personExpected);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            PersonResult result= pService.getPerson(request,authTok.getAuthToken());
+            assertEquals(result.getPerson(), personExpected.getPerson());
     }
 }

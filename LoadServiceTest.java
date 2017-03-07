@@ -36,10 +36,10 @@ public class LoadServiceTest {
     private LoadService lService;
     private DataBase db;
     private Connection connection;
-    private Person[] persons = {new Person("personID", "userID", "fName", "lName", "m", "", "", ""), new Person("personID2", "userID2", "fName", "lName", "m", "", "", "")};
-    private Event[] events = {new Event("eventID", "userID", "personID", new Location("lat", "long", "city", "USA"), "2999", "Birth"),
-            new Event("eventID2", "userID2", "personID2", new Location("lat", "long", "city", "USA"), "2999", "Birth")};
-    private User[] users = {new User("userName", "password", "email", "name", "lname", "m"), new User("userName", "password", "email", "name", "lname", "m")};
+    private Person[] persons = {new Person("personID", "userName", "fName", "lName", "m", "", "", ""), new Person("personID2", "userName2", "fName", "lName", "m", "", "", "")};
+    private Event[] events = {new Event("eventID", "userName", "personID", new Location("lat", "long", "city", "USA"), "2999", "Birth"),
+            new Event("eventID2", "userName2", "personID2", new Location("lat", "long", "city", "USA"), "2999", "Birth")};
+    private User[] users = {new User("userName", "password", "email", "name", "lname", "m","peep"), new User("userName2", "password", "email", "name", "lname", "m","peep")};
 
     @Before
     public void setUp(){

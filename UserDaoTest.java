@@ -43,31 +43,24 @@ public class UserDaoTest {
     @Test
     public void testRegister() {
         try{
-        User user = new User("name","password","email","first","last","m");
-        User user2 = new User("name2","password2","email2","first2","last2","f");;
-        assertTrue(uDao.register(user2));
-        assertEquals(uDao.getUserIDWithNames("first2","last2"),"1");
-        assertNotEquals(uDao.getUserIDWithNames("first2","last2"),"0");
-        assertNotEquals(uDao.getUserIDWithNames("first","last"),"1");
-
+        User user = new User("name","password","email","first","last","m","peep");
         assertTrue(uDao.register(user));
-        assertEquals(uDao.getUserIDWithNames("first","last"),"5");
-        assertNotEquals(uDao.getUserIDWithNames("first2","last2"),"0");
+        assertTrue(uDao.checkUserName("name"));
+            assertFalse(uDao.checkUserName("name2"));
     }catch(SQLException e){e.printStackTrace();}
     }
 
     @Test
     public void testLogin() {
         try{
-        User user = new User("name","password","email","first","last","m");
+        User user = new User("name","password","email","first","last","m","peep");
         assertTrue(uDao.register(user));
         LoginRequest request = new LoginRequest("name","password");
         LoginRequest request2 = new LoginRequest("name2","password2");
         LoginRequest request3 = new LoginRequest("name3","password3");
-        assertEquals(uDao.login(request),"name");
-        assertNotEquals(uDao.login(request),"name");
-        assertNotEquals(uDao.login(request2),"name");
-        assertNotEquals(uDao.login(request3),"name");
+        assertEquals(uDao.login(request),"peep");
+        assertNotEquals(uDao.login(request2),"peep");
+        assertNotEquals(uDao.login(request3),"peep");
     }catch(SQLException e){e.printStackTrace();}
     }
 

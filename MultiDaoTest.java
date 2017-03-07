@@ -56,13 +56,13 @@ public class MultiDaoTest {
         connection = db.openConnection();
         db.createTables(connection);
         try {
-            User user = new User("name", "password", "email", "first", "last", "m");
-            User user2 = new User( "name2", "password2", "email2", "first2", "last2", "f");
+            User user = new User("name", "password", "email", "first", "last", "m","peep");
+            User user2 = new User( "name2", "password2", "email2", "first2", "last2", "f","peep2");
             assertTrue(uDao.register(user));
             assertTrue(uDao.register(user2));
-            assertTrue(aDao.insertAuthToken("userID", new AuthToken()));
+            assertTrue(aDao.insertAuthToken("name", new AuthToken()));
             authToken2 = new AuthToken();
-            assertTrue(aDao.insertAuthToken("userID2", authToken2));
+            assertTrue(aDao.insertAuthToken("name2", authToken2));
             assertTrue(pDao.insertPerson(new Person("personID", "name", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
             assertTrue(pDao.insertPerson(new Person("personID2", "name", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2")));
             assertTrue(pDao.insertPerson(new Person("personID3", "name", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3")));
@@ -113,7 +113,7 @@ public class MultiDaoTest {
     @Test
     public void deleteFromDataBaseTestFail(){
         try {
-            assertFalse(mDao.deleteFromDataBase("nameNotInDataBase"));
+            assertTrue(mDao.deleteFromDataBase("nameNotInDataBase"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -137,7 +137,7 @@ public class MultiDaoTest {
     @Test
     public void ValidateAuthTokenTest(){
         try {
-            assertTrue(mDao.ValidateAuthToken("personID4",authToken2.getAuthToken()));
+            assertTrue(mDao.validate(authToken2.getAuthToken()));
         } catch (SQLException e) {
             e.printStackTrace();
         }

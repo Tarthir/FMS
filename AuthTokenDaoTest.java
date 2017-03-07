@@ -39,10 +39,9 @@ public class AuthTokenDaoTest {
         db.createTables(connection);
         //to Setup
         uDao = new UserDao();
-        User user = new User("name", "password", "email", "first", "last", "m");
+        User user = new User("name", "password", "email", "first", "last", "m","peep");
         try {
             assertTrue(uDao.register(user));
-            assertEquals(uDao.getUserIDWithNames("first", "last"), "5");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -63,17 +62,16 @@ public class AuthTokenDaoTest {
     public void insertAuthTokenTest() {
         AuthToken auth = new AuthToken();
         try {
-            String userID = uDao.getUserIDWithNames("first", "last");//Get the old userID
-            assertTrue(aDao.insertAuthToken(userID, auth));
+            assertTrue(aDao.insertAuthToken("name", auth));
             assertFalse(aDao.insertAuthToken("NotInTable", auth));//will throw exception, which is fine in this case
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         try {
             assertFalse(aDao.insertAuthToken("NotInTable", auth));//will throw exception, which is fine in this case
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
     }
@@ -82,10 +80,9 @@ public class AuthTokenDaoTest {
     public void deleteAuthTokenTest() {
         AuthToken auth = new AuthToken();
         try {
-            String userID = uDao.getUserIDWithNames("first", "last");//Get the old userID
-            assertTrue(aDao.insertAuthToken(userID, auth));
-            assertTrue(aDao.deleteAuthToken(userID));
-            assertEquals(aDao.getAuthToken(userID),new ArrayList<String>());
+            assertTrue(aDao.insertAuthToken("name", auth));
+            assertTrue(aDao.deleteAuthToken("name"));
+            assertEquals(aDao.getAuthToken("name"),new ArrayList<String>());
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -97,9 +94,8 @@ public class AuthTokenDaoTest {
     public void getAuthTokenTest() {
         try {
             //Setup
-            String userID = uDao.getUserIDWithNames("first", "last");//Get the old userID
             AuthToken auth = new AuthToken();
-            assertTrue(aDao.insertAuthToken(userID, auth));
+            assertTrue(aDao.insertAuthToken("name", auth));
             //endSetup
             ArrayList<String> authToks;
             // ArrayList<String> authToksExpected = new ArrayList<>();
@@ -117,12 +113,10 @@ public class AuthTokenDaoTest {
 
         try {
             //Setup
-            String userID = uDao.getUserIDWithNames("first", "last");//Get the old userID
             AuthToken auth = new AuthToken();
-            assertTrue(aDao.insertAuthToken(userID, auth));
+            assertTrue(aDao.insertAuthToken("name", auth));
             //endSetup
             ArrayList<String> authToks;
-            // ArrayList<String> authToksExpected = new ArrayList<>();
             authToks = aDao.getAuthToken("5");//get the authtoken(s) related to the userID of 5
             for (String str : authToks) {//for every authToken we found
                 assertNotEquals(aDao.getUserIDFromAuthToken(str), "notintable");//can we see that its related to this userID?

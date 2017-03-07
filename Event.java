@@ -6,24 +6,34 @@ package models;
  */
 
 public class Event {
+    /**The user this event belongs to*/
+    private String descendant;
     /**The unique event ID for this event*/
     private String eventID;
-    /**The user this event belongs to*/
-    private String descendent;
     /**The person this event belongs to*/
     private String personID;
-    /**The latitude this event occurred at*/
-    private Location location;
+    /**The latitude this event took place at*/
+    private String latitude;
+    /**The longitude this event occured at*/
+    private String longitude;
+    /**The country of this location*/
+    private String country;
+    /**The city of this location*/
+    private String city;
     /**The eventType of this event*/
     private String description;
     /**The year this event took place*/
     private String year;
 
-    public Event(String eventID, String descendent, String personID, Location location, String eventType, String year) {
+
+    public Event(String eventID, String descendant, String personID, Location location, String eventType, String year) {
         this.eventID = eventID;
-        this.descendent = descendent;
+        this.descendant = descendant;
         this.personID = personID;
-        this.location = location;
+        this.city = location.getCity();
+        this.country = location.getCountry();
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
         this.description = eventType;
         this.year = year;
     }
@@ -34,12 +44,15 @@ public class Event {
     public boolean equals(Object o) {
         if(this.getClass() != o.getClass()){return false;}
         Event other = (Event)o;
-        if(!other.getDescendent().equals(this.getDescendent())){return false;}
-        if(!other.getEventID().equals(this.getEventID())){return false;}
+        if(!other.getCountry().equals(this.getCountry())){return false;}
         if(!other.getEventType().equals(this.getEventType())){return false;}
-        if(!other.getLocation().equals(this.getLocation())){return false;}
+        if(!other.getDescendant().equals(this.getDescendant())){return false;}
+        if(!other.getEventID().equals(this.getEventID())){return false;}
         if(!other.getYear().equals(this.getYear())){return false;}
         if(!other.getPersonID().equals(this.getPersonID())){return false;}
+        if(!other.getCity().equals(this.getCity())){return false;}
+        if(!other.getLatitude().equals(this.getLatitude())){return false;}
+        if(!other.getLongitude().equals(this.getLongitude())){return false;}
         return true;
     }
 
@@ -47,16 +60,12 @@ public class Event {
         return eventID;
     }
 
-    public String getDescendent() {
-        return descendent;
+    public String getDescendant() {
+        return descendant;
     }
 
     public String getPersonID() {
         return personID;
-    }
-
-    public Location getLocation() {
-        return location;
     }
 
     public String getEventType() {
@@ -65,5 +74,29 @@ public class Event {
 
     public String getYear() {
         return year;
+    }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
     }
 }

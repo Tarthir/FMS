@@ -5,6 +5,7 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import infoObjects.FillRequest;
 import infoObjects.LoadRequest;
@@ -53,6 +54,8 @@ public class MultiDao {
                 pDao.insertPerson(person);
             }
             for (Event event : request.getEvents()) {
+                //UUID uuid = UUID.randomUUID();
+                //event.setEventID(uuid.toString());
                 eDao.insertEvent(event);
             }
         return new LoadResult(request.getUsers().length,request.getPersons().length,request.getEvents().length);

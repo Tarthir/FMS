@@ -47,10 +47,6 @@ public class DataGenerator {
      * @EXCEPTION SQLException, IllegalArgumentException, Exception
      */
     public FillResult genData(FillRequest request) throws SQLException, IllegalArgumentException, Exception {
-        User user = createUserPerson(request.getUsername());
-        if (user == null) {
-            throw new IllegalArgumentException();
-        }
         TOTAL_GENERATIONS = request.getNumOfGenerations();
         int currGeneration = TOTAL_GENERATIONS;
         int adderIndex = 0;//allows us to set mother/father indicies for children
@@ -59,8 +55,8 @@ public class DataGenerator {
             adderIndex = genPeople(j, request, adderIndex);
         }
         //put the user in the table
-        genUserData(user,request);
-        return insertData();
+        genUserData(request);
+        return insertData(request);
     }
     /**
      * Used to generate data for the user
@@ -69,25 +65,12 @@ public class DataGenerator {
      * @RETURN void
      * @EXCEPTION Exception
      * */
-    private void genUserData(User user, FillRequest request) throws Exception {
-        UUID uuid = UUID.randomUUID();
+    private void genUserData(FillRequest request) throws Exception {
         String father = people.get(people.size() - 2).getPersonID();
         String mother = people.get(people.size() - 1).getPersonID();
-        people.add(new Person(uuid.toString(),user.getUserName(), user.getfName(), user.getlName(), user.getGender(), father, mother, ""));
-        genEvents(people.get(people.size() - 1), request.getLocations(), 0,user.getUserName());
-    }
-
-    /**
-     * Creates a user object using other classes
-     *
-     * @PARAM FString, the user's username
-     * @RETURN A User object
-     * @EXCEPTION SQLException, Exception
-     */
-    private User createUserPerson(String userName) throws SQLException, Exception {
-        UserDao uDao = new UserDao();
-        UserCreator creator = new UserCreator();
-        return creator.createUser(uDao.selectAllFromUser(userName));
+        User user = request.getUser();
+        people.add(new Person(UUID.randomUUID().toString(), user.getUserName(), user.getfName(), user.getlName(), user.getGender(), father, mother, ""));
+        genEvents(people.get(people.size() - 1), request.getLocations(), 0, user.getUserName());
     }
 
     /**
@@ -103,12 +86,12 @@ public class DataGenerator {
         int numOfPeople = (int) Math.pow(2, currGeneration);
         for (int i = 0; i < numOfPeople; i++) {//create all people of this generation with all their connections
             if (i % 2 == 0) {//male
-                people.add(getMale(request.getmNames(), request.getlNames(),request.getUsername()));
-                genEvents(people.get(people.size() - 1), request.getLocations(), currGeneration,request.getUsername());
+                people.add(getMale(request.getmNames(), request.getlNames(),request.getUserName()));
+                genEvents(people.get(people.size() - 1), request.getLocations(), currGeneration,request.getUserName());
 
             } else {//female
-                people.add(getFemale(request.getfNames(), request.getlNames(),request.getUsername()));
-                genEvents(people.get(people.size() - 1), request.getLocations(), currGeneration,request.getUsername());
+                people.add(getFemale(request.getfNames(), request.getlNames(),request.getUserName()));
+                genEvents(people.get(people.size() - 1), request.getLocations(), currGeneration,request.getUserName());
 
                 //add spouses together
                 if (currGeneration == TOTAL_GENERATIONS) {
@@ -116,7 +99,7 @@ public class DataGenerator {
                     people.get(i).setSpouseID(people.get(i - 1).getPersonID());
                 }
 
-                createMarriage(currGeneration, people.get(i - 1), people.get(i), request.getLocations(),request.getUsername());//marry this couple
+                createMarriage(currGeneration, people.get(i - 1), people.get(i), request.getLocations(),request.getUserName());//marry this couple
 
                 if (currGeneration < TOTAL_GENERATIONS) {//once we are past the oldest generation
                     setMothersAndFathers(adderIndex);
@@ -282,25 +265,20 @@ public class DataGenerator {
 
     /**
      * Inserts the events and people generated
-     *
+     * @PARAM FillRequest
      * @RETURN void
      * @EXCEPTION Exception,SQLException
      */
-    private FillResult insertData() throws SQLException,Exception{
+    private FillResult insertData(FillRequest request) throws SQLException,Exception{
         PersonDao pDao = new PersonDao();
         EventDao eDao = new EventDao();
-        String userPersonID = "";
         for (int i = 0; i < people.size(); i++) {
             pDao.insertPerson(people.get(i));
-            if(i == people.size()-1){//if the last person(Which is the user)
-                userPersonID = people.get(i).getPersonID();
-            }
-
         }
         for (Event e : events) {
             eDao.insertEvent(e);
         }
-        return new FillResult( events.size(),people.size(),userPersonID);
+        return new FillResult( events.size(),people.size(),people.get(people.size() -1).getPersonID());
     }
 
 }

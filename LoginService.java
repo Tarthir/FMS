@@ -3,6 +3,7 @@ package service;
 import java.sql.SQLException;
 
 import dataAccess.AuthTokenDao;
+import dataAccess.PersonDao;
 import dataAccess.UserDao;
 import infoObjects.LoginRequest;
 import infoObjects.LoginResult;
@@ -28,14 +29,13 @@ public class LoginService {
             UserDao dao = new UserDao();
             if (request.isValidRequest()) {//if this is a valid request
 
-                String userID = dao.login(request);
-                if(!userID.equals("")) {//if founda matching userID
-
+                String userPersonID = dao.login(request);
+                if(!userPersonID.equals("")) {//if this user exists
                     AuthTokenDao authDao = new AuthTokenDao();
                     AuthToken authToken = new AuthToken();//gets the timestamp and UUID in the model object
-                    if (authDao.insertAuthToken(userID, authToken)) {
+                    if (authDao.insertAuthToken(request.getUserName(), authToken)) {
 
-                        return new LoginResult(authToken.getAuthToken(), request.getUserName(), userID);
+                        return new LoginResult(authToken.getAuthToken(), request.getUserName(), userPersonID);
                     }
                     else{
                         return new LoginResult("Inserting Authtoken into DataBase failed");

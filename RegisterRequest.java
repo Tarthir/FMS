@@ -1,7 +1,5 @@
 package infoObjects;
 
-import models.Location;
-
 /**
  * Created by tyler on 2/13/2017.
  * The info needed to register a new user
@@ -9,7 +7,7 @@ import models.Location;
 
 public class RegisterRequest {
     /** Non-empty string*/
-    private String username;
+    private String userName;
     /** Non-empty string*/
     private String password;
     /** Non-empty string*/
@@ -23,7 +21,7 @@ public class RegisterRequest {
     /**Array of possible locations*/
 
     public RegisterRequest(String username, String password, String email, String firstname, String lastname, String gender) {
-        this.username = username;
+        this.userName = username;
         this.password = password;
         this.email = email;
         this.firstname = firstname;
@@ -35,13 +33,13 @@ public class RegisterRequest {
     }
 
     public boolean isValidRequest(){
-        return  (!username.isEmpty()) && (!password.isEmpty()) && (!email.isEmpty()) &&
+        return  (!userName.isEmpty()) && (!password.isEmpty()) && (!email.isEmpty()) &&
                 (!email.isEmpty()) && (!firstname.isEmpty()) && (!lastname.isEmpty()) &&
                 (!gender.isEmpty()) &&(gender.toLowerCase().equals("f") || gender.toLowerCase().equals("m"));
     }
-    /**@RETURN Gets the username of this registerRequest*/
+    /**@RETURN Gets the userName of this registerRequest*/
     public String getUserName() {
-        return username;
+        return userName;
     }
     /**@RETURN  Gets the passWord of this registerRequest*/
     public String getPassWord() {

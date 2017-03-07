@@ -50,8 +50,8 @@ public class ClearServiceTest {
             connection = db.openConnection();
             db.createTables(connection);
 
-            User user = new User("name", "password", "email", "first", "last", "m");
-            User user2 = new User("name2", "password2", "email2", "first2", "last2", "f");
+            User user = new User("name", "password", "email", "first", "last", "m","peep");
+            User user2 = new User("name2", "password2", "email2", "first2", "last2", "f","peep");
             assertTrue(uDao.register(user));
             assertTrue(uDao.register(user2));
             assertTrue(aDao.insertAuthToken("name", new AuthToken()));
@@ -82,8 +82,7 @@ public class ClearServiceTest {
     @Test
     public void clearTest(){
         ClearResult actual = cService.clear();
-        ClearResult expected = new ClearResult(true);
-        assertEquals(actual.getE(),expected.getE());
-        assertEquals(actual.isClearedSuccessfully(),expected.isClearedSuccessfully());
+        ClearResult expected = new ClearResult();
+        assertEquals(actual.getMessage(),expected.getMessage());
     }
 }

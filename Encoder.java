@@ -52,16 +52,6 @@ public class Encoder {
         writer.flush();
     }
 
-    /***
-     * This decodes java objects from JSON
-     * @PARAM HttpExchange object
-     * @RETURN Location object
-     * @EXCEPTION IOException
-     * */
-    public Location decodeLocation(HttpExchange exchange)throws IOException{
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, Location.class);
-    }
     /**
      * This decodes java objects from JSON
      * @PARAM HttpExchange object

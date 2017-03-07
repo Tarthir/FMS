@@ -69,8 +69,8 @@ public class PersonDaoTest {
     public void testDeletePerson() {
         try {
             UserDao userDao = new UserDao();
-            assertTrue(userDao.register(new User("userName","password","email","fName","lName","f")));
-            assertTrue(userDao.register(new User("userName2","password","email","fName","lName","f")));
+            assertTrue(userDao.register(new User("userName","password","email","fName","lName","f","e")));
+            assertTrue(userDao.register(new User("userName2","password","email","fName","lName","f","e2")));
             assertTrue(pDao.insertPerson(new Person("personID", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
             assertTrue(pDao.insertPerson(new Person("personID2", "userID", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2")));
             assertTrue(pDao.insertPerson(new Person("personID3", "userID", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3")));

@@ -36,7 +36,7 @@ public class LoginServiceTest {
     private RegisterResult result2;
 
     @Before
-    public void setUp() throws SQLException {
+    public void setUp() throws SQLException, IOException {
         //try {
             lService = new LoginService();
             uDao = new UserDao();

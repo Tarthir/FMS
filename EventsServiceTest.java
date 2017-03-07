@@ -40,8 +40,8 @@ public class EventsServiceTest {
     private EventsService eService;
     private DataBase db;
     private Connection connection;
-    private ArrayList<String>  authToken;
-    private ArrayList<String> authToken2;
+    private AuthToken  authToken;
+    private AuthToken authToken2;
     private Event event;
     private Event event2;
     private Event event3;
@@ -58,17 +58,15 @@ public class EventsServiceTest {
             db = new DataBase();
             connection = db.openConnection();
             db.createTables(connection);
-            User user = new User("name", "password", "email", "first", "last", "m");
-            User user2 = new User("name2", "password2", "email2", "first2", "last2", "f");
+            User user = new User("name", "password", "email", "first", "last", "m","peep");
+            User user2 = new User("name2", "password2", "email2", "first2", "last2", "f","peep2");
             ;
             assertTrue(uDao.register(user));
             assertTrue(uDao.register(user2));
-            AuthToken auth = new AuthToken();
-            assertTrue(aDao.insertAuthToken("userID", auth));
-            AuthToken auth2 = new AuthToken();
-            assertTrue(aDao.insertAuthToken("userID2", auth2));
-            authToken = aDao.getAuthToken("userID");
-            authToken2 = aDao.getAuthToken("userID2");
+            authToken = new AuthToken();
+            assertTrue(aDao.insertAuthToken("name", authToken));
+            authToken2 = new AuthToken();
+            assertTrue(aDao.insertAuthToken("name2", authToken2));
             Person person1 = new Person("personID", "name", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
             Person person2 = new Person("personID2", "name", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2");
             Person person3 = new Person("personID3", "name", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3");
@@ -104,12 +102,12 @@ public class EventsServiceTest {
        // try {
             ArrayList<Event> expected = new ArrayList<>(Arrays.asList(event, event2, event3));
             ArrayList<Event> expected2 = new ArrayList<>(Arrays.asList(event4));
-            EventsRequest request = new EventsRequest(authToken.get(0));
-            EventsRequest request2 = new EventsRequest(authToken2.get(0));
+            EventsRequest request = new EventsRequest(authToken.getAuthToken());
+            EventsRequest request2 = new EventsRequest(authToken2.getAuthToken());
             EventsResult resultExpected = new EventsResult(expected);
             EventsResult resultExpected2 = new EventsResult(expected2);
-            assertEquals(eService.getEvents(request).getEvents(), resultExpected.getEvents());
-            assertEquals(eService.getEvents(request2).getEvents(), resultExpected2.getEvents());
+            assertEquals(eService.getEvents(request).getEvents().size(), resultExpected.getEvents().size());
+            assertEquals(eService.getEvents(request2).getEvents().size(), resultExpected2.getEvents().size());
         //}catch(SQLException e){e.printStackTrace();}
     }
 }

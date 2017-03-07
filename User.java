@@ -7,33 +7,47 @@ package models;
 
 public class User {
     /**The user name of this user*/
-    private String username;
+    private String userName;
     /**Password of this user*/
     private String password;
     /**THe user's email address*/
     private String email;
     /**The users first name*/
-    private String firstname;
+    private String firstName;
     /**The users last name*/
     private String lastname;
     /**The users gender*/
     private String gender;
+    /**This user's PersonID*/
+    private String personID;
 
 
     public User(String username, String password, String email, String firstname, String lastname, String gender) {
-        this.username = username;
+        this.userName = username;
         this.password = password;
         this.email = email;
-        this.firstname = firstname;
+        this.firstName = firstname;
         this.lastname = lastname;
         this.gender = gender;
     }
 
     public User() {
     }
+
+    public User(String username, String password, String email, String firstname, String lastname, String gender, String personID) {
+        this.userName = username;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstname;
+        this.lastname = lastname;
+        this.gender = gender;
+        this.personID = personID;
+    }
+
+
     /**@RETRUN the userName of this user*/
     public String getUserName() {
-        return username;
+        return userName;
     }
     /**@RETRUN the passWord of this user*/
     public String getPassWord() {
@@ -45,7 +59,7 @@ public class User {
     }
     /**@RETRUN the first name of this user*/
     public String getfName() {
-        return firstname;
+        return firstName;
     }
     /**@RETRUN the last name of this user*/
     public String getlName() {
@@ -56,8 +70,8 @@ public class User {
         return gender;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public void setPassword(String password) {
@@ -67,16 +81,11 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public void setFirstName(String firstName) {
-        this.firstname = firstName;
+    public String getPersonID() {
+        return personID;
     }
 
-    public void setLastName(String lastName) {
-        this.lastname = lastName;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setPersonID(String personID) {
+        this.personID = personID;
     }
 }

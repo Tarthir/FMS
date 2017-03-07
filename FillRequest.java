@@ -1,6 +1,7 @@
 package infoObjects;
 
 import models.Location;
+import models.User;
 
 /**
  * Created by tyler on 2/13/2017.
@@ -10,7 +11,7 @@ import models.Location;
 public class FillRequest {
     /**The num of generations to generate*/
     private int numOfGenerations;
-    /**The username of the user whose family tree we are going to fill*/
+    /**The userName of the user whose family tree we are going to fill*/
     private String username;
     /**Array of possible locations*/
     private Location[] locations;
@@ -20,6 +21,7 @@ public class FillRequest {
     private String[] lNames;
     /**Array of possible male names*/
     private String[] mNames;
+    private User user;
 
     public FillRequest(int numOfGenerations, String username) {
         this.numOfGenerations = numOfGenerations;
@@ -40,7 +42,7 @@ public class FillRequest {
         return numOfGenerations;
     }
     /**@RETURN the num of generations to generate*/
-    public String getUsername() {
+    public String getUserName() {
         return username;
     }
 
@@ -74,5 +76,13 @@ public class FillRequest {
 
     public void setmNames(String[] mNames) {
         this.mNames = mNames;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
