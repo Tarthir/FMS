@@ -48,26 +48,23 @@ public class EventHandler implements HttpHandler {
             else {
                 //if we got an Error in the request we will reach here
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                encode.encode(new EventResult(new Exception("Should be a get request")), respBody);
+                encode.encode(new EventResult("Should be a GET request not POST"), respBody);
                 respBody.close();
             }
-        }
-        catch(IllegalArgumentException e){
-            // System.out.println("errorPersonIllegal");
-            encode.encode(new EventResult(e),respBody);
-            respBody.close();
-        }
-        catch (SQLException e) {
-            encode.encode(new EventResult(e), respBody);
-            respBody.close();
         }
         catch (IOException e) {
             //System.out.println("errorPersonIO");
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            encode.encode(new EventResult(e),respBody);
+            encode.encode(new EventResult(e.getMessage()),respBody);
             respBody.close();
             //e.printStackTrace();
         }
+        catch(Exception e){
+            // System.out.println("errorPersonIllegal");
+            encode.encode(new EventResult(e.getMessage()),respBody);
+            respBody.close();
+        }
+
     }
 
     /**
@@ -84,7 +81,7 @@ public class EventHandler implements HttpHandler {
             new Encoder().encode(eventResult,respBody);
         }
         else{
-            new Encoder().encode(new Exception("Invalid Request"),respBody);
+            new Encoder().encode("Invalid Request",respBody);
         }
 
         respBody.close();
@@ -104,7 +101,7 @@ public class EventHandler implements HttpHandler {
             new Encoder().encode(eventsResult,respBody);
         }
         else{
-            new Encoder().encode(new Exception("Invalid Request"),respBody);
+            new Encoder().encode("Invalid Request",respBody);
         }
         respBody.close();
     }

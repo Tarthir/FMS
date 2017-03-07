@@ -22,7 +22,7 @@ public class EventsCreator {
      * @RETURN An arraylist of event objects
      */
     public ArrayList<Event> createEvents(ArrayList<ArrayList<String>> allEvents) {
-        if (allEvents.size() == 0) {
+        if (allEvents == null || allEvents.size() == 0) {
             return null;
         }
         ArrayList<Event> outputEvents= new ArrayList<Event>();
@@ -39,7 +39,7 @@ public class EventsCreator {
      * @RETURN A event object
      */
     public Event createEvent(ArrayList<String> eventData) {
-        if (eventData.size() < 9) {//9 is the number of parameters we should have
+        if (eventData == null || eventData.size() < 9) {//9 is the number of parameters we should have
             return null;
         } else {//return a new person
             LocationCreator locCreator = new LocationCreator();

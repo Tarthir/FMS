@@ -25,7 +25,7 @@ public class ClearService {
             mDao.doClear();
             return new ClearResult();//if worked!
         } catch (SQLException e) {
-            return new ClearResult(e);//Exception was thrown
+            return new ClearResult(e.getMessage());//Exception was thrown
         }
     }
 }

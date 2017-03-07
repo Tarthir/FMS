@@ -166,11 +166,13 @@ public class AuthTokenDao {
     public boolean validateAuthToken(String authTok)throws SQLException{
         AuthTokenDao aDao = new AuthTokenDao();
         String userID = aDao.getUserIDFromAuthToken(authTok);
-        ArrayList<String> authTokens = aDao.getAuthToken(userID);
-        for(String tok : authTokens){
-            if(tok.equals(authTok)){
-                //System.out.println(true);
-                return true;
+        if(!userID.equals("")) {
+            ArrayList<String> authTokens = aDao.getAuthToken(userID);
+            for (String tok : authTokens) {
+                if (tok.equals(authTok)) {
+                    //System.out.println(true);
+                    return true;
+                }
             }
         }
         return false;

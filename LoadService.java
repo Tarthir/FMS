@@ -36,7 +36,7 @@ public class LoadService {
             mDao.doClear();
             return new MultiDao().loadDataBase(request);
         }
-        return new LoadResult(new IllegalArgumentException("Invalid request"));
+        return new LoadResult("Invalid request");
 
     }
 }

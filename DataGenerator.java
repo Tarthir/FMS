@@ -286,7 +286,7 @@ public class DataGenerator {
      * @RETURN void
      * @EXCEPTION Exception,SQLException
      */
-    private FillResult insertData() throws SQLException, Exception {
+    private FillResult insertData() throws SQLException,Exception{
         PersonDao pDao = new PersonDao();
         EventDao eDao = new EventDao();
         String userPersonID = "";

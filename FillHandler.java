@@ -40,32 +40,19 @@ public class FillHandler implements HttpHandler {
                     request = new FillRequest(4, params[2]);
                 }
 
-                request = (FillRequest) new JsonData().setupJSONArrays(request);//grabs the arrays we need
-
-                if(request.isValidRequest()) {
-                    FillResult result = service.fill(request);
-                    if (result.getE() != null) {
-                        encode.encode(result.getE(), respBody);
-                    } else {
-                        encode.encode(result, respBody);
-                    }
-                    respBody.close();
-                    return;
-                }
-                else{//not a valid request
-                    throw new IllegalArgumentException("Not a valid request");
-                }
+                request = new JsonData().setupJSONArrays(request);//grabs the arrays we need
+                FillResult result = service.fill(request);
+                encode.encode(new FillResult(result.getMessage()), respBody);
+                   respBody.close();
             }
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-            respBody.close();
+            else {
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                encode.encode(new FillResult("Should be a POST, not GET"), respBody);
+                respBody.close();
+            }
         } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
-            //e.printStackTrace();
-        }
-        catch(IllegalArgumentException e){
-            encode.encode(e.getMessage(),respBody);
-            respBody.close();
         }
     }
 }

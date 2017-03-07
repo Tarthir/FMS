@@ -1,5 +1,6 @@
 package infoObjects;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 
 import models.Person;
@@ -11,9 +12,8 @@ import models.Person;
 
 public class PeopleResult {
     /**Array of people that is our result*/
+    //@Transient
     private ArrayList<Person> people;
-    /**An exception that may have been thrown*/
-    private Exception e;
     /**Our exception result*/
     private String message;
 
@@ -21,9 +21,8 @@ public class PeopleResult {
         this.people = people;
     }
 
-    public PeopleResult(Exception e) {
-        this.e = e;
-        message = e.getMessage();
+    public PeopleResult(String message) {
+       this.message = message;
     }
 
     public PeopleResult() {
@@ -33,11 +32,7 @@ public class PeopleResult {
         return people;
     }
 
-    public Exception getE() {
-        return e;
-    }
-
-    public void setE(Exception e) {
-        this.e = e;
+    public String getMessage() {
+        return message;
     }
 }

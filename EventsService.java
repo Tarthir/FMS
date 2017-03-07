@@ -33,15 +33,14 @@ public class EventsService {
                 if (result != null) {
                     ArrayList<Event> events = create.createEvents(result);
                     return new EventsResult(events);
-                } else {//found nothing
-                    return new EventsResult(new Exception("No such events found"));
                 }
             }
             else{
-                return new EventsResult(new Exception("Invalid AuthToken"));
+                return new EventsResult("Invalid AuthToken");
             }
         }catch(SQLException e){
-            return new EventsResult(e);//SQL error
+            return new EventsResult(e.getMessage());//SQL error
         }
+        return new EventsResult("No such events found");
     }
 }

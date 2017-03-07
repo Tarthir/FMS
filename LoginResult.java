@@ -12,8 +12,6 @@ public class LoginResult {
     private String userName;
     /** Non-empty string containing the userID  of the user’s generated object*/
     private String personID;
-    /**The exception thrown object*/
-    private Exception e;
     /**Our exception result*/
     private String message;
 
@@ -25,9 +23,8 @@ public class LoginResult {
         this.personID = personID;
     }
 
-    public LoginResult(Exception e) {
-        this.e = e;
-        message = e.getMessage();
+    public LoginResult(String message) {
+        this.message = message;
     }
 
     public LoginResult() {
@@ -44,10 +41,6 @@ public class LoginResult {
     /**@RETURN The personID of this login result*/
     public String getPersonID() {
         return personID;
-    }
-
-    public Exception getE() {
-        return e;
     }
 
     public String getMessage() {

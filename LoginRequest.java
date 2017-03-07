@@ -31,6 +31,6 @@ public class LoginRequest {
      * @RETURN boolean
      * */
     public boolean isValidRequest(){
-        return (!this.username.isEmpty()) && (!this.password.isEmpty());
+        return (!this.username.equals("")) && (!this.password.equals(""));
     }
 }

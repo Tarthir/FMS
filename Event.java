@@ -28,8 +28,6 @@ public class Event {
         this.year = year;
     }
 
-    /**The location of this event*/
-
 
 
     @Override

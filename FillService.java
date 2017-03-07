@@ -1,5 +1,6 @@
 package service;
 
+        import java.io.IOException;
         import java.sql.SQLException;
 
         import dataAccess.MultiDao;
@@ -24,25 +25,28 @@ public class FillService {
      * @PARAM request, the request to fill the database
      * @RETURN the result of attempting to fill the database
      */
-    public FillResult fill(FillRequest request) {
+    public FillResult fill(FillRequest request){
         try {
-            if (request.getNumOfGenerations() > 0) {//if given a non negative integer
+            if (request.isValidRequest()) {//if given a non negative integer
                 MultiDao multiDao = new MultiDao();
                 UserDao uDao = new UserDao();
+
                 if (uDao.checkUserName(request.getUsername())) {
-                   request = (FillRequest) new JsonData().setupJSONArrays(request);
+
                     if (multiDao.deleteFromDataBase(request.getUsername())) {//if the deletion works right
                         DataGenerator dataGenerator = new DataGenerator();
                         return dataGenerator.genData(request);//if it generates right
                     }
+                    else{
+                        return new FillResult("DataBase Error");
+                    }
                 }
             }
+            return new FillResult("Invalid Request Data Found");
         } catch (SQLException e) {
-            return new FillResult(e);//return the error
+            return new FillResult(e.getMessage());//return the error
         } catch (Exception e) {
-            //e.printStackTrace();
-            return new FillResult(e);
+            return new FillResult(e.getMessage());//return the error
         }
-        return null;
     }
 }

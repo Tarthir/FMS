@@ -6,8 +6,6 @@ package infoObjects;
  */
 
 public class ClearResult {
-    /**The exception thrown object*/
-    private Exception e;
     /**The success message*/
     private String message;
 
@@ -15,14 +13,8 @@ public class ClearResult {
         message = "Clear Succeeded";
     }
 
-    public ClearResult(Exception e) {
-        this.e = e;
-        message = e.getMessage();
-    }
-
-
-    public Exception getE() {
-        return e;
+    public ClearResult(String message) {
+        this.message = message;
     }
 
     public String getMessage() {

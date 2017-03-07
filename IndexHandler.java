@@ -13,6 +13,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import service.IndexService;
 import service.RegisterService;
 
 /**
@@ -20,34 +21,24 @@ import service.RegisterService;
  * Handles requests for Index.html
  */
 
-//returns a website. returns the index.html file
-// given 1.0.0.|:8080/index.html this is sent to the index handler. Also defaults to this if given
-// 1.0.0.|:8080/
 public class IndexHandler implements HttpHandler {
     //exchange variable holds the http info
+
     public void handle(HttpExchange exchange)throws IOException {
-        //String myBaseFolder = "HTML" + File.separator;
-        OutputStream  respBody = exchange.getResponseBody();
+        IndexService service = new IndexService();
+        OutputStream respBody = exchange.getResponseBody();
+        String[] params = null;
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("get")) {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);//otherwise send Forbidden/BadRequest/etc as needed
-                //Headers reqHeaders = exchange.getRequestHeaders();
-//TODO: NEED TO PARSE
-                String filePathStr = "C:\\Users\\tyler\\AndroidStudioProjects\\FamilyMap\\DefaultFiles\\index.html";
-                Path filePath = FileSystems.getDefault().getPath(filePathStr);
-                Files.copy(filePath, exchange.getResponseBody());
+                params  = exchange.getRequestURI().toString().split("/");
 
-
-                //DO the .css file too if you want
-                filePathStr = "C:\\Users\\tyler\\AndroidStudioProjects\\FamilyMap\\DefaultFiles\\main.css";
-                filePath = FileSystems.getDefault().getPath(filePathStr);
-                Files.copy(filePath, exchange.getResponseBody());
-
-                respBody.close();//right?
+                service.sendRequested(respBody,params);
 
             }
             else{
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                service.sendRequested(respBody,params);
             }
         } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);

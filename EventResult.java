@@ -12,32 +12,26 @@ public class EventResult {
     /**
      * The userID of this event
      * */
-    private String userID;
+    private String descendant;
     /**The event object*/
     private Event event;
     /**The personID string*/
     private String personID;
-    /**The exception thrown object*/
-    private Exception e;
+    /**An error message*/
     private String message;
 
 
-    public EventResult(String userID,Event event, String personID) {
-        this.userID = userID;
+    public EventResult(String descendant,Event event, String personID) {
+        this.descendant = descendant;
         this.event = event;
         this.personID = personID;
     }
 
-    public EventResult(Exception e) {
-        this.e = e;
-        message = e.getMessage();
+    public EventResult(String message) {
+        this.message = message;
     }
 
     public EventResult() {
-    }
-
-    public Exception getE() {
-        return e;
     }
 
     public Event getEvent() {
@@ -47,7 +41,7 @@ public class EventResult {
     public String getPersonID() {
         return personID;
     }
-    public String getUserID(){return userID;}
+    public String getUserID(){return descendant;}
 
     public String getMessage() {
         return message;

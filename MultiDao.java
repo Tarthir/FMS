@@ -55,9 +55,6 @@ public class MultiDao {
             for (Event event : request.getEvents()) {
                 eDao.insertEvent(event);
             }
-        System.out.println("gsd");
-        int num = request.getEvents().length + request.getUsers().length + request.getPersons().length;
-        System.out.println(num);
         return new LoadResult(request.getUsers().length,request.getPersons().length,request.getEvents().length);
     }
 

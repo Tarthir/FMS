@@ -8,17 +8,13 @@ package infoObjects;
 public class LoadResult {
     /**The result of the attempt to load data*/
     private String message;
-    /**The exception thrown object*/
-    private Exception e;
-
     public LoadResult(int numUsers, int numPersons, int numEvents) {
        message = "Successfully added " + numUsers + " users, " + numPersons
                 + " persons, and " + numEvents + " events to the database";
     }
 
-    public LoadResult(Exception e) {
-        this.e = e;
-        this.message = e.getMessage();
+    public LoadResult(String message) {
+        this.message = message;
     }
 
     public LoadResult() {
@@ -29,7 +25,4 @@ public class LoadResult {
         return message;
     }
 
-    public Exception getE() {
-        return e;
-    }
 }

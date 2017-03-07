@@ -24,18 +24,15 @@ public class LoginHandler implements HttpHandler {
     @Override
     /**This method handles the login request from the server*/
     public void handle(HttpExchange exchange) throws IOException {
-        OutputStream respBody;
+        OutputStream respBody = exchange.getResponseBody();
+        Encoder encode = new Encoder();
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
 
                 //Headers reqHeaders = exchange.getRequestHeaders();
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 LoginService service = new LoginService();
-                respBody = exchange.getResponseBody();
-                Encoder encode = new Encoder();
-
                 LoginRequest request = encode.decodeLogin(exchange);
-                //System.out.print(request.getUserName() + request.getPassWord());
                 LoginResult result = service.login(request);
 
                 encode.encode(result,respBody);
@@ -44,10 +41,13 @@ public class LoginHandler implements HttpHandler {
 
             else{
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                encode.encode(new LoginResult("Should be a POST, not GET"),respBody);
+                respBody.close();
             }
         } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            exchange.getResponseBody().close();
+            encode.encode(e.getMessage(),respBody);
+            respBody.close();
             // e.printStackTrace();
         }
     }

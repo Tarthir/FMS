@@ -12,8 +12,8 @@ public class RegisterResult {
     private String userName;
     /** Non-empty string containing the Person ID of the user’s generated Person object*/
     private String personID;
-    /**An error message we recieved*/
-    private Exception e;
+    /**An error message we recieved in string form*/
+    private String message;
 
 
     public RegisterResult(String authToken, String userName, String personID) {
@@ -21,8 +21,8 @@ public class RegisterResult {
         this.userName = userName;
         this.personID = personID;
     }
-    public RegisterResult(Exception e) {
-        this.e = e;
+    public RegisterResult(String message) {
+        this.message = message;
     }
 
     public RegisterResult() {
@@ -47,13 +47,7 @@ public class RegisterResult {
         return personID;
     }
 
-    public Exception getE() {
-        return e;
+    public String getMessage() {
+        return message;
     }
-
-    public void setE(Exception e) {
-        this.e = e;
-    }
-
-
 }

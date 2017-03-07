@@ -37,7 +37,7 @@ public class PeopleCreator {
      * @RETURN A person object
      */
     public Person createPerson(ArrayList<String> personData) {
-        if (personData.size() < 8) {
+        if (personData == null || personData.size() < 8) {
             return null;
         } else {//return a new person
             return new Person(personData.get(0), personData.get(1), personData.get(2), personData.get(3),

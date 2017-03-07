@@ -10,8 +10,6 @@ import models.Person;
 public class PersonResult {
     /**Array of people that is our result*/
     private Person person;
-    /**An exception that may have been thrown*/
-    private Exception e;
     /**Our exception result*/
     private String message;
 
@@ -19,9 +17,8 @@ public class PersonResult {
         this.person = person;
     }
 
-    public PersonResult(Exception e) {
-        this.e = e;
-        message = e.getMessage();
+    public PersonResult(String message) {
+        this.message = message;
     }
 
     public PersonResult() {
@@ -30,7 +27,7 @@ public class PersonResult {
         return person;
     }
 
-    public Exception getE() {
-        return e;
+    public String getMessage() {
+        return message;
     }
 }

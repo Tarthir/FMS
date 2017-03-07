@@ -1,12 +1,9 @@
 package service;
 
-import com.sun.org.apache.xpath.internal.operations.Mult;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dataAccess.AuthTokenDao;
-import dataAccess.MultiDao;
 import dataAccess.PersonDao;
 import infoObjects.PeopleRequest;
 import infoObjects.PeopleResult;
@@ -38,11 +35,14 @@ public class PeopleService {
                 allPeople = pDao.getPeople(userID);
 
                 if(allPeople == null){//if no people found
-                    return new PeopleResult(new Exception("No People found under this userName"));
+                    return new PeopleResult("No People found under this userName");
                 }
             }
+            else{
+                return new PeopleResult("Invalid Authtoken");
+            }
         }
-        catch(SQLException e){return new PeopleResult(e);}
+        catch(SQLException e){return new PeopleResult(e.getMessage());}
         return new PeopleResult(create.createPeople(allPeople));
     }
 

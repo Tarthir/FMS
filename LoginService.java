@@ -26,26 +26,28 @@ public class LoginService {
     public LoginResult login(LoginRequest request) {
         try {
             UserDao dao = new UserDao();
-            System.out.print(1);
-            System.out.print(request.getUserName() + request.getPassWord());
-            if (!request.isValidRequest()) {//if this is a valid request
-                System.out.print(2);
+            if (request.isValidRequest()) {//if this is a valid request
+
                 String userID = dao.login(request);
                 if(!userID.equals("")) {//if founda matching userID
-                    System.out.print(3);
+
                     AuthTokenDao authDao = new AuthTokenDao();
                     AuthToken authToken = new AuthToken();//gets the timestamp and UUID in the model object
                     if (authDao.insertAuthToken(userID, authToken)) {
-                        System.out.print(4);
+
                         return new LoginResult(authToken.getAuthToken(), request.getUserName(), userID);
+                    }
+                    else{
+                        return new LoginResult("Inserting Authtoken into DataBase failed");
                     }
                 }
             }
+            return new LoginResult("Invalid Request");
         }
+
        catch(SQLException e){
-           return new LoginResult(e);
+           return new LoginResult(e.getMessage());
        }
-        return new LoginResult(new Exception("Invalid Request"));
     }
 
 

@@ -36,11 +36,11 @@ public class EventService {
                 }
             }
             else{
-                return new EventResult(new Exception("Invalid AuthToken"));
+                return new EventResult("Invalid AuthToken");
             }
         }catch(SQLException e){
-            return new EventResult(e);
+            return new EventResult(e.getMessage());
         }
-        return new EventResult(new Exception("No such Event found"));
+        return new EventResult("No such Event found");
     }
 }

@@ -20,13 +20,11 @@ public class LocationCreator {
      * @RETURN An arraylist of event objects
      */
     public Location createLocation(ArrayList<String> locData) {
-        Location loc = null;
-        if (locData.size() < 4 ) {
-            return loc;
+        if (locData == null || locData.size() < 4 ) {
+            return null;
         }
         else{
-            loc = new Location(locData.get(0),locData.get(1),locData.get(2),locData.get(3));
+            return new Location(locData.get(0),locData.get(1),locData.get(2),locData.get(3));
         }
-        return loc;
     }
 }

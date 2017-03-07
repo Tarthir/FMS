@@ -36,10 +36,10 @@ public class PersonService {
                 ArrayList<String> personData = pDao.getPerson(p);
                 return new PersonResult(maker.createPerson(personData));
             } else {
-                return new PersonResult(new IllegalArgumentException("Invalid Authtoken"));
+                return new PersonResult("Invalid Authtoken");
             }
         }catch(SQLException e){
-            return new PersonResult(e);
+            return new PersonResult(e.getMessage());
         }
     }
 }

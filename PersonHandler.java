@@ -84,10 +84,15 @@ public class PersonHandler implements HttpHandler {
     private void doPerson(OutputStream respBody,String PersonID,String authToken) throws IOException {
         PersonService service = new PersonService();
         PersonRequest request = new PersonRequest(PersonID);
+        Encoder encode = new Encoder();
         PersonResult result = service.getPerson(request, authToken);
-
-        new Encoder().encode(result, respBody);
-        respBody.close();
+        if(result.getPerson() == null){
+            encode.encode(new PersonResult("No person found by given ID"),respBody);
+        }
+        else {
+            encode.encode(result, respBody);
+            respBody.close();
+        }
     }
 
     /**
@@ -99,7 +104,6 @@ public class PersonHandler implements HttpHandler {
         PeopleService service = new PeopleService();
         PeopleRequest request = new PeopleRequest(authToken);
         PeopleResult result = service.getPeople(request);
-
         new Encoder().encode(result, respBody);
         respBody.close();
     }
