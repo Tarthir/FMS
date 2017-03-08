@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -16,18 +17,23 @@ import java.util.Iterator;
 import java.util.List;
 
 //import javax.xml.ws.spi.http.HttpExchange;
+import com.sun.corba.se.spi.orbutil.fsm.Input;
 import com.sun.net.httpserver.HttpExchange;
 
+import infoObjects.ClearResult;
+import infoObjects.EventResult;
 import infoObjects.EventsRequest;
 import infoObjects.EventsResult;
 import infoObjects.FillRequest;
 import infoObjects.FillResult;
 import infoObjects.LoadRequest;
+import infoObjects.LoadResult;
 import infoObjects.LoginRequest;
 import infoObjects.LoginResult;
 import infoObjects.PeopleRequest;
 import infoObjects.PeopleResult;
 import infoObjects.PersonRequest;
+import infoObjects.PersonResult;
 import infoObjects.RegisterRequest;
 import infoObjects.RegisterResult;
 import models.Location;
@@ -62,6 +68,92 @@ public class Encoder {
         Reader reader = new InputStreamReader(exchange.getRequestBody());
         return gson.fromJson(reader, RegisterRequest.class);
     }
+
+    /**
+     * This decodes java objects from JSON
+     * @PARAM String, input
+     * @RETURN A result object
+     * @EXCEPTION IOException
+     * */
+    public RegisterResult decodeReg(String input)throws IOException{
+        return gson.fromJson(input, RegisterResult.class);
+    }
+    /**
+     * This decodes java objects from JSON
+     * @PARAM String, input
+     * @RETURN A PersonResult object
+     * @EXCEPTION IOException
+     * */
+    public PersonResult decodePersonResult(InputStream input)throws IOException{
+        Reader reader = new InputStreamReader(input);
+        return gson.fromJson(reader, PersonResult.class);
+    }
+
+    /**
+     * This decodes java objects from JSON
+     * @PARAM String, input
+     * @RETURN A PersonResult object
+     * @EXCEPTION IOException
+     * */
+    public EventResult decodeEventResult(InputStream input)throws IOException{
+        Reader reader = new InputStreamReader(input);
+        return gson.fromJson(reader, EventResult.class);
+    }
+    /**
+     * This decodes java objects from JSON
+     * @PARAM String, input
+     * @RETURN A PersonResult object
+     * @EXCEPTION IOException
+     * */
+    public EventsResult decodeEventsResult(InputStream input)throws IOException{
+        Reader reader = new InputStreamReader(input);
+        return gson.fromJson(reader, EventsResult.class);
+    }
+
+    /**
+     * This decodes java objects from JSON
+     * @PARAM String, input
+     * @RETURN A PersonResult object
+     * @EXCEPTION IOException
+     * */
+    public ClearResult decodeClearResult(InputStream input)throws IOException{
+        Reader reader = new InputStreamReader(input);
+        return gson.fromJson(reader, ClearResult.class);
+    }
+
+    /**
+     * This decodes java objects from JSON
+     * @PARAM String, input
+     * @RETURN A PersonResult object
+     * @EXCEPTION IOException
+     * */
+    public FillResult decodeFillResult(InputStream input)throws IOException{
+        Reader reader = new InputStreamReader(input);
+        return gson.fromJson(reader, FillResult.class);
+    }
+
+    /**
+     * This decodes java objects from JSON
+     * @PARAM String, input
+     * @RETURN A PeopleResult object
+     * @EXCEPTION IOException
+     * */
+    public PeopleResult decodePeopleResult(InputStream input)throws IOException{
+        Reader reader = new InputStreamReader(input);
+        return gson.fromJson(reader, PeopleResult.class);
+    }
+
+    /**
+     * This decodes java objects from JSON
+     * @PARAM String Json object
+     * @RETURN LoginRequest object
+     * @EXCEPTION IOException
+     * */
+    public LoginResult decodeLogin(InputStream input)throws IOException{
+        Reader reader = new InputStreamReader(input);
+        return gson.fromJson(reader, LoginResult.class);
+    }
+
     /**
      * This decodes java objects from JSON
      * @PARAM HttpExchange object
@@ -91,4 +183,14 @@ public class Encoder {
         }
     }
 
+    /**
+     * This decodes java objects from JSON
+     * @PARAM InputStream object
+     * @RETURN LoadRequest object
+     * @EXCEPTION IOException
+     * */
+    public LoadResult decodeLoadResult(InputStream input)throws IOException,IllegalArgumentException{
+        Reader reader = new InputStreamReader(input);
+        return gson.fromJson(reader, LoadResult.class);
+    }
 }

@@ -1,13 +1,9 @@
 package dataAccess;
 
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.UUID;
 
-import infoObjects.FillRequest;
 import infoObjects.LoadRequest;
 import infoObjects.LoadResult;
 import models.Event;
@@ -45,7 +41,7 @@ public class MultiDao {
         UserDao uDao = new UserDao();
         PersonDao pDao = new PersonDao();
         EventDao eDao = new EventDao();
-        System.out.println(true);
+       // System.out.println(true);
         //TODO: CHECK FOR INVALID INPUTS? OR LET DAO THROW SQL
             for (User user : request.getUsers()) {
                 uDao.register(user);

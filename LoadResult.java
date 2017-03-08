@@ -9,8 +9,8 @@ public class LoadResult {
     /**The result of the attempt to load data*/
     private String message;
     public LoadResult(int numUsers, int numPersons, int numEvents) {
-       message = "Successfully added " + numUsers + " users, " + numPersons
-                + " persons, and " + numEvents + " events to the database";
+       message = "Successfully added " + numUsers + " users " + numPersons
+                + " persons and " + numEvents + " events to the database";
     }
 
     public LoadResult(String message) {

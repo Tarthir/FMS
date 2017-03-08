@@ -2,7 +2,9 @@ package server;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.sql.SQLException;
 
 import javax.xml.crypto.Data;
@@ -35,7 +37,6 @@ public class MainServer {
      * Runs our server
      * */
     private void run(String portNumber) {
-        //System.out.println("Initializing HTTP Server");
         try {
             server = HttpServer.create(
                     new InetSocketAddress(Integer.parseInt(portNumber)),
@@ -66,7 +67,7 @@ public class MainServer {
     }
 
     public static void main(String[] args) {
-        //String portNumber = args[0];
-        new MainServer().run("8080");
+        String portNumber = args[0];
+        new MainServer().run(portNumber);
     }
 }

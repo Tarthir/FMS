@@ -33,7 +33,7 @@ public class EventHandler implements HttpHandler {
         Encoder encode = new Encoder();
         OutputStream respBody = exchange.getResponseBody();
         try {
-            if (exchange.getRequestMethod().toLowerCase().equals("get")) {
+            if (exchange.getRequestMethod().toLowerCase().equals("post") || exchange.getRequestMethod().toLowerCase().equals("get")) {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 String authToken = exchange.getRequestHeaders().getFirst("Authorization");
                 String[] params  = exchange.getRequestURI().toString().split("/");
