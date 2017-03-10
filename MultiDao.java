@@ -4,8 +4,12 @@ package dataAccess;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import infoObjects.EventRequest;
+import infoObjects.EventsRequest;
 import infoObjects.LoadRequest;
 import infoObjects.LoadResult;
+import infoObjects.PeopleRequest;
+import infoObjects.PersonRequest;
 import models.Event;
 import models.Person;
 import models.User;
@@ -42,7 +46,6 @@ public class MultiDao {
         PersonDao pDao = new PersonDao();
         EventDao eDao = new EventDao();
        // System.out.println(true);
-        //TODO: CHECK FOR INVALID INPUTS? OR LET DAO THROW SQL
             for (User user : request.getUsers()) {
                 uDao.register(user);
             }
@@ -71,14 +74,42 @@ public class MultiDao {
     }
     /**
      * Validates authtokens given by the user
-     * @PARAM String,A personID
+     * @PARAM A Request Object,A personID
      * @PARAM String, an Authtoken
      * @RETURN boolean, if is validated
      * @EXCEPTION SQLException
      * */
-    public boolean validate(String authTok)throws SQLException{
+    public boolean validate(Object request)throws SQLException{
         AuthTokenDao aDao = new AuthTokenDao();
-        return aDao.validateAuthToken(authTok);
+
+        if(request instanceof PersonRequest){
+            PersonDao pDao = new PersonDao();
+            PersonRequest newRequest = (PersonRequest) request;
+
+            String userName = pDao.getUserOfPerson(newRequest.getPersonID());
+            String usernameTest = aDao.getUserIDFromAuthToken(newRequest.getAuthToken());
+
+            return (userName.equals(usernameTest));
+        }
+        else if(request instanceof PeopleRequest){
+            PeopleRequest newRequest = (PeopleRequest) request;
+            return aDao.validateAuthToken(newRequest.getAuthToken());
+        }
+        else if(request instanceof EventsRequest){
+            EventsRequest newRequest = (EventsRequest) request;
+            return aDao.validateAuthToken(newRequest.getAuthToken());
+        }
+        else if(request instanceof EventRequest){
+            EventDao eDao = new EventDao();
+            EventRequest newRequest = (EventRequest) request;
+
+            Event event = new EventsCreator().createEvent((eDao.getEvent(newRequest)));
+            String usernameTest = aDao.getUserIDFromAuthToken(newRequest.getAuthToken());
+
+            return (event.getDescendant().equals(usernameTest));
+        }
+        return false;
+
     }
 
 }

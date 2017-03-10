@@ -32,7 +32,7 @@ public class FillRequest {
     }
 
     public boolean isValidRequest(){
-        return  (!username.isEmpty()) && (numOfGenerations > 0) &&
+        return  (!username.isEmpty()) && (numOfGenerations >= 0) &&
                 (locations != null) && (fNames != null) &&
                 (lNames != null) && (mNames != null);
     }

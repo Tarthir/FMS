@@ -27,13 +27,13 @@ public class PersonService {
      * @PARAM String, an authtoken
      * @RETURN Gets the person requested
      */
-    public PersonResult getPerson(PersonRequest p, String authToken){
+    public PersonResult getPerson(PersonRequest request){
         try {
             PersonDao pDao = new PersonDao();
-            AuthTokenDao aDao = new AuthTokenDao();
+            MultiDao mDao = new MultiDao();
             PeopleCreator maker = new PeopleCreator();
-            if (aDao.validateAuthToken(authToken)) {//if is valid authtoken
-                ArrayList<String> personData = pDao.getPerson(p);
+            if (mDao.validate(request)) {//if is valid authtoken
+                ArrayList<String> personData = pDao.getPerson(request);
                 PersonResult result = new PersonResult(maker.createPerson(personData));
                 if(result.getPerson() == null){ return new PersonResult("Invalid ID given as input");}
                 return result;

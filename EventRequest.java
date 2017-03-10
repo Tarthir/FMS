@@ -7,10 +7,13 @@ package infoObjects;
 
 public class EventRequest {
     /**The userID of this Event Request*/
-    String eventID;
+    private String eventID;
+    /**THe user's authtoken*/
+    private String authToken;
 
-    public EventRequest(String eventID) {
+    public EventRequest(String eventID,String authToken) {
         this.eventID = eventID;
+        this.authToken = authToken;
     }
 
     public EventRequest() {
@@ -25,5 +28,9 @@ public class EventRequest {
     /**@RETURN the eventID of this Event Request*/
     public String getEventID() {
         return eventID;
+    }
+
+    public String getAuthToken() {
+        return authToken;
     }
 }

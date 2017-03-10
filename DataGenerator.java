@@ -6,10 +6,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import dataAccess.EventDao;
-import dataAccess.PeopleCreator;
 import dataAccess.PersonDao;
-import dataAccess.UserCreator;
-import dataAccess.UserDao;
 import infoObjects.FillRequest;
 import infoObjects.FillResult;
 import models.Event;
@@ -50,11 +47,12 @@ public class DataGenerator {
         TOTAL_GENERATIONS = request.getNumOfGenerations();
         int currGeneration = TOTAL_GENERATIONS;
         int adderIndex = 0;//allows us to set mother/father indicies for children
-
-        for (int j = currGeneration; j > 0; j--) {//create all the generations starting from the top
-            adderIndex = genPeople(j, request, adderIndex);
+        if(TOTAL_GENERATIONS > 0) {
+            for (int j = currGeneration; j > 0; j--) {//create all the generations starting from the top
+                adderIndex = genPeople(j, request, adderIndex);
+            }
+            //put the user in the table
         }
-        //put the user in the table
         genUserData(request);
         return insertData(request);
     }
@@ -66,8 +64,12 @@ public class DataGenerator {
      * @EXCEPTION Exception
      * */
     private void genUserData(FillRequest request) throws Exception {
-        String father = people.get(people.size() - 2).getPersonID();
-        String mother = people.get(people.size() - 1).getPersonID();
+        String father = "";
+        String mother = "";
+        if(TOTAL_GENERATIONS != 0) {
+            father = people.get(people.size() - 2).getPersonID();
+            mother = people.get(people.size() - 1).getPersonID();
+        }
         User user = request.getUser();
         people.add(new Person(UUID.randomUUID().toString(), user.getUserName(), user.getfName(), user.getlName(), user.getGender(), father, mother, ""));
         genEvents(people.get(people.size() - 1), request.getLocations(), 0, user.getUserName());
@@ -95,8 +97,8 @@ public class DataGenerator {
 
                 //add spouses together
                 if (currGeneration == TOTAL_GENERATIONS) {
-                    people.get(i - 1).setSpouseID(people.get(i).getPersonID());
-                    people.get(i).setSpouseID(people.get(i - 1).getPersonID());
+                    people.get(i - 1).setSpouse(people.get(i).getPersonID());
+                    people.get(i).setSpouse(people.get(i - 1).getPersonID());
                 }
 
                 createMarriage(currGeneration, people.get(i - 1), people.get(i), request.getLocations(),request.getUserName());//marry this couple
@@ -115,15 +117,15 @@ public class DataGenerator {
      * @RETURN int, the adderindex so its parent can keep it updated
      * */
     private int setMothersAndFathers(int adderIndex){
-        people.get(people.size() - 2).setSpouseID(people.get(people.size() - 1).getPersonID());
-        people.get(people.size() - 1).setSpouseID(people.get(people.size() - 2).getPersonID());
-        people.get(people.size() - 2).setFatherID(people.get(adderIndex).getPersonID());
+        people.get(people.size() - 2).setSpouse(people.get(people.size() - 1).getPersonID());
+        people.get(people.size() - 1).setSpouse(people.get(people.size() - 2).getPersonID());
+        people.get(people.size() - 2).setFather(people.get(adderIndex).getPersonID());
         adderIndex++;
-        people.get(people.size() - 2).setMotherID(people.get(adderIndex).getPersonID());
+        people.get(people.size() - 2).setMother(people.get(adderIndex).getPersonID());
         adderIndex++;
-        people.get(people.size() - 1).setFatherID(people.get(adderIndex).getPersonID());
+        people.get(people.size() - 1).setFather(people.get(adderIndex).getPersonID());
         adderIndex++;
-        people.get(people.size() - 1).setMotherID(people.get(adderIndex).getPersonID());
+        people.get(people.size() - 1).setMother(people.get(adderIndex).getPersonID());
         adderIndex++;
         return adderIndex;
     }

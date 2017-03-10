@@ -13,9 +13,9 @@ public class RegisterRequest {
     /** Non-empty string*/
     private String email;
     /** Non-empty string*/
-    private String firstname;
+    private String firstName;
     /** Non-empty string*/
-    private String lastname;
+    private String lastName;
     /** f or m*/
     private String gender;
     /**Array of possible locations*/
@@ -24,8 +24,8 @@ public class RegisterRequest {
         this.userName = username;
         this.password = password;
         this.email = email;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstName = firstname;
+        this.lastName = lastname;
         this.gender = gender;
     }
 
@@ -34,7 +34,7 @@ public class RegisterRequest {
 
     public boolean isValidRequest(){
         return  (!userName.isEmpty()) && (!password.isEmpty()) && (!email.isEmpty()) &&
-                (!email.isEmpty()) && (!firstname.isEmpty()) && (!lastname.isEmpty()) &&
+                (!email.isEmpty()) && (!firstName.isEmpty()) && (!lastName.isEmpty()) &&
                 (!gender.isEmpty()) &&(gender.toLowerCase().equals("f") || gender.toLowerCase().equals("m"));
     }
     /**@RETURN Gets the userName of this registerRequest*/
@@ -51,11 +51,11 @@ public class RegisterRequest {
     }
     /**@RETURN  Gets the fName of this registerRequest*/
     public String getfName() {
-        return firstname;
+        return firstName;
     }
     /**@RETURN  Gets the lName of this registerRequest*/
     public String getlName() {
-        return lastname;
+        return lastName;
     }
     /**@RETURN  Gets the gender of this registerRequest*/
     public String getGender() {

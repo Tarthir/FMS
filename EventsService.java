@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import dataAccess.AuthTokenDao;
 import dataAccess.EventsCreator;
 import dataAccess.EventDao;
+import dataAccess.MultiDao;
 import infoObjects.EventsResult;
 import infoObjects.EventsRequest;
 import models.Event;
@@ -25,9 +26,10 @@ public class EventsService {
     public EventsResult getEvents(EventsRequest request) {
         try {
             EventDao eDao = new EventDao();
+            MultiDao mDao = new MultiDao();
             EventsCreator create = new EventsCreator();
             AuthTokenDao aDao = new AuthTokenDao();
-            if (aDao.validateAuthToken(request.getAuthToken())) {
+            if (mDao.validate(request)) {
                 String userID = aDao.getUserIDFromAuthToken(request.getAuthToken());
                 ArrayList<ArrayList<String>> result = eDao.getEvents(userID);
                 if (result != null) {

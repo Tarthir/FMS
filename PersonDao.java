@@ -5,10 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
-import infoObjects.PeopleRequest;
 import infoObjects.PersonRequest;
 import models.Person;
 
@@ -45,9 +43,9 @@ public class PersonDao {
             stmt.setString(3,person.getfName());
             stmt.setString(4,person.getlName());
             stmt.setString(5,person.getGender());
-            stmt.setString(6,person.getFatherID());
-            stmt.setString(7,person.getMotherID());
-            stmt.setString(8,person.getSpouseID());
+            stmt.setString(6,person.getFather());
+            stmt.setString(7,person.getMother());
+            stmt.setString(8,person.getSpouse());
             if(stmt.executeUpdate() == 1){//execute the statement
                 db.closeConnection(true, conn);
                 //ALSO LOG US ON
@@ -175,7 +173,41 @@ public class PersonDao {
             }
         }
         catch(SQLException e){
-            e.printStackTrace();
+            db.closeConnection(false, conn);
+            throw e;
+        }
+        finally {
+            DataBase.safeClose(rs);
+            DataBase.safeClose(stmt);
+        }
+        return null;
+    }
+
+    /***
+     * A method to get the userName of a person
+     *
+     * @PARAM userID, the ID for a specific user
+     * @RETURN returns the data needed to start to make people objects
+     * @EXCEPTION throws SQLException
+     */
+    public String getUserOfPerson(String personID)throws SQLException{
+        Connection conn = null;
+        ResultSet rs = null;
+        PreparedStatement stmt = null;
+        ArrayList<ArrayList<String>> allRows = new ArrayList<>();//all the people
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement("SELECT descendant FROM person WHERE personID = ?");
+            stmt.setString(1,personID);
+            rs = stmt.executeQuery();
+            if(rs.next()){
+                String userName = rs.getString(1);
+                db.closeConnection(true, conn);
+                return userName;//get that userName
+            }
+            db.closeConnection(false, conn);
+        }
+        catch(SQLException e){
             db.closeConnection(false, conn);
             throw e;
         }

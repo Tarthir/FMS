@@ -116,8 +116,7 @@ public class DataBase {
         Statement stmt = null;
         try {
             stmt = connection.createStatement();
-            stmt.executeUpdate("drop table if exists user");
-            stmt.executeUpdate("create table user ( username text not null primary key,\n" +
+            stmt.executeUpdate("create table if not exists user ( username text not null primary key,\n" +
                     "    password text not null,\n" +
                     "    email text not null,\n" +
                     "    firstName text not null,\n" +
@@ -125,8 +124,7 @@ public class DataBase {
                     "    gender text not null,\n" +
                     "    personID text not null)");
 
-            stmt.executeUpdate("drop table if exists person");
-            stmt.executeUpdate("create table person ( personID text not null primary key,\n" +
+            stmt.executeUpdate("create table if not exists person ( personID text not null primary key,\n" +
                     "    descendant text not null,\n" +
                     "    firstName text not null,\n" +
                     "    lastName text not null,\n" +
@@ -135,8 +133,7 @@ public class DataBase {
                     "    motherID text,\n" +
                     "    spouseID text)");
 
-            stmt.executeUpdate("drop table if exists events");
-            stmt.executeUpdate("create table events ( eventID text not null primary key,\n" +
+            stmt.executeUpdate("create table if not exists events ( eventID text not null primary key,\n" +
                     "    descendant text not null,\n" +
                     "    personID text not null,\n" +
                     "    year text not null,\n" +
@@ -146,8 +143,7 @@ public class DataBase {
                     "    longitude text not null,\n" +
                     "    country text not null)");
 
-            stmt.executeUpdate("drop table if exists authToken");
-            stmt.executeUpdate("create table authToken ( authToken text not null primary key,\n" +
+            stmt.executeUpdate("create table if not exists authToken ( authToken text not null primary key,\n" +
                     "    descendant text not null,\n" +
                     "    timeStamp REAL not null)");
             closeConnection(true, connection);

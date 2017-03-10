@@ -30,7 +30,7 @@ public class FamilyMapServerProxy {
 
     public FamilyMapServerProxy() {
             this.serverHost = "localhost";//InetAddress.getLocalHost().getHostAddress();
-            System.out.println("PortNumber: ");
+            System.out.println("ServerHost is localhost\nPortNumber: ");
             Scanner scan = new Scanner(System.in);
             //this.serverPort ="8080";
             this.serverPort = scan.next();;//InetAddress.getLocalHost().getHostName();

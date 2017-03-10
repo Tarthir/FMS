@@ -28,15 +28,15 @@ public class Person {
     /**
      * This persons Father(Person obj). May be null
      * */
-    private String fatherID;
+    private String father;
     /**
      * The mother(Person obj) of this person. May be null
      * */
-    private String motherID;
+    private String mother;
     /**
      * The spouse(Person obj) of this person. May be null
      * */
-    private String spouseID;
+    private String spouse;
 
     public Person(String personID,String descendant, String firstName, String lastName, String gender, String fatherID, String motherID, String spouseID) {
         this.descendant = descendant;
@@ -44,9 +44,9 @@ public class Person {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
-        this.fatherID = fatherID;
-        this.motherID = motherID;
-        this.spouseID = spouseID;
+        this.father = fatherID;
+        this.mother = motherID;
+        this.spouse = spouseID;
     }
     public Person(String personID,String descendant, String firstname, String lastname, String gender) {
         this.descendant = descendant;
@@ -54,9 +54,9 @@ public class Person {
         this.firstName = firstname;
         this.lastName = lastname;
         this.gender = gender;
-        this.fatherID = "";
-        this.motherID = "";
-        this.spouseID = "";
+        this.father = "";
+        this.mother = "";
+        this.spouse = "";
     }
 
     public Person() {
@@ -78,28 +78,28 @@ public class Person {
         return gender;
     }
 
-    public String getFatherID() {
-        return fatherID;
+    public String getFather() {
+        return father;
     }
 
-    public String getMotherID() {
-        return motherID;
+    public String getMother() {
+        return mother;
     }
 
-    public String getSpouseID() {
-        return spouseID;
+    public String getSpouse() {
+        return spouse;
     }
 
-    public void setFatherID(String fatherID) {
-        this.fatherID = fatherID;
+    public void setFather(String father) {
+        this.father = father;
     }
 
-    public void setMotherID(String motherID) {
-        this.motherID = motherID;
+    public void setMother(String mother) {
+        this.mother = mother;
     }
 
-    public void setSpouseID(String spouseID) {
-        this.spouseID = spouseID;
+    public void setSpouse(String spouse) {
+        this.spouse = spouse;
     }
 
     public String getDescendant() {
@@ -116,11 +116,11 @@ public class Person {
         if(!other.getDescendant().equals(this.getDescendant())){return false;}
         if(!other.getPersonID().equals(this.getPersonID())){return false;}
         if(!other.getGender().equals(this.getGender())){return false;}
-        if(!other.getMotherID().equals(this.getMotherID())){return false;}
+        if(!other.getMother().equals(this.getMother())){return false;}
         if(!other.getfName().equals(this.getfName())){return false;}
         if(!other.getlName().equals(this.getlName())){return false;}
-        if(!other.getSpouseID().equals(this.getSpouseID())){return false;}
-        if(!other.getFatherID().equals(this.getFatherID())){return false;}
+        if(!other.getSpouse().equals(this.getSpouse())){return false;}
+        if(!other.getFather().equals(this.getFather())){return false;}
         return true;
 
     }

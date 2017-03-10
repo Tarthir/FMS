@@ -21,7 +21,7 @@ public class Event {
     /**The city of this location*/
     private String city;
     /**The eventType of this event*/
-    private String description;
+    private String eventType;
     /**The year this event took place*/
     private String year;
 
@@ -34,7 +34,7 @@ public class Event {
         this.country = location.getCountry();
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
-        this.description = eventType;
+        this.eventType = eventType;
         this.year = year;
     }
 
@@ -68,10 +68,6 @@ public class Event {
         return personID;
     }
 
-    public String getEventType() {
-        return description;
-    }
-
     public String getYear() {
         return year;
     }
@@ -80,8 +76,8 @@ public class Event {
         this.eventID = eventID;
     }
 
-    public String getDescription() {
-        return description;
+    public String getEventType() {
+        return eventType;
     }
 
     public String getCity() {

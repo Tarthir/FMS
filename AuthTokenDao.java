@@ -67,7 +67,6 @@ public class AuthTokenDao {
         PreparedStatement stmt = null;
         try {
             conn = db.openConnection();
-            //TODO:HAVE IT DEPEND ON TIMESTAMP PASSED IN
             stmt = conn.prepareStatement("DELETE FROM authToken WHERE descendant = ?");
             stmt.setString(1, userID);
             if (stmt.executeUpdate() >= 1) {//execute the statement
@@ -158,22 +157,21 @@ public class AuthTokenDao {
 
     /**
      * Validates authtokens given by the user
-     * @PARAM String,A personID
      * @PARAM String, an Authtoken
-     * @RETURN boolean, if is validated
+     * @RETURN boolean, if is validated that this authToken exists
      * @EXCEPTION SQLException
      * */
     public boolean validateAuthToken(String authTok)throws SQLException{
         AuthTokenDao aDao = new AuthTokenDao();
-        String userID = aDao.getUserIDFromAuthToken(authTok);
+        String userID = aDao.getUserIDFromAuthToken(authTok);//grab the userID associated with this authtoken
         if(!userID.equals("")) {
-            ArrayList<String> authTokens = aDao.getAuthToken(userID);
-            for (String tok : authTokens) {
+            /*ArrayList<String> authTokens = aDao.getAuthToken(userID);
+            for (String tok : authTokens) {//does this authtoken exist?
                 if (tok.equals(authTok)) {
-                    //System.out.println(true);
                     return true;
                 }
-            }
+            }*/
+            return true;
         }
         return false;
     }

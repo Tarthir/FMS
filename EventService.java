@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import dataAccess.AuthTokenDao;
 import dataAccess.EventsCreator;
 import dataAccess.EventDao;
+import dataAccess.MultiDao;
 import infoObjects.EventRequest;
 import infoObjects.EventResult;
 import models.Event;
@@ -22,13 +23,14 @@ public class EventService {
      * @PARAM String, an authToken
      * @RETURN The result of attempting to get a particular event. May return an error
      * */
-    public EventResult getEvent(EventRequest request,String authToken){
+    public EventResult getEvent(EventRequest request){
         try {
             EventDao eDao = new EventDao();
+            MultiDao mDao = new MultiDao();
             EventsCreator create = new EventsCreator();
             AuthTokenDao aDao = new AuthTokenDao();
             Event event = null;
-            if (aDao.validateAuthToken(authToken)){
+            if (mDao.validate(request)){
                 event = create.createEvent(eDao.getEvent(request));
                 if (event != null) {
                     return new EventResult(event.getDescendant(), event, event.getPersonID());

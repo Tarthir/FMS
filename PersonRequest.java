@@ -11,14 +11,21 @@ public class PersonRequest {
 
     /**The ID of this personRequest*/
     private String personID;
+    /**The user's authtoken */
+    private String authToken;
 
-    public PersonRequest(String personID) {
+    public PersonRequest(String personID,String authToken) {
         this.personID = personID;
+        this.authToken = authToken;
     }
     /**
      * @RETURN Gets the personID
      * */
     public String getPersonID() {
         return personID;
+    }
+
+    public String getAuthToken() {
+        return authToken;
     }
 }

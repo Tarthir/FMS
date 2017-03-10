@@ -83,9 +83,9 @@ public class PersonHandler implements HttpHandler {
      * */
     private void doPerson(OutputStream respBody,String PersonID,String authToken) throws IOException {
         PersonService service = new PersonService();
-        PersonRequest request = new PersonRequest(PersonID);
+        PersonRequest request = new PersonRequest(PersonID,authToken);
         Encoder encode = new Encoder();
-        PersonResult result = service.getPerson(request, authToken);
+        PersonResult result = service.getPerson(request);
         encode.encode(result, respBody);
         respBody.close();
     }

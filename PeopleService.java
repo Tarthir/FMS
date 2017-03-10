@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dataAccess.AuthTokenDao;
+import dataAccess.MultiDao;
 import dataAccess.PersonDao;
 import infoObjects.PeopleRequest;
 import infoObjects.PeopleResult;
@@ -25,10 +26,11 @@ public class PeopleService {
      */
     public PeopleResult getPeople(PeopleRequest request) {
         AuthTokenDao aDao = new AuthTokenDao();
+        MultiDao mDao = new MultiDao();
         PeopleCreator create = new PeopleCreator();
         ArrayList<ArrayList<String>> allPeople = new ArrayList<>();
         try {
-            if(aDao.validateAuthToken(request.getAuthToken())){
+            if(mDao.validate(request)){
                 PersonDao pDao = new PersonDao();
 
                 String userID = aDao.getUserIDFromAuthToken(request.getAuthToken());

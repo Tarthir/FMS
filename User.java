@@ -15,7 +15,7 @@ public class User {
     /**The users first name*/
     private String firstName;
     /**The users last name*/
-    private String lastname;
+    private String lastName;
     /**The users gender*/
     private String gender;
     /**This user's PersonID*/
@@ -27,7 +27,7 @@ public class User {
         this.password = password;
         this.email = email;
         this.firstName = firstname;
-        this.lastname = lastname;
+        this.lastName = lastname;
         this.gender = gender;
     }
 
@@ -39,7 +39,7 @@ public class User {
         this.password = password;
         this.email = email;
         this.firstName = firstname;
-        this.lastname = lastname;
+        this.lastName = lastname;
         this.gender = gender;
         this.personID = personID;
     }
@@ -63,7 +63,7 @@ public class User {
     }
     /**@RETRUN the last name of this user*/
     public String getlName() {
-        return lastname;
+        return lastName;
     }
     /**@RETRUN the gender of this user*/
     public String getGender() {

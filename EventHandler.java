@@ -53,14 +53,11 @@ public class EventHandler implements HttpHandler {
             }
         }
         catch (IOException e) {
-            //System.out.println("errorPersonIO");
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             encode.encode(new EventResult(e.getMessage()),respBody);
             respBody.close();
-            //e.printStackTrace();
         }
         catch(Exception e){
-            // System.out.println("errorPersonIllegal");
             encode.encode(new EventResult(e.getMessage()),respBody);
             respBody.close();
         }
@@ -75,13 +72,13 @@ public class EventHandler implements HttpHandler {
      * */
     private void doEvent(OutputStream respBody,String eventID,String authToken) throws IllegalArgumentException, IOException, SQLException {
         EventService service = new EventService();
-        EventRequest request = new EventRequest(eventID);
+        EventRequest request = new EventRequest(eventID,authToken);
         if(request.isValidRequest()) {
-            EventResult eventResult = service.getEvent(request, authToken);
+            EventResult eventResult = service.getEvent(request);
             new Encoder().encode(eventResult,respBody);
         }
         else{
-            new Encoder().encode("Invalid Request",respBody);
+            new Encoder().encode(new EventResult("Invalid Request"),respBody);
         }
 
         respBody.close();
@@ -95,13 +92,12 @@ public class EventHandler implements HttpHandler {
     private void doEvents(OutputStream respBody,String authToken) throws IllegalArgumentException, IOException, SQLException {
         EventsService service = new EventsService();
         EventsRequest request = new EventsRequest(authToken);
-        EventsResult result = service.getEvents(request);
         if(request.isValidRequest()) {
             EventsResult eventsResult = service.getEvents(request);
             new Encoder().encode(eventsResult,respBody);
         }
         else{
-            new Encoder().encode("Invalid Request",respBody);
+            new Encoder().encode(new EventResult("Invalid Request"),respBody);
         }
         respBody.close();
     }
