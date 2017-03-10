@@ -34,6 +34,7 @@ public class User {
     public User() {
     }
 
+
     public User(String username, String password, String email, String firstname, String lastname, String gender, String personID) {
         this.userName = username;
         this.password = password;
@@ -43,7 +44,21 @@ public class User {
         this.gender = gender;
         this.personID = personID;
     }
+    /**Checks an object against a user object, seeing if it holds the same data*/
+    @Override
+    public boolean equals(Object o) {
+        if(!this.getClass().equals(o.getClass())){return false;}
+        User other = (User) o;
+        if(!this.getPassWord().equals(other.getPassWord())){return false;}
+        if(!this.getGender().equals(other.getGender())){return false;}
+        if(!this.getPersonID().equals(other.getPersonID())){return false;}
+        if(!this.getfName().equals(other.getfName())){return false;}
+        if(!this.getlName().equals(other.getlName())){return false;}
+        if(!this.getUserName().equals(other.getUserName())){return false;}
+        if(!this.getEmail().equals(other.getEmail())){return false;}
+        return true;
 
+    }
 
     /**@RETRUN the userName of this user*/
     public String getUserName() {

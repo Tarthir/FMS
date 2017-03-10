@@ -35,6 +35,7 @@ public class EventServiceTest {
     private EventService eService;
     private DataBase db;
     private AuthToken authToken;
+    private AuthToken authToken2;
     private Connection connection;
 
     @Before
@@ -45,10 +46,17 @@ public class EventServiceTest {
             db = new DataBase();
             connection = db.openConnection();
             db.createTables(connection);
+
             authToken = new AuthToken();
+            authToken2 = new AuthToken();
+            User user = new User("userID","password","email","first","last","f","personID");
+            assertTrue(new UserDao().register(user));
+            assertTrue(new AuthTokenDao().insertAuthToken("userID",authToken));
+
             User user2 = new User("userID2","password2","email2","first2","last2","f","personID3");
-            assertTrue(new AuthTokenDao().insertAuthToken("name2",authToken));
             assertTrue(new UserDao().register(user2));
+            assertTrue(new AuthTokenDao().insertAuthToken("userID2",authToken2));
+
             Event event = new Event("eventID", "userID", "personID", new Location( "213.7", "123.7","Provo", "USA"), "Birth", "1994");
             Event event2 = new Event("eventID2", "userID", "personID2", new Location( "213.7", "123.7","Provo", "USA"), "Birth", "1994");
             Event event3 = new Event("eventID3", "userID", "personID3", new Location( "213.7", "123.7","Provo", "USA"), "Birth", "1994");
@@ -77,10 +85,10 @@ public class EventServiceTest {
     public void testGetEvent() {
        //try {
             Event event3 = new Event("eventID3", "userID", "personID3", new Location( "213.7", "123.7","Provo", "USA"), "Birth","1994");
-            EventRequest request = new EventRequest("eventID3");
+            EventRequest request = new EventRequest("eventID3",authToken.getAuthToken());
 
             EventResult expected = new EventResult("userID", event3, "personID3");
-            EventResult result = eService.getEvent(request,authToken.getAuthToken());
+            EventResult result = eService.getEvent(request);
 
             assertEquals(result.getUserID(), expected.getUserID());
             assertEquals(result.getPersonID(), expected.getPersonID());

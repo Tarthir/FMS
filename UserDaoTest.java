@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import dataAccess.DataBase;
+import dataAccess.PeopleCreator;
+import dataAccess.UserCreator;
 import dataAccess.UserDao;
 import infoObjects.LoginRequest;
 import models.User;
@@ -56,12 +58,43 @@ public class UserDaoTest {
         User user = new User("name","password","email","first","last","m","peep");
         assertTrue(uDao.register(user));
         LoginRequest request = new LoginRequest("name","password");
-        LoginRequest request2 = new LoginRequest("name2","password2");
-        LoginRequest request3 = new LoginRequest("name3","password3");
-        assertEquals(uDao.login(request),"peep");
+        LoginRequest request2 = new LoginRequest("name2","password2");//not in table
+        LoginRequest request3 = new LoginRequest("name3","password3");//not in table
+        assertEquals(uDao.login(request),"peep");//login returns the personID of the user, so it should match
         assertNotEquals(uDao.login(request2),"peep");
         assertNotEquals(uDao.login(request3),"peep");
     }catch(SQLException e){e.printStackTrace();}
+    }
+
+    @Test
+    public void testUpdateUser() {
+        try{
+            User user = new User("name","password","email","first","last","m","peep");
+            assertTrue(uDao.register(user));
+            User userUpdate = new User("name","password","email","first","last","m","peepNew");
+            uDao.updateUser(userUpdate);
+            User newUser = new UserCreator().createUser(uDao.selectAllFromUser("name"));
+            assertNotEquals(newUser,user);
+            assertEquals(newUser.getUserName(),user.getUserName());
+            assertNotEquals(newUser.getPersonID(),user.getPersonID());
+        }catch(SQLException e){e.printStackTrace();}
+    }
+
+    @Test
+    public void selectAllFromUserTest() {
+        try{
+            //setup
+            User user = new User("name","password","email","first","last","m","peep");
+            assertTrue(uDao.register(user));
+
+            User user2 = new UserCreator().createUser(uDao.selectAllFromUser("name"));//grab from Database
+            assertEquals(user,user2);//should be the same
+            User userUpdate = new User("name","password","email","first","last","m","peepNew");//update that user
+            uDao.updateUser(userUpdate);
+
+            User updatedUser = new UserCreator().createUser(uDao.selectAllFromUser("name"));
+            assertNotEquals(user,updatedUser);//not the same anymore after the update
+        }catch(SQLException e){e.printStackTrace();}
     }
 
 }

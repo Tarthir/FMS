@@ -165,12 +165,6 @@ public class AuthTokenDao {
         AuthTokenDao aDao = new AuthTokenDao();
         String userID = aDao.getUserIDFromAuthToken(authTok);//grab the userID associated with this authtoken
         if(!userID.equals("")) {
-            /*ArrayList<String> authTokens = aDao.getAuthToken(userID);
-            for (String tok : authTokens) {//does this authtoken exist?
-                if (tok.equals(authTok)) {
-                    return true;
-                }
-            }*/
             return true;
         }
         return false;

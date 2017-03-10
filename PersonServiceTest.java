@@ -71,10 +71,10 @@ public class PersonServiceTest {
 
     @Test
     public void getPerson() {
-            PersonRequest request = new PersonRequest("2");
+            PersonRequest request = new PersonRequest("2",authTok.getAuthToken());
             PersonResult personExpected = new PersonResult(new Person("2", "name2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2"));
             pService = new PersonService();
-            PersonResult result= pService.getPerson(request,authTok.getAuthToken());
+            PersonResult result= pService.getPerson(request);
             assertEquals(result.getPerson(), personExpected.getPerson());
     }
 }

@@ -31,7 +31,8 @@ public class MultiDao {
     }
     /**
      * Takes a userID and deletes all data related to it
-     * @PARAM A String userID
+
+.     * @PARAM A String userID
      * @RETURN boolean
      * @EXCEPTION SQLException
      */
@@ -53,8 +54,6 @@ public class MultiDao {
                 pDao.insertPerson(person);
             }
             for (Event event : request.getEvents()) {
-                //UUID uuid = UUID.randomUUID();
-                //event.setEventID(uuid.toString());
                 eDao.insertEvent(event);
             }
         return new LoadResult(request.getUsers().length,request.getPersons().length,request.getEvents().length);
@@ -88,7 +87,7 @@ public class MultiDao {
 
             String userName = pDao.getUserOfPerson(newRequest.getPersonID());
             String usernameTest = aDao.getUserIDFromAuthToken(newRequest.getAuthToken());
-
+            if(userName == null || usernameTest == null){return false;}
             return (userName.equals(usernameTest));
         }
         else if(request instanceof PeopleRequest){

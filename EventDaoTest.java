@@ -10,12 +10,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import dataAccess.AuthTokenDao;
 import dataAccess.DataBase;
 import dataAccess.EventDao;
 import dataAccess.EventsCreator;
+import dataAccess.UserDao;
 import infoObjects.EventRequest;
+import models.AuthToken;
 import models.Event;
 import models.Location;
+import models.User;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -30,7 +34,7 @@ public class EventDaoTest {
     private EventDao eDao;
     private DataBase db;
     private Connection connection;
-
+    private AuthToken authToken;
     @Before
     public void setUp() throws IOException, SQLException {
         eDao = new EventDao();
@@ -41,6 +45,12 @@ public class EventDaoTest {
             e.printStackTrace();
         }
         db.createTables(connection);
+
+        //setup
+        User user = new User("name","password","email","first","last","m","personID");
+        new UserDao().register(user);
+        authToken = new AuthToken();
+        new AuthTokenDao().insertAuthToken("name",authToken);
     }
 
     @After
@@ -69,9 +79,10 @@ public class EventDaoTest {
         try {
             Event event = new Event("eventID", "userID", "personID", new Location( "213.7", "123.7", "Provo","USA"), "1994", "Birth");
             EventsCreator eventsCreator = new EventsCreator();
+
             assertTrue(eDao.insertEvent(event));
             ArrayList<String> expected = new ArrayList<>(Arrays.asList("eventID", "userID", "personID", "Birth", "1994", "Provo", "213.7", "123.7", "USA"));
-            EventRequest request = new EventRequest("eventID");
+            EventRequest request = new EventRequest("eventID",authToken.getAuthToken());
             ArrayList<String> result = eDao.getEvent(request);
             assertEquals(expected, result);
             Event e = eventsCreator.createEvent(expected);
@@ -90,7 +101,7 @@ public class EventDaoTest {
             assertTrue(eDao.insertEvent(new Event("eventID3", "userID", "personID3",new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth")));
             assertTrue(eDao.insertEvent(new Event("eventID4", "userID2", "personID4",new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth2")));
             assertTrue(eDao.deleteEvents("userID"));
-            EventRequest request = new EventRequest("eventID");
+            EventRequest request = new EventRequest("eventID",authToken.getAuthToken());
             ArrayList<String> actual = eDao.getEvent(request);
             assertEquals(null, actual);
         } catch (SQLException e) {
@@ -101,10 +112,10 @@ public class EventDaoTest {
     @Test
     public void testgetEventFail() {
         try {
-            Event event = new Event("eventID", "userID", "personID",new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth");
+            Event event = new Event("eventID", "name", "personID",new Location("Provo", "213.7", "123.7", "USA"), "1994", "Birth");
             assertTrue(eDao.insertEvent(event));
-            ArrayList<String> expected = new ArrayList<>(Arrays.asList("eventID", "userID", "personID", "1994", "Birth","Provo","213.7", "123.7", "USA"));
-            EventRequest request = new EventRequest("eventID2");
+            ArrayList<String> expected = new ArrayList<>(Arrays.asList("eventID", "name", "personID", "1994", "Birth","Provo","213.7", "123.7", "USA"));
+            EventRequest request = new EventRequest("eventID2",authToken.getAuthToken());
             assertNotEquals(expected, eDao.getEvent(request));
         } catch (SQLException e) {
             e.printStackTrace();

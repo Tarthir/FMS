@@ -43,7 +43,7 @@ public class EventsCreator {
             return null;
         } else {//return a new person
             LocationCreator locCreator = new LocationCreator();
-            ArrayList<String> location = new ArrayList<>(Arrays.asList(eventData.get(5),eventData.get(6),eventData.get(7),eventData.get(8)));
+            ArrayList<String> location = new ArrayList<>(Arrays.asList(eventData.get(7),eventData.get(6),eventData.get(5),eventData.get(8)));
             Location loc = locCreator.createLocation(location);
             return new Event(eventData.get(0), eventData.get(1), eventData.get(2),loc, eventData.get(3),
                     eventData.get(4));

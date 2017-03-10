@@ -52,7 +52,35 @@ public class UserDao {
             //e.printStackTrace();
             db.closeConnection(false, conn);
             throw e;
-            //THROW AN ERROR HERE SO THAT THE RESULT CREATED HOLDS AN ERROR?
+        }
+        finally {
+            DataBase.safeClose(stmt);
+        }
+        return false;
+    }
+
+    /***
+     * A method to update the personID when it changes during FILL command
+     * @PARAM user, the new user we are updating
+     * @RETURN BOOLEAN, whether the update succeeded or not
+     * @EXCEPTION throws SQLException
+     */
+    public boolean updateUser(User newUser)throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;//insert statement
+        try {
+            conn = db.openConnection();
+            stmt = conn.prepareStatement("UPDATE user SET personID = ? WHERE userName = ?");
+            stmt.setString(1,newUser.getPersonID());
+            stmt.setString(2,newUser.getUserName());
+            if(stmt.executeUpdate() == 1){//execute the statement
+                db.closeConnection(true, conn);
+                return true;
+            }
+            if(!conn.isClosed()){db.closeConnection(false, conn);}
+        }catch(SQLException e){
+            db.closeConnection(false, conn);
+            throw e;
         }
         finally {
             DataBase.safeClose(stmt);

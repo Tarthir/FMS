@@ -10,7 +10,7 @@ import infoObjects.FillRequest;
 
 /**
  * Created by tyler on 3/1/2017.
- * Grabs our Json data that we need for Fill request and Register Requests
+ * Grabs our Json data that we need for Fill requests
  */
 
 public class JsonData {
@@ -25,14 +25,6 @@ public class JsonData {
      * @EXCEPTION IllegalArgumentException
      * */
     public FillRequest setupJSONArrays(FillRequest request) throws IllegalArgumentException,IOException {
-        return setupJSONArraysFill(request);
-    }
-    /**
-     *Takes our Json arrays we have and then converts them to java arrays
-     * @PARAM FillRequest, a type of request
-     * @RETURN The FillRequest object with updated fields containg the arrays we setup
-     * */
-    private FillRequest setupJSONArraysFill(FillRequest request) throws IOException {
         String filePathStr = "C:\\Users\\tyler\\AndroidStudioProjects\\FamilyMap\\DefaultFiles\\locations.json";
         Gson gson = new Gson();
         try {

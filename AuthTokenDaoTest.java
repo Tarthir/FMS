@@ -30,6 +30,7 @@ public class AuthTokenDaoTest {
     private UserDao uDao;
     private DataBase db;
     private Connection connection;
+    private AuthToken authToken;
 
     @Before
     public void setUp() throws IOException,SQLException {
@@ -40,7 +41,9 @@ public class AuthTokenDaoTest {
         //to Setup
         uDao = new UserDao();
         User user = new User("name", "password", "email", "first", "last", "m","peep");
+        authToken = new AuthToken();
         try {
+            new AuthTokenDao().insertAuthToken("name",authToken);
             assertTrue(uDao.register(user));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,7 +85,7 @@ public class AuthTokenDaoTest {
         try {
             assertTrue(aDao.insertAuthToken("name", auth));
             assertTrue(aDao.deleteAuthToken("name"));
-            assertEquals(aDao.getAuthToken("name"),new ArrayList<String>());
+            assertEquals(aDao.getAuthToken("name"),new ArrayList<String>());//empty arraylist of authtokens
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,6 +124,31 @@ public class AuthTokenDaoTest {
             for (String str : authToks) {//for every authToken we found
                 assertNotEquals(aDao.getUserIDFromAuthToken(str), "notintable");//can we see that its related to this userID?
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void getUserIDFromAuthtokenTest() {
+
+        try {
+            String userID = new AuthTokenDao().getUserIDFromAuthToken(authToken.getAuthToken());
+
+            assertEquals(userID,"name");
+            assertNotEquals(userID,"nameNotinTable");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void ValidateAuthTokenTest() {
+
+        try {
+           boolean bool = new AuthTokenDao().validateAuthToken(authToken.getAuthToken());//should be true
+            assertTrue(bool);
+            bool = new AuthTokenDao().validateAuthToken(new AuthToken().getAuthToken());//should be false
+            assertFalse(bool);
         } catch (SQLException e) {
             e.printStackTrace();
         }

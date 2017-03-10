@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import dataAccess.EventDao;
 import dataAccess.PersonDao;
+import dataAccess.UserDao;
 import infoObjects.FillRequest;
 import infoObjects.FillResult;
 import models.Event;
@@ -71,7 +72,11 @@ public class DataGenerator {
             mother = people.get(people.size() - 1).getPersonID();
         }
         User user = request.getUser();
-        people.add(new Person(UUID.randomUUID().toString(), user.getUserName(), user.getfName(), user.getlName(), user.getGender(), father, mother, ""));
+        UserDao uDao = new UserDao();
+        String newPersonID = UUID.randomUUID().toString();//GRAB the new personID for the user
+        user.setPersonID(newPersonID);//set it
+        uDao.updateUser(user);//update it in the user table
+        people.add(new Person(newPersonID, user.getUserName(), user.getfName(), user.getlName(), user.getGender(), father, mother, ""));
         genEvents(people.get(people.size() - 1), request.getLocations(), 0, user.getUserName());
     }
 
@@ -142,7 +147,7 @@ public class DataGenerator {
         Random lNameRand = new Random();
         Random fNameRand = new Random();
         return new Person(uuid.toString(),userName, fNames[fNameRand.nextInt(fNames.length)],
-                lNames[lNameRand.nextInt(lNames.length)], "m", null, null, null);
+                lNames[lNameRand.nextInt(lNames.length)], "m", "", "", "");
     }
 
     /**
@@ -158,7 +163,7 @@ public class DataGenerator {
         Random lNameRand = new Random();
         UUID uuid = UUID.randomUUID();
         return new Person(uuid.toString(),userName, mNames[mNameRand.nextInt(mNames.length)],
-                lNames[lNameRand.nextInt(lNames.length)], "f", null, null, null);
+                lNames[lNameRand.nextInt(lNames.length)], "f", "", "", "");
     }
 
     /**

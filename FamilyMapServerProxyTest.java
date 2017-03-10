@@ -68,7 +68,7 @@ public class FamilyMapServerProxyTest {
     public void ClearTest(){
         RegisterResult result = proxy.register(new RegisterRequest("user","password","email","firstname","lastname","m"));
         ClearResult result2 = proxy.clear();
-        PersonResult result3 = proxy.getPerson(new PersonRequest(result.getPersonID()));
+        PersonResult result3 = proxy.getPerson(new PersonRequest(result.getPersonID(),result.getAuthToken()));
         assertEquals(result3.getPerson(), null);
         assertNotEquals(result3.getMessage(),null);
         assertEquals(result2.getMessage(),"Clear Succeeded");
@@ -117,7 +117,7 @@ public class FamilyMapServerProxyTest {
         assertEquals(result2.getEvents().size(), 123);
         assertEquals(result2.getMessage(),null);
         Event event = result2.getEvents().get(0);
-        EventResult result3 = proxy.getEvent(new EventRequest(event.getEventID()));
+        EventResult result3 = proxy.getEvent(new EventRequest(event.getEventID(),result.getAuthToken()));
         assertEquals(event,result3.getEvent());
         proxy.clear();
     }
@@ -134,7 +134,7 @@ public class FamilyMapServerProxyTest {
     public void getPersonTest(){
         RegisterResult result = proxy.register(new RegisterRequest("user","password","email","firstname","lastname","m"));
         assertEquals(result.getUserName(),"user");
-        PersonResult result2 = proxy.getPerson(new PersonRequest(result.getPersonID()));
+        PersonResult result2 = proxy.getPerson(new PersonRequest(result.getPersonID(),result.getAuthToken()));
         assertEquals(result2.getPerson().getDescendant(), result.getUserName());
         assertEquals(result2.getPerson().getPersonID(), result.getPersonID());
         assertEquals(proxy.getAuthToken(), result.getAuthToken());
@@ -145,6 +145,7 @@ public class FamilyMapServerProxyTest {
         RegisterResult result = proxy.register(new RegisterRequest("user","password","email","firstname","lastname","m"));
         assertEquals(result.getUserName(),"user");
         PeopleResult result2 = proxy.getPeople(new PeopleRequest(proxy.getAuthToken()));
+        //System.out.println(result2.getPeople().get(0).getMother());
         assertEquals(result2.getPeople().size(),31);
         assertEquals(result2.getMessage(),null);
         proxy.clear();

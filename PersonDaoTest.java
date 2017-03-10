@@ -10,11 +10,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import dataAccess.AuthTokenDao;
 import dataAccess.DataBase;
 import dataAccess.PersonDao;
 import dataAccess.UserDao;
 import infoObjects.LoginRequest;
 import infoObjects.PersonRequest;
+import models.AuthToken;
 import models.Person;
 import models.User;
 
@@ -32,6 +34,8 @@ public class PersonDaoTest {
     private PersonDao pDao;
     private DataBase db;
     private Connection connection;
+    private AuthToken authToken;
+    private AuthToken authToken2;
 
     @Before
     public void setUp() throws IOException, SQLException {
@@ -39,6 +43,21 @@ public class PersonDaoTest {
         db = new DataBase();
         connection = db.openConnection();
         db.createTables(connection);
+
+        //setup
+        UserDao userDao = new UserDao();
+        assertTrue(userDao.register(new User("userName","password","email","fName","lName","f","e")));
+        authToken = new AuthToken();
+        new AuthTokenDao().insertAuthToken("userName",authToken);
+
+        assertTrue(userDao.register(new User("userName2","password","email","fName","lName","f","e2")));
+        authToken2 = new AuthToken();
+        new AuthTokenDao().insertAuthToken("userName2",authToken2);
+
+        assertTrue(pDao.insertPerson(new Person("personID", "userName", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
+        assertTrue(pDao.insertPerson(new Person("personID2", "userName", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2")));
+        assertTrue(pDao.insertPerson(new Person("personID3", "userName", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3")));
+        assertTrue(pDao.insertPerson(new Person("personID4", "userName2", "fName4", "lName4", "f", "fatherID4", "motherID4", "spouseID4")));
     }
 
     @After
@@ -50,6 +69,16 @@ public class PersonDaoTest {
             e.printStackTrace();
         }
         return;
+    }
+    @Test
+    public void getUserOfPersonTest(){
+        try {
+            assertEquals(pDao.getUserOfPerson("personID"),"userName");
+            assertEquals(pDao.getUserOfPerson("personID4"),"userName2");
+            assertNotEquals(pDao.getUserOfPerson("personID"),"userName2");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -68,20 +97,14 @@ public class PersonDaoTest {
     @Test
     public void testDeletePerson() {
         try {
-            UserDao userDao = new UserDao();
-            assertTrue(userDao.register(new User("userName","password","email","fName","lName","f","e")));
-            assertTrue(userDao.register(new User("userName2","password","email","fName","lName","f","e2")));
-            assertTrue(pDao.insertPerson(new Person("personID", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
-            assertTrue(pDao.insertPerson(new Person("personID2", "userID", "fName2", "lName2", "m", "fatherID2", "motherID2", "spouseID2")));
-            assertTrue(pDao.insertPerson(new Person("personID3", "userID", "fName3", "lName3", "m", "fatherID3", "motherID3", "spouseID3")));
-            assertTrue(pDao.insertPerson(new Person("personID4", "userID2", "fName4", "lName4", "f", "fatherID4", "motherID4", "spouseID4")));
-            assertTrue(pDao.deletePerson("userID"));
-            assertEquals(pDao.getPerson(new PersonRequest("personID")),null);
-            assertEquals(pDao.getPerson(new PersonRequest("personID2")),null);
-            assertEquals(pDao.getPerson(new PersonRequest("personID3")),null);
-            assertNotEquals(pDao.getPerson(new PersonRequest("personID4")),null);
-            assertTrue(pDao.deletePerson("userID2"));
-            assertEquals(pDao.getPerson(new PersonRequest("personID4")),null);
+
+            assertTrue(pDao.deletePerson("userName"));
+            assertEquals(pDao.getPerson(new PersonRequest("personID",authToken.getAuthToken())),null);
+            assertEquals(pDao.getPerson(new PersonRequest("personID2",authToken.getAuthToken())),null);
+            assertEquals(pDao.getPerson(new PersonRequest("personID3",authToken.getAuthToken())),null);
+            assertNotEquals(pDao.getPerson(new PersonRequest("personID4",authToken2.getAuthToken())),null);
+            assertTrue(pDao.deletePerson("userName2"));
+            assertEquals(pDao.getPerson(new PersonRequest("personID4",authToken2.getAuthToken())),null);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -91,15 +114,15 @@ public class PersonDaoTest {
     @Test
     public void testGetPerson() {
         try {
-            Person person1 = new Person("5","userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
-            Person person2 = new Person("6","userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
-            PersonRequest request = new PersonRequest("5");
-            PersonRequest request2 = new PersonRequest("6");
-            assertTrue(pDao.insertPerson(person1));
-            assertTrue(pDao.insertPerson(person2));
-            ArrayList<String> dataExpected = new ArrayList<>(Arrays.asList("5","userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID"));
+            //Person person1 = new Person("5","userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
+            //Person person2 = new Person("6","userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
+            PersonRequest request = new PersonRequest("personID",authToken.getAuthToken());
+            PersonRequest request2 = new PersonRequest("personID4",authToken2.getAuthToken());
+            //assertTrue(pDao.insertPerson(person1));
+            //assertTrue(pDao.insertPerson(person2));
+            ArrayList<String> dataExpected = new ArrayList<>(Arrays.asList("personID", "userName", "fName", "lName", "m", "fatherID", "motherID", "spouseID"));
             assertEquals(dataExpected, pDao.getPerson(request));
-            ArrayList<String> dataExpected2 = new ArrayList<>(Arrays.asList("6","userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2"));
+            ArrayList<String> dataExpected2 = new ArrayList<>(Arrays.asList("personID4", "userName2", "fName4", "lName4", "f", "fatherID4", "motherID4", "spouseID4"));
             assertEquals(dataExpected2, pDao.getPerson(request2));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -108,18 +131,12 @@ public class PersonDaoTest {
     }
 
     @Test
-    public void testGetPersonFail() {
+    public void testGetPersonFail() {//trying personIDs that dont exist will fail
         try {
-            Person person1 = new Person("1", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID");
-            Person person2 = new Person("6", "userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2");
-            PersonRequest request = new PersonRequest("1");
-            PersonRequest request2 = new PersonRequest("2");
-            assertTrue(pDao.insertPerson(person1));
-            assertTrue(pDao.insertPerson(person2));
-            ArrayList<String> dataExpected = new ArrayList<>(Arrays.asList("1", "userID", "fName", "lName", "m", "fatherID", "motherID", "spouseID"));
-            assertEquals(dataExpected, pDao.getPerson(request));
-            ArrayList<String> dataExpected2 = new ArrayList<>(Arrays.asList("2", "userID2", "fName2", "lName2", "f", "fatherID2", "motherID2", "spouseID2"));
-            assertNotEquals(dataExpected2, pDao.getPerson(request2));
+            PersonRequest request = new PersonRequest("personID6",authToken.getAuthToken());
+            PersonRequest request2 = new PersonRequest("personID7",authToken2.getAuthToken());
+            assertEquals(null, pDao.getPerson(request));
+            assertEquals(null, pDao.getPerson(request2));
         } catch (SQLException e) {
             e.printStackTrace();
         }

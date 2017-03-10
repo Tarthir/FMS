@@ -42,6 +42,7 @@ public class MultiDaoTest {
     private DataBase db;
     private Connection connection;
     private MultiDao mDao;
+    private AuthToken authToken;
     private AuthToken authToken2;
 
     @Before
@@ -60,7 +61,8 @@ public class MultiDaoTest {
             User user2 = new User( "name2", "password2", "email2", "first2", "last2", "f","peep2");
             assertTrue(uDao.register(user));
             assertTrue(uDao.register(user2));
-            assertTrue(aDao.insertAuthToken("name", new AuthToken()));
+            authToken = new AuthToken();
+            assertTrue(aDao.insertAuthToken("name", authToken));
             authToken2 = new AuthToken();
             assertTrue(aDao.insertAuthToken("name2", authToken2));
             assertTrue(pDao.insertPerson(new Person("personID", "name", "fName", "lName", "m", "fatherID", "motherID", "spouseID")));
@@ -73,10 +75,10 @@ public class MultiDaoTest {
             assertTrue(eDao.insertEvent(new Event("eventID3", "name", "personID3", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth")));
             assertTrue(eDao.insertEvent(new Event("eventID4", "name2", "personID4", new Location( "213.7", "123.7","Provo", "USA"), "1994", "Birth2")));
 
-            assertNotEquals(eDao.getEvent(new EventRequest("eventID")),null);
-            assertNotEquals(eDao.getEvent(new EventRequest("eventID2")),null);
-            assertNotEquals(eDao.getEvent(new EventRequest("eventID3")),null);
-            assertNotEquals(eDao.getEvent(new EventRequest("eventID4")),null);
+            assertNotEquals(eDao.getEvent(new EventRequest("eventID",authToken.getAuthToken())),null);
+            assertNotEquals(eDao.getEvent(new EventRequest("eventID2",authToken.getAuthToken())),null);
+            assertNotEquals(eDao.getEvent(new EventRequest("eventID3",authToken.getAuthToken())),null);
+            assertNotEquals(eDao.getEvent(new EventRequest("eventID4",authToken2.getAuthToken())),null);
 
         }catch(SQLException e){
             e.printStackTrace();
@@ -98,13 +100,13 @@ public class MultiDaoTest {
     public void deleteFromDataBaseTest(){
         try {
             assertTrue(mDao.deleteFromDataBase("name"));
-            ArrayList<String> arr = eDao.getEvent(new EventRequest("eventID4"));
-            ArrayList<String> arr2 = pDao.getPerson(new PersonRequest("personID4"));
-            ArrayList<String> arr3 = eDao.getEvent(new EventRequest("eventID2"));
-            ArrayList<String> arr4 = pDao.getPerson(new PersonRequest("personID2"));
+            ArrayList<String> arr = eDao.getEvent(new EventRequest("eventID4",authToken2.getAuthToken()));
+            ArrayList<String> arr2 = pDao.getPerson(new PersonRequest("personID4",authToken2.getAuthToken()));
+            ArrayList<String> arr3 = eDao.getEvent(new EventRequest("eventID2",authToken.getAuthToken()));
+            ArrayList<String> arr4 = pDao.getPerson(new PersonRequest("personID2",authToken.getAuthToken()));
             //ArrayList<String> arr3 = aDao.getAuthToken("userID2");
-            assertNotEquals(arr,null);
-            assertNotEquals(arr2,null);
+            assertNotEquals(arr,null);//is there
+            assertNotEquals(arr2,null);//is there
             assertEquals(arr3,null);
             assertEquals(arr4,null);
         }catch(SQLException e){e.printStackTrace();}
@@ -122,14 +124,19 @@ public class MultiDaoTest {
     public void doClear(){
         try {
             mDao.doClear();
-            assertEquals(eDao.getEvent(new EventRequest("eventID")), null);
-            assertEquals(eDao.getEvent(new EventRequest("eventID2")), null);
-            assertEquals(eDao.getEvent(new EventRequest("eventID3")), null);
-            assertEquals(eDao.getEvent(new EventRequest("eventID4")), null);
-            assertEquals(pDao.getPerson(new PersonRequest("personID")), null);
-            assertEquals(pDao.getPerson(new PersonRequest("personID2")), null);
-            assertEquals(pDao.getPerson(new PersonRequest("personID3")), null);
-            assertEquals(pDao.getPerson(new PersonRequest("personID4")), null);
+            assertEquals(eDao.getEvent(new EventRequest("eventID",authToken.getAuthToken())), null);
+            assertEquals(eDao.getEvent(new EventRequest("eventID2",authToken.getAuthToken())), null);
+            assertEquals(eDao.getEvent(new EventRequest("eventID3",authToken.getAuthToken())), null);
+            assertEquals(eDao.getEvent(new EventRequest("eventID4",authToken2.getAuthToken())), null);
+
+            assertEquals(eDao.getEvent(new EventRequest("eventID4",authToken.getAuthToken())), null);//giving wrong authtoken
+
+            assertEquals(pDao.getPerson(new PersonRequest("personID",authToken.getAuthToken())), null);
+            assertEquals(pDao.getPerson(new PersonRequest("personID2",authToken.getAuthToken())), null);
+            assertEquals(pDao.getPerson(new PersonRequest("personID3",authToken.getAuthToken())), null);
+            assertEquals(pDao.getPerson(new PersonRequest("personID4",authToken2.getAuthToken())), null);
+
+            assertEquals(pDao.getPerson(new PersonRequest("personID4",authToken.getAuthToken())), null);//giving wrong authtoken
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -137,7 +144,16 @@ public class MultiDaoTest {
     @Test
     public void ValidateAuthTokenTest(){
         try {
-            assertTrue(mDao.validate(authToken2.getAuthToken()));
+            assertTrue(mDao.validate(new EventRequest("eventID",authToken.getAuthToken())));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void ValidateAuthTokenTestFail(){
+        try {
+            assertFalse(mDao.validate(new EventRequest("eventID4",authToken.getAuthToken())));
         } catch (SQLException e) {
             e.printStackTrace();
         }
