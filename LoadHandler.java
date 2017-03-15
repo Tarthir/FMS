@@ -1,13 +1,13 @@
 package handler;
 
 import com.sun.net.httpserver.HttpHandler;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.sql.SQLException;
 
 import encode.Encoder;
-import encode.JsonData;
 import infoObjects.LoadRequest;
 import infoObjects.LoadResult;
 import service.LoadService;
@@ -32,7 +32,7 @@ public class LoadHandler implements HttpHandler{
 
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 LoadService service = new LoadService();
-                LoadRequest request = encode.decodeLoad(exchange);//new JsonData().getLoadData();
+                LoadRequest request = encode.decodeLoadRequest(exchange.getRequestBody());//new JsonData().getLoadData();
 
                 LoadResult result = service.load(request);
                 encode.encode(result, respBody);

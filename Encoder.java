@@ -1,11 +1,8 @@
 package encode;
 
 
-//import com.sun.corba.se.impl.orbutil.ObjectWriter;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,31 +10,20 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.util.Iterator;
-import java.util.List;
-
-//import javax.xml.ws.spi.http.HttpExchange;
-import com.sun.corba.se.spi.orbutil.fsm.Input;
-import com.sun.net.httpserver.HttpExchange;
 
 import infoObjects.ClearResult;
 import infoObjects.EventResult;
-import infoObjects.EventsRequest;
 import infoObjects.EventsResult;
-import infoObjects.FillRequest;
 import infoObjects.FillResult;
 import infoObjects.LoadRequest;
 import infoObjects.LoadResult;
 import infoObjects.LoginRequest;
 import infoObjects.LoginResult;
-import infoObjects.PeopleRequest;
 import infoObjects.PeopleResult;
-import infoObjects.PersonRequest;
 import infoObjects.PersonResult;
 import infoObjects.RegisterRequest;
 import infoObjects.RegisterResult;
-import models.Location;
-import models.Person;
+
 
 /**
  * Created by tyler on 2/10/2017.
@@ -58,15 +44,15 @@ public class Encoder {
         writer.flush();
     }
 
+
     /**
      * This decodes java objects from JSON
-     * @PARAM HttpExchange object
-     * @RETURN RegisterRequest object
+     * @PARAM String, input
+     * @RETURN A result object
      * @EXCEPTION IOException
      * */
-    public RegisterRequest decodeReg(HttpExchange exchange)throws IOException{
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
-        return gson.fromJson(reader, RegisterRequest.class);
+    public RegisterResult decodeRegResult(String input)throws IOException{
+        return gson.fromJson(input, RegisterResult.class);
     }
 
     /**
@@ -75,8 +61,9 @@ public class Encoder {
      * @RETURN A result object
      * @EXCEPTION IOException
      * */
-    public RegisterResult decodeReg(String input)throws IOException{
-        return gson.fromJson(input, RegisterResult.class);
+    public RegisterRequest decodeRegRequest(InputStream input)throws IOException{
+        Reader reader = new InputStreamReader(input);
+        return gson.fromJson(reader, RegisterRequest.class);
     }
     /**
      * This decodes java objects from JSON
@@ -146,32 +133,33 @@ public class Encoder {
     /**
      * This decodes java objects from JSON
      * @PARAM String Json object
-     * @RETURN LoginRequest object
+     * @RETURN LoginResult object
      * @EXCEPTION IOException
      * */
-    public LoginResult decodeLogin(InputStream input)throws IOException{
+    public LoginResult decodeLoginResult(InputStream input)throws IOException{
         Reader reader = new InputStreamReader(input);
         return gson.fromJson(reader, LoginResult.class);
     }
 
     /**
      * This decodes java objects from JSON
-     * @PARAM HttpExchange object
+     * @PARAM String Json object
      * @RETURN LoginRequest object
      * @EXCEPTION IOException
      * */
-    public LoginRequest decodeLogin(HttpExchange exchange)throws IOException{
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
+    public LoginRequest decodeLoginRequest(InputStream input)throws IOException{
+        Reader reader = new InputStreamReader(input);
         return gson.fromJson(reader, LoginRequest.class);
     }
+
     /**
      * This decodes java objects from JSON
      * @PARAM HttpExchange object
      * @RETURN LoadRequest object
      * @EXCEPTION IOException
      * */
-    public LoadRequest decodeLoad(HttpExchange exchange)throws IOException,IllegalArgumentException{
-        Reader reader = new InputStreamReader(exchange.getRequestBody());
+    public LoadRequest decodeLoadRequest(InputStream reqBody)throws IOException,IllegalArgumentException{
+        Reader reader = new InputStreamReader(reqBody);
         LoadDataHolder holder = gson.fromJson(reader, LoadDataHolder.class);//put into holder class
         //System.out.println(holder.getUsers()[0].getfName());
         if(holder.getEvents().length > 0 && holder.getPersons().length > 0 && holder.getUsers().length > 0) {

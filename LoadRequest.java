@@ -1,6 +1,5 @@
 package infoObjects;
 
-import models.AuthToken;
 import models.Event;
 import models.Person;
 import models.User;

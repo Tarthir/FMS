@@ -1,13 +1,10 @@
 package server;
+
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.sql.SQLException;
-
-import javax.xml.crypto.Data;
 
 import dataAccess.DataBase;
 import handler.ClearHandler;
@@ -18,8 +15,6 @@ import handler.LoadHandler;
 import handler.LoginHandler;
 import handler.PersonHandler;
 import handler.RegisterHandler;
-import models.Person;
-import infoObjects.*;
 
 /**
  * Created by tyler on 2/13/2017.
@@ -36,7 +31,7 @@ public class MainServer {
     /**
      * Runs our server
      * */
-    private void run(String portNumber) {
+    public void run(String portNumber) {
         try {
             server = HttpServer.create(
                     new InetSocketAddress(Integer.parseInt(portNumber)),

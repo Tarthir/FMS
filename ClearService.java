@@ -2,7 +2,6 @@ package service;
 
 import java.sql.SQLException;
 
-import dataAccess.DataBase;
 import dataAccess.MultiDao;
 import infoObjects.ClearResult;
 

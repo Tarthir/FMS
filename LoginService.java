@@ -3,11 +3,9 @@ package service;
 import java.sql.SQLException;
 
 import dataAccess.AuthTokenDao;
-import dataAccess.PersonDao;
 import dataAccess.UserDao;
 import infoObjects.LoginRequest;
 import infoObjects.LoginResult;
-import infoObjects.RegisterResult;
 import models.AuthToken;
 
 /**

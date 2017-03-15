@@ -1,27 +1,17 @@
 package handler;
 
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
-import dataAccess.MultiDao;
 import encode.Encoder;
 import infoObjects.PeopleRequest;
 import infoObjects.PeopleResult;
 import infoObjects.PersonRequest;
 import infoObjects.PersonResult;
-import models.Person;
 import service.PeopleService;
 import service.PersonService;
 

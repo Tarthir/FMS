@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 import dataAccess.AuthTokenDao;
 import dataAccess.MultiDao;
+import models.PeopleCreator;
 import dataAccess.PersonDao;
 import infoObjects.PeopleRequest;
 import infoObjects.PeopleResult;
-import dataAccess.PeopleCreator;
 
 /**
  * Created by tyler on 2/14/2017.

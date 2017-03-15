@@ -3,13 +3,11 @@ package service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import dataAccess.AuthTokenDao;
 import dataAccess.MultiDao;
+import models.PeopleCreator;
 import dataAccess.PersonDao;
 import infoObjects.PersonRequest;
-import dataAccess.PeopleCreator;
 import infoObjects.PersonResult;
-import models.Person;
 
 /**
  * Created by tyler on 2/14/2017.

@@ -1,13 +1,13 @@
 package service;
 
-        import java.sql.SQLException;
+import java.sql.SQLException;
 
-        import dataAccess.MultiDao;
-        import dataAccess.UserCreator;
-        import dataAccess.UserDao;
-        import infoObjects.FillRequest;
-        import infoObjects.FillResult;
-        import models.User;
+import dataAccess.MultiDao;
+import models.UserCreator;
+import dataAccess.UserDao;
+import infoObjects.FillRequest;
+import infoObjects.FillResult;
+import models.User;
 
 /**
  * Created by tyler on 2/14/2017.

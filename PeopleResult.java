@@ -1,6 +1,5 @@
 package infoObjects;
 
-import java.beans.Transient;
 import java.util.ArrayList;
 
 import models.Person;

@@ -13,7 +13,6 @@ import infoObjects.EventRequest;
 import infoObjects.EventResult;
 import infoObjects.EventsRequest;
 import infoObjects.EventsResult;
-import models.Event;
 import service.EventService;
 import service.EventsService;
 

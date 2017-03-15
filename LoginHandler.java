@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 import encode.Encoder;
-import encode.JsonData;
 import infoObjects.LoginRequest;
 import infoObjects.LoginResult;
 import service.LoginService;
@@ -32,7 +31,7 @@ public class LoginHandler implements HttpHandler {
                 //Headers reqHeaders = exchange.getRequestHeaders();
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 LoginService service = new LoginService();
-                LoginRequest request = encode.decodeLogin(exchange);
+                LoginRequest request = encode.decodeLoginRequest(exchange.getRequestBody());
                 LoginResult result = service.login(request);
 
                 encode.encode(result,respBody);

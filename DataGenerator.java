@@ -180,7 +180,7 @@ public class DataGenerator {
         Random locRand = new Random();
         for (String eventT : eventType) {//for every kind of event
             UUID uuid = UUID.randomUUID();
-            int location = locRand.nextInt(locations.length - 1);
+            int location = locRand.nextInt(locations.length);
             int year = getYear(eventT, startYear);
             //NEED TO HAVE MARRIAGES AT SAME LOCATION/YEAR
             events.add(new Event(uuid.toString(), userName, person.getPersonID(), locations[location], Integer.toString(year), eventT));

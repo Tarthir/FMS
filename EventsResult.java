@@ -3,7 +3,6 @@ package infoObjects;
 import java.util.ArrayList;
 
 import models.Event;
-import models.Person;
 
 /**
  * Created by tyler on 2/13/2017.

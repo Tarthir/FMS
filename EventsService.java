@@ -4,11 +4,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dataAccess.AuthTokenDao;
-import dataAccess.EventsCreator;
 import dataAccess.EventDao;
+import models.EventsCreator;
 import dataAccess.MultiDao;
-import infoObjects.EventsResult;
 import infoObjects.EventsRequest;
+import infoObjects.EventsResult;
 import models.Event;
 
 /**

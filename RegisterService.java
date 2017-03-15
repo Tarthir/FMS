@@ -1,13 +1,10 @@
 package service;
 
 import java.io.IOException;
-import java.rmi.ServerError;
 import java.sql.SQLException;
 import java.util.UUID;
 
 import dataAccess.AuthTokenDao;
-import dataAccess.PeopleCreator;
-import dataAccess.PersonDao;
 import dataAccess.UserDao;
 import encode.JsonData;
 import infoObjects.FillRequest;
@@ -15,7 +12,6 @@ import infoObjects.FillResult;
 import infoObjects.RegisterRequest;
 import infoObjects.RegisterResult;
 import models.AuthToken;
-import models.Person;
 import models.User;
 
 /**

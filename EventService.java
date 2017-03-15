@@ -3,8 +3,8 @@ package service;
 import java.sql.SQLException;
 
 import dataAccess.AuthTokenDao;
-import dataAccess.EventsCreator;
 import dataAccess.EventDao;
+import models.EventsCreator;
 import dataAccess.MultiDao;
 import infoObjects.EventRequest;
 import infoObjects.EventResult;

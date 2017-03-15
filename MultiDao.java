@@ -11,6 +11,7 @@ import infoObjects.LoadResult;
 import infoObjects.PeopleRequest;
 import infoObjects.PersonRequest;
 import models.Event;
+import models.EventsCreator;
 import models.Person;
 import models.User;
 

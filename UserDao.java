@@ -1,14 +1,13 @@
 package dataAccess;
 
 import java.sql.Connection;
-
-import infoObjects.LoginRequest;
-import models.User;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import infoObjects.LoginRequest;
+import models.User;
 
 /**
  * Created by tyler on 2/10/2017.
@@ -149,6 +148,7 @@ public class UserDao {
             stmt.setString(1,userName);
             rs = stmt.executeQuery();//execute the statement
             if(rs.next()){
+                String str = rs.getString(1);
                 db.closeConnection(true, conn);
                 return true;
             }

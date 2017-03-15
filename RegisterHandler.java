@@ -36,7 +36,7 @@ public class RegisterHandler implements HttpHandler {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
                 RegisterService service = new RegisterService();
-                RegisterRequest request = encode.decodeReg(exchange);
+                RegisterRequest request = encode.decodeRegRequest(exchange.getRequestBody());
 
                 RegisterResult result = service.register(request);
                 encode.encode(result, respBody);

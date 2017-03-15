@@ -1,19 +1,30 @@
-package server;
+package com.tylerbrady34gmail.familyclient;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.Scanner;
 
 import encode.Encoder;
-import infoObjects.*;
-import models.*;
+import infoObjects.ClearResult;
+import infoObjects.EventRequest;
+import infoObjects.EventResult;
+import infoObjects.EventsRequest;
+import infoObjects.EventsResult;
+import infoObjects.FillRequest;
+import infoObjects.FillResult;
+import infoObjects.LoadRequest;
+import infoObjects.LoadResult;
+import infoObjects.LoginRequest;
+import infoObjects.LoginResult;
+import infoObjects.PeopleRequest;
+import infoObjects.PeopleResult;
+import infoObjects.PersonRequest;
+import infoObjects.PersonResult;
+import infoObjects.RegisterRequest;
+import infoObjects.RegisterResult;
 
 /**
  * Created by tyler on 2/10/2017.
@@ -22,19 +33,22 @@ import models.*;
  */
 
 public class FamilyMapServerProxy {
+    //public static final FamilyMapServerProxy SINGLETON = new FamilyMapServerProxy();
 
-
-    private String serverHost; //"128.187.83.252";//need to connect in a different way
-    private String serverPort; //"8080";
+    private String serverHost; //= FamilyMapServerProxy.SINGLETON.getServerHost();//"128.187.83.252";//need to connect in a different way
+    private String serverPort; //= FamilyMapServerProxy.SINGLETON.getServerPort();//"8080";
     private String authToken;
 
     public FamilyMapServerProxy() {
-            this.serverHost = "localhost";//InetAddress.getLocalHost().getHostAddress();
-            System.out.println("ServerHost is localhost\nPortNumber: ");
-            Scanner scan = new Scanner(System.in);
-            //this.serverPort ="8080";
-            this.serverPort = scan.next();;//InetAddress.getLocalHost().getHostName();
-            scan.close();
+        //FamilyMapServerProxy.SINGLETON.setServerHost("localhost");
+        //FamilyMapServerProxy.SINGLETON.setServerPort("8080");
+        this.serverHost = "localhost";//FamilyMapServerProxy.SINGLETON.getServerHost();//InetAddress.getLocalHost().getHostAddress();
+        this.serverPort = "8080";//FamilyMapServerProxy.SINGLETON.getServerPort();
+    }
+
+    public FamilyMapServerProxy(String serverHost, String serverPort) {
+        this.serverHost = serverHost;
+        this.serverPort = serverPort;
     }
 
     /***
@@ -43,11 +57,12 @@ public class FamilyMapServerProxy {
      * @PARAM request, the request to register a new user
      * @Return the result, successful or not of the register attempt
      */
-    public RegisterResult register(RegisterRequest request)  {
+    public RegisterResult register(URL url,RegisterRequest request)  {
 
         try {
             //IP address and port
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/register");
+            /*URL url = new URL("http://" + serverHost + ":"
+                                        + serverPort + "/user/register");*/
 
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
 
@@ -55,8 +70,8 @@ public class FamilyMapServerProxy {
             http.setDoOutput(true);	// There is a request body, dofor all except clear
 
             http.addRequestProperty("Accept", "application/json");
-            Encoder encode = new Encoder();
-            encode.encode(request,http.getOutputStream());
+            Encoder encoder = new Encoder();
+            encoder.encode(request,http.getOutputStream());
             http.connect();
 
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -65,7 +80,7 @@ public class FamilyMapServerProxy {
 
                 String respData = readString(respBody);
 
-                RegisterResult result = encode.decodeReg(respData);
+                RegisterResult result = encoder.decodeRegResult(respData);
                 authToken = result.getAuthToken();
                 return result;
             }
@@ -79,8 +94,7 @@ public class FamilyMapServerProxy {
 
                 System.out.println("ERROR: " + http.getResponseMessage());
 
-                RegisterResult result = encode.decodeReg(respData);
-                return result;
+                return encoder.decodeRegResult(respData);
             }
         }
         catch (IOException e) {
@@ -94,11 +108,12 @@ public class FamilyMapServerProxy {
      * @Param request, this object holds the info needed to successfully login
      * @Return the result, successful or not of the login attempt
      */
-    public LoginResult login(LoginRequest request) {
+    public LoginResult login(URL url,LoginRequest request) {
 
         try {
             //IP address and port
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/login");
+           /* URL url = new URL("http://" + serverHost
+                                        + ":" + serverPort + "/user/login");*/
 
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
@@ -114,11 +129,11 @@ public class FamilyMapServerProxy {
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
                 InputStream respBody = http.getInputStream();
-                return encode.decodeLogin(respBody);
+                return encode.decodeLoginResult(respBody);
             } else {
 
                 InputStream resBody = http.getErrorStream();
-                LoginResult result =  encode.decodeLogin(resBody);
+                LoginResult result =  encode.decodeLoginResult(resBody);
                 authToken = result.getAuthToken();
                 return result;
             }
@@ -138,7 +153,8 @@ public class FamilyMapServerProxy {
 
         try {
             //IP address and port
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/person/" + request.getPersonID());
+            URL url = new URL("http://" + serverHost + ":"
+                                        + serverPort + "/person/" + request.getPersonID());
 
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setDoOutput(true);	// There is a request body, do for all except clear
@@ -175,7 +191,8 @@ public class FamilyMapServerProxy {
 
         try {
             //IP address and port
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/person/");
+            URL url = new URL("http://" + serverHost
+                                        + ":" + serverPort + "/person/");
 
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setDoOutput(true);	// There is a request body, do for all except clear
@@ -212,7 +229,8 @@ public class FamilyMapServerProxy {
 
         try {
             //IP address and port
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/event/" + request.getEventID());
+            URL url = new URL("http://" + serverHost
+                                        + ":" + serverPort + "/event/" + request.getEventID());
 
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setDoOutput(true);	// There is a request body, dofor all except clear
@@ -251,7 +269,8 @@ public class FamilyMapServerProxy {
 
         try {
             //IP address and port
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/event");
+            URL url = new URL("http://" + serverHost
+                                        + ":" + serverPort + "/event");
 
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setDoOutput(true);	// There is a request body, dofor all except clear
@@ -287,7 +306,8 @@ public class FamilyMapServerProxy {
 
         try {
             //IP address and port
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/clear");
+            URL url = new URL("http://" + serverHost
+                                        + ":" + serverPort + "/clear");
 
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
 
@@ -322,10 +342,12 @@ public class FamilyMapServerProxy {
             //IP address and port
             URL url = null;
             if(request.getNumOfGenerations() == 0) {
-                url = new URL("http://" + serverHost + ":" + serverPort + "/fill/" + request.getUserName());
+                url = new URL("http://" + serverHost
+                                        + ":" + serverPort + "/fill/" + request.getUserName());
             }
             else{
-                url = new URL("http://" + serverHost + ":" + serverPort + "/fill/" + request.getUserName() +"/" + request.getNumOfGenerations());
+                url = new URL("http://" + serverHost
+                                        + ":" + serverPort + "/fill/" + request.getUserName() +"/" + request.getNumOfGenerations());
             }
 
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
@@ -362,7 +384,8 @@ public class FamilyMapServerProxy {
 
         try {
             //IP address and port
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/load");
+            URL url = new URL("http://" + serverHost
+                                        + ":" + serverPort + "/load");
 
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
 
@@ -403,5 +426,21 @@ public class FamilyMapServerProxy {
 
     public String getAuthToken() {
         return authToken;
+    }
+
+    public String getServerHost() {
+        return serverHost;
+    }
+
+    public void setServerHost(String serverHost) {
+        this.serverHost = serverHost;
+    }
+
+    public String getServerPort() {
+        return serverPort;
+    }
+
+    public void setServerPort(String serverPort) {
+        this.serverPort = serverPort;
     }
 }
