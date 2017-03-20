@@ -187,12 +187,12 @@ public class FamilyMapServerProxy {
      * @PARAM request, the info needed to make a request on the database for all ancestors
      * @Return the array of people related to the User
      */
-    public PeopleResult getPeople(PeopleRequest request) {
+    public PeopleResult getPeople(URL url,PeopleRequest request) {
 
         try {
             //IP address and port
-            URL url = new URL("http://" + serverHost
-                                        + ":" + serverPort + "/person/");
+            /*URL url = new URL("http://" + serverHost
+                                        + ":" + serverPort + "/person/");*/
 
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setDoOutput(true);	// There is a request body, do for all except clear
@@ -265,12 +265,12 @@ public class FamilyMapServerProxy {
      * @PARAM request, the info needed to make a request on the database for all events of a user's ancestor
      * @Return the result, an event object array; successful or not of the getEvents Attempt attempt
      */
-    public EventsResult getEvents(EventsRequest request) {
+    public EventsResult getEvents(URL url,EventsRequest request) {
 
         try {
             //IP address and port
-            URL url = new URL("http://" + serverHost
-                                        + ":" + serverPort + "/event");
+            /*URL url = new URL("http://" + serverHost
+                                        + ":" + serverPort + "/event");*/
 
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setDoOutput(true);	// There is a request body, dofor all except clear

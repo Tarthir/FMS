@@ -1,9 +1,10 @@
 package com.tylerbrady34gmail.familyclient;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +17,21 @@ import android.widget.Toast;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
+import infoObjects.EventsRequest;
+import infoObjects.EventsResult;
 import infoObjects.LoginRequest;
 import infoObjects.LoginResult;
+import infoObjects.PeopleRequest;
+import infoObjects.PeopleResult;
 import infoObjects.RegisterRequest;
 import infoObjects.RegisterResult;
 
 
 /**
  * Created by tyler on 3/13/2017.
+ * Our loginFragment
  */
 
 public class LoginFragment extends Fragment {
@@ -36,9 +43,11 @@ public class LoginFragment extends Fragment {
     private static final String TAG = "onCreateView";
     private static final String TAG2 = "register";
     private static final String TAG3 = "login";
+    private static final String GET_DATA = "httpTaskGetData";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
     }
 
@@ -46,8 +55,8 @@ public class LoginFragment extends Fragment {
     Fragment synchronizes the application with data from the Family Map Server. Synchronization
     pulls the data from the Family Map Server and stores it so that the application can access it
     later. If sign-in / registration or data synchronization fails, the Login Fragment displays an error
-    message (i.e., Android “toast”), and allows the user to retry the operation
-    @Override*/
+    message (i.e., Android “toast”), and allows the user to retry the operation*/
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "Entering OnCreateView");
         super.onCreate(savedInstanceState);
@@ -155,7 +164,9 @@ public class LoginFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Task which does a register or login request. Calls the proxy server which calls the server
+     * */
     public class httpTask extends AsyncTask<URL, Integer, Object> {//URL im sending off
         Object request;
         Object reqResult;
@@ -183,70 +194,126 @@ public class LoginFragment extends Fragment {
             }
         }
 
-
-        /*protected void onProgressUpdate(Integer... progress) {//probably dont need
-            progressBar.setProgress(progress[0]);
-        }*/
         @Override
         protected void onPostExecute(Object result) {//gets us back on the main thread
             Log.d("onPostExecute", "Entering onPostExecute");
             super.onPostExecute(result);
+            checkResult(result);
             /*create a second AsyncTask that uses HttpURLConnection to
             retrieve the logged-in user’s family data from the server.*/
-            //TODO:change to map fragment
-            checkResult(result);
-        }
 
-        public void successMsg(String msg) {
-            final String str = msg;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getActivity().getApplicationContext(), R.string.success_toast, Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-        public void errorMsg(String msg) {
-            final String str = msg;
-            LoginFragment.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getActivity().getApplicationContext(), R.string.error_toast, Toast.LENGTH_SHORT).show();
-                }
-            });
         }
 
         /**
          * Checks the result of the AsyncTask to see if an error occurred
+         * and if it succeeds to grab the data of the user
          *
          * @param reqResult An Register or Login Result
-         * @return boolean
+         * @return void
          */
         void checkResult(Object reqResult) {
+            httpTaskGetData dataGetter = new httpTaskGetData();
             if (reqResult instanceof RegisterResult) {
                 Log.d("checkResult", "Is a RegisterResult");
-                if (!(((RegisterResult) reqResult).getMessage().isEmpty())) {
+                RegisterResult result = (RegisterResult) reqResult;
+
+                if (result.getMessage() == null) {//the message will only be null if there is not an error
+
                     Log.d("checkResult", "No error");
+                    dataGetter.start(result.getAuthToken());
 
                 } else {
-                    Log.d("checkResult", "Error: " + ((RegisterResult) reqResult).getMessage());
+                    Log.d("checkResult", "Error: " + result.getMessage());
+                    Toast.makeText(getActivity(), R.string.error_toast, Toast.LENGTH_LONG).show();
                 }
             } else if (reqResult instanceof LoginResult) {
                 Log.d("checkResult", "Is a LoginResult");
-                if (!(((LoginResult) reqResult).getMessage().isEmpty())) {
+                LoginResult result = (LoginResult) reqResult;
+
+                if (result.getMessage() == null) {//the message will only be null if there is not an error
+
                     Log.d("checkResult", "No error");
-                    //Toast.makeText(getActivity().getApplicationContext(), R.string.success_toast, Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.d("checkResult", "Error: " + ((LoginResult) reqResult).getMessage());
-                    //Toast.makeText(getActivity().getApplicationContext(), R.string.error_toast, Toast.LENGTH_SHORT).show();
+                    dataGetter.start(result.getAuthToken());
+
+                } else {//otherwise we log the error message and make an error Toast
+                    Log.d("checkResult", "Error: " + result.getMessage());
+                    Toast.makeText(getActivity(), R.string.error_toast, Toast.LENGTH_LONG).show();
                 }
             } else {//Something went horribly wrong
                 Log.d("checkResult", "Got an object that was null or not of the right type");
-                //return null;
             }
         }
     }
+
+    /**
+     * An ASync task to grab the user data from the database
+     */
+    public class httpTaskGetData extends AsyncTask<URL, Integer, Object> {//URL im sending off
+        String authToken;
+
+        void start(String authToken) {
+            Log.d(GET_DATA, "Do a regRequest");
+            this.authToken = authToken;
+            try {
+                execute(new URL("http://" + mHost_input.getText().toString() + ":" + mPort_input.getText().toString() + "/person"),
+                        new URL("http://" + mHost_input.getText().toString() + ":" + mPort_input.getText().toString() + "/event"));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        protected Object doInBackground(URL... urls) {//... says treat it like an array even tho it isnt
+            Log.d(GET_DATA, "Entering DoInBackGround");
+            FamilyMapServerProxy proxy = new FamilyMapServerProxy();
+            ArrayList<Object> result = new ArrayList<>();
+            PeopleResult pResult = proxy.getPeople(urls[0], new PeopleRequest(authToken));
+            EventsResult eResult = proxy.getEvents(urls[1], new EventsRequest(authToken));
+            if (eResult.getMessage() != null || pResult.getMessage() != null) {
+                Log.d(GET_DATA, "Data gathering succeeded");
+                result.add(pResult);
+                result.add(eResult);
+                return result;
+            }
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            Log.d(GET_DATA, "Entering onPostExecute");
+            ArrayList<Object> result;
+
+           try {
+               result = (ArrayList<Object>) o;
+               super.onPostExecute(result);
+           } catch(Exception e){
+                Log.d(GET_DATA, "Wrong type given...exiting...exception thrown");
+                Toast.makeText(getActivity(), R.string.error_toast + ". Getting Data Failed", Toast.LENGTH_LONG).show();
+                return;
+            }
+            Log.d(GET_DATA, "Successful data get");
+            String success_toast = "Hello " + mFName_input.getText().toString() + " " + mLName_input.getText().toString() + "!";
+            Toast.makeText(getActivity(), success_toast, Toast.LENGTH_LONG).show();
+            goToMap();
+        }
+        /**Function which goes to the MapFragment after successfully grabbing the User's data*/
+        private void goToMap() {
+            Log.d(GET_DATA,"Going into map Fragment");
+            // Create new fragment and transaction
+            Fragment newFragment = new MapFragment();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack
+            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.addToBackStack(null);
+
+            // Commit the transaction
+            transaction.commit();
+        }
+
+    }
+
 
     /**
      * Simply setups the private member variables
@@ -271,31 +338,31 @@ public class LoginFragment extends Fragment {
 
     @Override
     public void onStart() {
-        Log.i("OnStart", "Starting");
+        Log.d("OnStart", "Starting");
         super.onStart();
     }
 
     @Override
     public void onResume() {
-        Log.i("OnResume", "Resuming");
+        Log.d("OnResume", "Resuming");
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        Log.i("OnPause", "Pausing");
+        Log.d("OnPause", "Pausing");
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        Log.i("OnStop", "Stopping");
+        Log.d("OnStop", "Stopping");
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Log.i("OnDestroy", "Destroying");
+        Log.d("OnDestroy", "Destroying");
         super.onDestroy();
     }
 
