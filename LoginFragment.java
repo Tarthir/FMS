@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.MapFragment;
+import com.tylerbrady34gmail.familyclient.Models.Model;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -199,9 +203,6 @@ public class LoginFragment extends Fragment {
             Log.d("onPostExecute", "Entering onPostExecute");
             super.onPostExecute(result);
             checkResult(result);
-            /*create a second AsyncTask that uses HttpURLConnection to
-            retrieve the logged-in user’s family data from the server.*/
-
         }
 
         /**
@@ -268,7 +269,7 @@ public class LoginFragment extends Fragment {
             ArrayList<Object> result = new ArrayList<>();
             PeopleResult pResult = proxy.getPeople(urls[0], new PeopleRequest(authToken));
             EventsResult eResult = proxy.getEvents(urls[1], new EventsRequest(authToken));
-            if (eResult.getMessage() != null || pResult.getMessage() != null) {
+            if (eResult.getMessage() == null || pResult.getMessage() == null) {
                 Log.d(GET_DATA, "Data gathering succeeded");
                 result.add(pResult);
                 result.add(eResult);
@@ -285,6 +286,7 @@ public class LoginFragment extends Fragment {
 
            try {
                result = (ArrayList<Object>) o;
+               Model.setValues(result);
                super.onPostExecute(result);
            } catch(Exception e){
                 Log.d(GET_DATA, "Wrong type given...exiting...exception thrown");
@@ -294,18 +296,18 @@ public class LoginFragment extends Fragment {
             Log.d(GET_DATA, "Successful data get");
             String success_toast = "Hello " + mFName_input.getText().toString() + " " + mLName_input.getText().toString() + "!";
             Toast.makeText(getActivity(), success_toast, Toast.LENGTH_LONG).show();
+           // getActivity().startActivity(new Intent(getActivity(),MapsActivity.class));
             goToMap();
         }
         /**Function which goes to the MapFragment after successfully grabbing the User's data*/
         private void goToMap() {
             Log.d(GET_DATA,"Going into map Fragment");
             // Create new fragment and transaction
-            Fragment newFragment = new MapFragment();
+            Fragment newFragment = new MapsFrag();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
             // Replace whatever is in the fragment_container view with this fragment,
             // and add the transaction to the back stack
-            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.replace(R.id.fragment_spot, newFragment);
             transaction.addToBackStack(null);
 
             // Commit the transaction
@@ -332,8 +334,6 @@ public class LoginFragment extends Fragment {
         mCheckFemale = (RadioButton) v.findViewById(R.id.female_input);
         mSignIn = (Button) v.findViewById(R.id.login_button);
         mRegister = (Button) v.findViewById(R.id.register_button);
-       /* mSignIn.setEnabled(false);
-        mRegister.setEnabled(false);*/
     }
 
     @Override

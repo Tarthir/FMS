@@ -57,21 +57,21 @@ public class FamilyMapServerProxy {
      * @PARAM request, the request to register a new user
      * @Return the result, successful or not of the register attempt
      */
-    public RegisterResult register(URL url,RegisterRequest request)  {
+    public RegisterResult register(URL url, RegisterRequest request) {
 
         try {
             //IP address and port
             /*URL url = new URL("http://" + serverHost + ":"
                                         + serverPort + "/user/register");*/
 
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
             http.setRequestMethod("POST");
-            http.setDoOutput(true);	// There is a request body, dofor all except clear
+            http.setDoOutput(true);    // There is a request body, dofor all except clear
 
             http.addRequestProperty("Accept", "application/json");
             Encoder encoder = new Encoder();
-            encoder.encode(request,http.getOutputStream());
+            encoder.encode(request, http.getOutputStream());
             http.connect();
 
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -83,8 +83,7 @@ public class FamilyMapServerProxy {
                 RegisterResult result = encoder.decodeRegResult(respData);
                 authToken = result.getAuthToken();
                 return result;
-            }
-            else {
+            } else {
 
                 InputStream resBody = http.getErrorStream();
 
@@ -96,8 +95,7 @@ public class FamilyMapServerProxy {
 
                 return encoder.decodeRegResult(respData);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -105,10 +103,11 @@ public class FamilyMapServerProxy {
 
     /***
      * A method to login a user
+     *
      * @Param request, this object holds the info needed to successfully login
      * @Return the result, successful or not of the login attempt
      */
-    public LoginResult login(URL url,LoginRequest request) {
+    public LoginResult login(URL url, LoginRequest request) {
 
         try {
             //IP address and port
@@ -133,14 +132,14 @@ public class FamilyMapServerProxy {
             } else {
 
                 InputStream resBody = http.getErrorStream();
-                LoginResult result =  encode.decodeLoginResult(resBody);
+                LoginResult result = encode.decodeLoginResult(resBody);
                 authToken = result.getAuthToken();
                 return result;
             }
-            }catch(IOException e){
-                e.printStackTrace();
-            }
-            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /***
@@ -154,28 +153,26 @@ public class FamilyMapServerProxy {
         try {
             //IP address and port
             URL url = new URL("http://" + serverHost + ":"
-                                        + serverPort + "/person/" + request.getPersonID());
+                    + serverPort + "/person/" + request.getPersonID());
 
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
-            http.setDoOutput(true);	// There is a request body, do for all except clear
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setDoOutput(true);    // There is a request body, do for all except clear
             http.setRequestMethod("GET");
 
 
-            http.addRequestProperty("Authorization",authToken);
+            http.addRequestProperty("Authorization", authToken);
             http.addRequestProperty("Accept", "application/json");
             Encoder encode = new Encoder();
-            encode.encode(request,http.getOutputStream());
+            encode.encode(request, http.getOutputStream());
             http.connect();
 
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 return encode.decodePersonResult(http.getInputStream());
-            }
-            else {
+            } else {
                 System.out.println("ERROR: " + http.getResponseMessage());
                 return encode.decodePersonResult(http.getErrorStream());
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -187,33 +184,35 @@ public class FamilyMapServerProxy {
      * @PARAM request, the info needed to make a request on the database for all ancestors
      * @Return the array of people related to the User
      */
-    public PeopleResult getPeople(URL url,PeopleRequest request) {
+    public PeopleResult getPeople(URL url, PeopleRequest request) {
 
         try {
             //IP address and port
             /*URL url = new URL("http://" + serverHost
                                         + ":" + serverPort + "/person/");*/
 
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
-            http.setDoOutput(true);	// There is a request body, do for all except clear
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setDoOutput(true);    // There is a request body, do for all except clear
             http.setRequestMethod("GET");
-
-            http.addRequestProperty("Authorization",authToken ); //NEED TO SEND authorization
+            if (authToken == null) {
+                http.addRequestProperty("Authorization", request.getAuthToken()); //NEED TO SEND authorization
+            }
+            else{
+                http.addRequestProperty("Authorization", authToken); //NEED TO SEND authorization
+            }
             http.addRequestProperty("Accept", "application/json");
             Encoder encode = new Encoder();
-            encode.encode(request,http.getOutputStream());
+            encode.encode(request, http.getOutputStream());
             http.connect();
 
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
                 return encode.decodePeopleResult(http.getInputStream());
-            }
-            else {
+            } else {
                 System.out.println("ERROR: " + http.getResponseMessage());
                 return encode.decodePeopleResult(http.getErrorStream());
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -230,30 +229,28 @@ public class FamilyMapServerProxy {
         try {
             //IP address and port
             URL url = new URL("http://" + serverHost
-                                        + ":" + serverPort + "/event/" + request.getEventID());
+                    + ":" + serverPort + "/event/" + request.getEventID());
 
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
-            http.setDoOutput(true);	// There is a request body, dofor all except clear
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setDoOutput(true);    // There is a request body, dofor all except clear
             http.setRequestMethod("GET");
 
 
-            http.addRequestProperty("Authorization",authToken );
+            http.addRequestProperty("Authorization", authToken);
             http.addRequestProperty("Accept", "application/json");
             Encoder encode = new Encoder();
-            encode.encode(request,http.getOutputStream());
+            encode.encode(request, http.getOutputStream());
 
             http.connect();
 
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
                 return encode.decodeEventResult(http.getInputStream());
-            }
-            else {
+            } else {
                 System.out.println("ERROR: " + http.getResponseMessage());
                 return encode.decodeEventResult(http.getErrorStream());
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -265,34 +262,37 @@ public class FamilyMapServerProxy {
      * @PARAM request, the info needed to make a request on the database for all events of a user's ancestor
      * @Return the result, an event object array; successful or not of the getEvents Attempt attempt
      */
-    public EventsResult getEvents(URL url,EventsRequest request) {
+    public EventsResult getEvents(URL url, EventsRequest request) {
 
         try {
             //IP address and port
             /*URL url = new URL("http://" + serverHost
                                         + ":" + serverPort + "/event");*/
 
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
-            http.setDoOutput(true);	// There is a request body, dofor all except clear
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setDoOutput(true);    // There is a request body, dofor all except clear
             http.setRequestMethod("GET");
 
-            http.addRequestProperty("Authorization", authToken);
+            if (authToken == null) {
+                http.addRequestProperty("Authorization", request.getAuthToken()); //NEED TO SEND authorization
+            }
+            else{
+                http.addRequestProperty("Authorization", authToken); //NEED TO SEND authorization
+            }
             http.addRequestProperty("Accept", "application/json");
             Encoder encode = new Encoder();
-            encode.encode(request,http.getOutputStream());
+            encode.encode(request, http.getOutputStream());
 
             http.connect();
 
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
                 return encode.decodeEventsResult(http.getInputStream());
-            }
-            else {
+            } else {
                 System.out.println("ERROR: " + http.getResponseMessage());
                 return encode.decodeEventsResult(http.getErrorStream());
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -300,6 +300,7 @@ public class FamilyMapServerProxy {
 
     /***
      * Calls a method to clear the database
+     *
      * @Return the result, successful or not of the clear attempt
      */
     public ClearResult clear() {
@@ -307,12 +308,12 @@ public class FamilyMapServerProxy {
         try {
             //IP address and port
             URL url = new URL("http://" + serverHost
-                                        + ":" + serverPort + "/clear");
+                    + ":" + serverPort + "/clear");
 
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
             http.setRequestMethod("POST");
-            http.setDoOutput(false);	// There is a request body, dofor all except clear
+            http.setDoOutput(false);    // There is a request body, dofor all except clear
             http.addRequestProperty("Accept", "application/json");
 
             http.connect();
@@ -320,13 +321,11 @@ public class FamilyMapServerProxy {
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
                 return new Encoder().decodeClearResult(http.getInputStream());
-            }
-            else {
+            } else {
                 System.out.println("ERROR: " + http.getResponseMessage());
                 return new Encoder().decodeClearResult(http.getErrorStream());
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -334,6 +333,7 @@ public class FamilyMapServerProxy {
 
     /***
      * Calls a method to fill the database with new data
+     *
      * @Return the result, a FillResult object; successful or not of the fill attempt
      */
     public FillResult fill(FillRequest request) {
@@ -341,42 +341,40 @@ public class FamilyMapServerProxy {
         try {
             //IP address and port
             URL url = null;
-            if(request.getNumOfGenerations() == 0) {
+            if (request.getNumOfGenerations() == 0) {
                 url = new URL("http://" + serverHost
-                                        + ":" + serverPort + "/fill/" + request.getUserName());
-            }
-            else{
+                        + ":" + serverPort + "/fill/" + request.getUserName());
+            } else {
                 url = new URL("http://" + serverHost
-                                        + ":" + serverPort + "/fill/" + request.getUserName() +"/" + request.getNumOfGenerations());
+                        + ":" + serverPort + "/fill/" + request.getUserName() + "/" + request.getNumOfGenerations());
             }
 
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
             http.setRequestMethod("POST");
-            http.setDoOutput(true);	// There is a request body, dofor all except clear
+            http.setDoOutput(true);    // There is a request body, dofor all except clear
 
             http.addRequestProperty("Accept", "application/json");
             Encoder encode = new Encoder();
-            encode.encode(request,http.getOutputStream());
+            encode.encode(request, http.getOutputStream());
             http.connect();
 
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
                 return new Encoder().decodeFillResult(http.getInputStream());
-            }
-            else {
+            } else {
                 System.out.println("ERROR: " + http.getResponseMessage());
                 return new Encoder().decodeFillResult(http.getErrorStream());
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
     /***
-     *Calls a method to fill the database with new Data
+     * Calls a method to fill the database with new Data
+     *
      * @Param request, A object which contains the info needs to load up a database
      * @Return the result, an loadResult object; successful or not of the load attempt
      */
@@ -385,28 +383,26 @@ public class FamilyMapServerProxy {
         try {
             //IP address and port
             URL url = new URL("http://" + serverHost
-                                        + ":" + serverPort + "/load");
+                    + ":" + serverPort + "/load");
 
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
             http.setRequestMethod("POST");
-            http.setDoOutput(true);	// There is a request body, dofor all except clear
+            http.setDoOutput(true);    // There is a request body, dofor all except clear
             http.addRequestProperty("Accept", "application/json");
 
             Encoder encode = new Encoder();
-            encode.encode(request,http.getOutputStream());
+            encode.encode(request, http.getOutputStream());
             http.connect();
 
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
                 return encode.decodeLoadResult(http.getInputStream());
-            }
-            else {
+            } else {
                 System.out.println("ERROR: " + http.getResponseMessage());
                 return encode.decodeLoadResult(http.getErrorStream());
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
