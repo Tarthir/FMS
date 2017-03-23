@@ -154,7 +154,10 @@ public class Model {
             else{//the key isnt already in the Map
                 LinkedList<Event> listOfEvents = new LinkedList<>();
                 listOfEvents.add(events.get(ID));
-                persnEvntMap.put(personID,listOfEvents);//add the new List to the map keyed with its person
+                //add event Types as well
+                eventTypes.add(events.get(ID).getEventType());
+                //add the new List to the map keyed with its person
+                persnEvntMap.put(personID,listOfEvents);
             }
 
         }

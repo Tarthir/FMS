@@ -294,6 +294,7 @@ public class LoginFragment extends Fragment {
                 return;
             }
             Log.d(GET_DATA, "Successful data get");
+            //TODO Need to get the name from the data in the Async task. Needed for sign on
             String success_toast = "Hello " + mFName_input.getText().toString() + " " + mLName_input.getText().toString() + "!";
             Toast.makeText(getActivity(), success_toast, Toast.LENGTH_LONG).show();
            // getActivity().startActivity(new Intent(getActivity(),MapsActivity.class));
