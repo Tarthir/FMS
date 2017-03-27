@@ -2,6 +2,7 @@ package com.tylerbrady34gmail.familyclient;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -22,10 +25,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.tylerbrady34gmail.familyclient.Models.Model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import models.Event;
 
@@ -34,8 +41,12 @@ import models.Event;
  * A map fragment class
  */
 public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerClickListener {
-
+    /**Our google map*/
     private GoogleMap mMap;
+    /**Our tetview*/
+    private TextView currTextView;
+    /**Our map allowing us to easily access events from map markers*/
+    private Map<String,Event> eventMap = new TreeMap<>();
 
     public MapsFrag() {
         // Required empty public constructor
@@ -55,7 +66,9 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapsfrag);
+        currTextView = (TextView) view.findViewById(R.id.person_info);
         mapFragment.getMapAsync(this);
+
 
         return view;
     }
@@ -66,13 +79,37 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
+        mMap.setOnMarkerClickListener(this);
         if (Model.getFilter().isShowFathersSide()) {
             addMapMarker(Model.getPaternalAncestors());
+           // doLines(Model.getPaternalAncestors());
         }
         if (Model.getFilter().isShowMothersSide()) {
             addMapMarker(Model.getMaternalAncestors());
+           // doLines(Model.getMaternalAncestors());
         }
     }
+
+  /*  private void doLines(Set<String> sideOfAncestors) {
+        for(String id : sideOfAncestors){
+
+        }
+        if(Model.getSettings().isShowFamilyLines()){
+
+        }
+        if(Model.getSettings().isShowLifeLines()){
+
+        }
+        if(Model.getSettings().isShowSpouseLines()){
+
+        }
+
+        PolylineOptions line=
+                new PolylineOptions().add(new LatLng())
+                        .width(5).color(Color.RED);
+
+        mMap.addPolyline(line);
+    }*/
 
     /**
      * Puts in all the map markers on the GoogleMap
@@ -80,29 +117,30 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      * */
     private void addMapMarker(Set<String> people) {
         //for every person, grab their lat and long of each of their events and add it to the map
-
         for (String person : people) {
             List<Event> eventList = Model.getPersnEvntMap().get(person);
-            for(Event event : eventList) {//for each event
+            for(int i = 0; i < eventList.size(); i++) {//for each event
+                Event event = eventList.get(i);
                 double latitude = Double.parseDouble(event.getLatitude());
                 double longitude = Double.parseDouble(event.getLongitude());
                 String city = event.getCity();
-                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(city));
+                MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title(city);
+                eventMap.put(marker.getTitle(),event);
+                mMap.addMarker(marker);
             }
         }
     }
 
+
+
     @Override
     public boolean onMarkerClick(Marker marker) {
-        // Retrieve the data from the marker.
-        Integer clickCount = (Integer) marker.getTag();
+        Log.d("MapFrag","Entering onMarkerClick");
+        Event event = eventMap.get(marker.getTitle());
+        String fName = Model.getPeople().get(event.getPersonID()).getfName();
+        String lName = Model.getPeople().get(event.getPersonID()).getlName();
+        currTextView.setText(fName +" " + lName + "\n" + event.toString() );
 
-        // Check if a click count was set, then display the click count.
-        if (clickCount != null) {
-            clickCount = clickCount + 1;
-            marker.setTag(clickCount);
-            Toast.makeText(getActivity(), marker.getTitle() + " has been clicked.", Toast.LENGTH_SHORT).show();
-        }
 
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
