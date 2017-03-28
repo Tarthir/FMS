@@ -1,10 +1,8 @@
-package com.tylerbrady34gmail.familyclient;
+package com.tylerbrady34gmail.familyclient.ui;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,8 +14,9 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.MapFragment;
+import com.tylerbrady34gmail.familyclient.FamilyMapServerProxy;
 import com.tylerbrady34gmail.familyclient.Models.Model;
+import com.tylerbrady34gmail.familyclient.R;
 
 import java.net.MalformedURLException;
 import java.net.URL;

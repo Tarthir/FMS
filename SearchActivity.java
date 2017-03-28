@@ -1,7 +1,6 @@
-package com.tylerbrady34gmail.familyclient;
+package com.tylerbrady34gmail.familyclient.ui;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 /**

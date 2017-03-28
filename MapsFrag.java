@@ -1,12 +1,10 @@
-package com.tylerbrady34gmail.familyclient;
+package com.tylerbrady34gmail.familyclient.ui;
 
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,9 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -28,21 +24,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.tylerbrady34gmail.familyclient.Models.Model;
+import com.tylerbrady34gmail.familyclient.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import models.Event;
-import models.EventComparator;
-import models.Person;
 
 import static java.lang.Double.parseDouble;
 
@@ -56,7 +46,7 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      */
     private GoogleMap mMap;
     /**
-     * Our tetview
+     * Our tetxview
      */
     private TextView currTextView;
     /**
@@ -349,6 +339,13 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    /**Handles when our Text or Image view has been clicked on
+     * @param view the view we are passed
+     * */
+    public void doOnClick(View view){
+        Intent intent = new Intent(getActivity(),PersonActivity.class);
+        startActivity(intent);
     }
 
     @Override

@@ -1,14 +1,13 @@
-package com.tylerbrady34gmail.familyclient;
+package com.tylerbrady34gmail.familyclient.ui;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.maps.MapFragment;
+import com.tylerbrady34gmail.familyclient.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,23 +25,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-    }
-
-    public void goToMapFrag(){
-        Log.d("GoToMapFrag","Going into map Fragment");
-
-        /*// Create new fragment and transaction
-        MapFragment newFragment = new MapFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.fragment_spot, newFragment);
-        transaction.addToBackStack(null);
-
-        // Commit the transaction
-        transaction.commit();*/
-        Intent intent = new Intent(MainActivity.this,MapsActivity.class);
-        startActivity(intent);
-        finish();
     }
 }
