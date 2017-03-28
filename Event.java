@@ -1,11 +1,14 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+
 /**
  * Created by tyler on 2/10/2017.
  * This object is an Event, IE: marriage, birth.
  */
 
-public class Event {
+public class Event{
     /**The user this event belongs to*/
     private String descendant;
     /**The unique event ID for this event*/
@@ -39,7 +42,6 @@ public class Event {
     }
 
 
-
     @Override
     public boolean equals(Object o) {
         if(this.getClass() != o.getClass()){return false;}
@@ -56,6 +58,11 @@ public class Event {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return getEventType() +": " + getCity() +"," + getCountry() +"(" + getYear() + ")";
+    }
+
     public String getEventID() {
         return eventID;
     }
@@ -70,6 +77,10 @@ public class Event {
 
     public String getYear() {
         return year;
+    }
+
+    public int getYearInt() {
+        return Integer.parseInt(year);
     }
 
     public void setEventID(String eventID) {

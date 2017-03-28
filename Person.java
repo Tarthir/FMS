@@ -1,4 +1,7 @@
 package models;
+
+import java.util.ArrayList;
+
 /**
  * Created by tyler on 2/10/2017.
  * This class holds the information for a person

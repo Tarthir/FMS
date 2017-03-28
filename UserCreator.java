@@ -1,13 +1,7 @@
-package dataAccess;
+package models;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
-import infoObjects.RegisterRequest;
-import infoObjects.RegisterResult;
-import models.Person;
 import models.User;
 
 /**

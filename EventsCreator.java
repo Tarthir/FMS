@@ -1,10 +1,7 @@
-package dataAccess;
+package models;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import models.Event;
-import models.Location;
 
 /**
  * Created by tyler on 2/23/2017.
