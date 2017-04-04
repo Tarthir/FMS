@@ -12,7 +12,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -23,7 +26,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.tylerbrady34gmail.familyclient.Models.Filter;
 import com.tylerbrady34gmail.familyclient.Models.Model;
+import com.tylerbrady34gmail.familyclient.Models.Utils;
 import com.tylerbrady34gmail.familyclient.R;
 
 import java.util.ArrayList;
@@ -33,6 +38,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import models.Event;
+import models.Person;
 
 import static java.lang.Double.parseDouble;
 
@@ -57,6 +63,8 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      * A list of our polylines on the screen
      */
     List<Polyline> polylines = new ArrayList<>();
+    /**Our gender image view*/
+    private ImageView genderImage;
 
     public MapsFrag() {
         // Required empty public constructor
@@ -77,6 +85,8 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapsfrag);
         currTextView = (TextView) view.findViewById(R.id.person_info);
+        currTextView.setText(R.string.show_begining_text);
+        genderImage = (ImageView) view.findViewById(R.id.imageView);
         mapFragment.getMapAsync(this);
 
 
@@ -88,12 +98,14 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      */
     @Override
     public void onMapReady(GoogleMap map) {
+        final String fathersSide = "Father's Side";
+        final String mothersSide = "Mother's Side";
         mMap = map;
         mMap.setOnMarkerClickListener(this);
-        if (Model.getFilter().isShowFathersSide()) {
+        if (Model.getFilter().getFilterRows().get(fathersSide).isOn()) {
             addMapMarker(Model.getPaternalAncestors());
         }
-        if (Model.getFilter().isShowMothersSide()) {
+        if (Model.getFilter().getFilterRows().get(mothersSide).isOn()) {
             addMapMarker(Model.getMaternalAncestors());
         }
     }
@@ -106,9 +118,9 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      */
     private void addMapMarker(Set<String> people) {
         //for every person, grab their lat and long of each of their events and add it to the map
+        //TODO Check to see if we are too add males or females, or both
         for (String person : people) {
             List<Event> eventList = Model.getPersnEvntMap().get(person);
-            //TODO COLOR COORDINATE MARKERS by eventType
             for (int i = 0; i < eventList.size(); i++) {//for each event
                 Event event = eventList.get(i);
                 double latitude = parseDouble(event.getLatitude());
@@ -126,12 +138,28 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
     public boolean onMarkerClick(Marker marker) {
         Log.d("MapFrag", "Entering onMarkerClick");
         clearLines();
-        Event event = eventMap.get(marker.getTitle());//TODO handle markers at the same spot
-        String fName = Model.getPeople().get(event.getPersonID()).getfName();
-        String lName = Model.getPeople().get(event.getPersonID()).getlName();
-        currTextView.setText(fName + " " + lName + "\n" + event.toString());
-        doLines(event.getPersonID(), marker);
+        final Event event = eventMap.get(marker.getTitle());//TODO handle markers at the same spot
+        Person personClicked = Model.getPeople().get(event.getPersonID());
+        String fName = personClicked.getfName();
+        String lName = personClicked.getlName();
 
+        currTextView.setText(fName + " " + lName + "\n" + event.toString());
+        genderImage.setImageDrawable(Utils.getGenderIcon(this.getContext(),personClicked.getGender()));
+
+        doLines(event.getPersonID(), marker);
+        //For when the textview associated with this marker is clicked
+        currTextView.setOnClickListener(new View.OnClickListener() {//set the click listener
+            private Event currEvent = event;//grab the current event
+            @Override
+            public void onClick(View v) {
+                Log.d("MapsActvity","TextField has been clicked");
+                Intent intent = new Intent(getActivity(),PersonActivity.class);
+                Bundle b = new Bundle();
+                b.putString("person_key",currEvent.getPersonID()); //Your id
+                intent.putExtras(b); //Put your id to your next Intent
+                getActivity().startActivity(intent);
+            }
+        });
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
@@ -207,7 +235,7 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
             Log.d("LineDrawing", "Got events to draw!");
             LatLng pos = new LatLng(parseDouble(currEvent.getLatitude()), parseDouble(currEvent.getLongitude()));
             LatLng pos2 = new LatLng(parseDouble(nextGenBirth.getLatitude()), parseDouble(nextGenBirth.getLongitude()));
-            drawLines(pos, pos2, lineWidth);
+            drawLines(pos, pos2, lineWidth,nextGenBirth.getEventType());
         }
         //Get the next generation
         if (!nextGenPerson.equals("")) {
@@ -253,7 +281,7 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
             Event event2 = events.get(i + 1);
             LatLng pos = new LatLng(parseDouble(event.getLatitude()), parseDouble(event.getLongitude()));
             LatLng pos2 = new LatLng(parseDouble(event2.getLatitude()), parseDouble(event2.getLongitude()));
-            drawLines(pos, pos2, lineWidth);
+            drawLines(pos, pos2, lineWidth,event2.getEventType());
         }
     }
 
@@ -272,22 +300,10 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
         List<Event> events = Model.getPersnEvntMap().get(spouse);
         Event firstEvent = null;
 
-        if (events.size() > 0) {
+        if (events.size() != 0) {//grab the first event
             firstEvent = events.get(0);
-        }//grab the first event
-
-        for (int i = 0; i < events.size(); i++) {//will only draw lines if the spouse has events
-            Event event = events.get(i);
-            if (Integer.parseInt(event.getYear()) < Integer.parseInt(firstEvent.getYear())) {//update the earliest event
-                firstEvent = event;
-            }
-            if (event.getEventType().toLowerCase().equals("birth")) {//
-                LatLng pos = new LatLng(parseDouble(event.getLatitude()), parseDouble(event.getLongitude()));
-                drawLines(pos, marker.getPosition(), lineWidth);
-            } else if (i == events.size() - 1) {
-                LatLng pos = new LatLng(parseDouble(firstEvent.getLatitude()), parseDouble(firstEvent.getLongitude()));
-                drawLines(pos, marker.getPosition(), lineWidth);
-            }
+            LatLng pos = new LatLng(parseDouble(firstEvent.getLatitude()), parseDouble(firstEvent.getLongitude()));
+            drawLines(marker.getPosition(),pos, lineWidth,firstEvent.getEventType());
         }
     }
 
@@ -309,12 +325,12 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      * @param pos,      a Latlng Position
      * @param pos2      a Latlng position
      * @param lineWidth
+     * @param eventType the type of event being drawn
      */
-    private void drawLines(LatLng pos, LatLng pos2, int lineWidth) {
-        PolylineOptions line = new PolylineOptions().add(pos, pos2).width(lineWidth).color(Color.MAGENTA);
+    private void drawLines(LatLng pos, LatLng pos2, int lineWidth,String eventType) {
+        int color = Model.getColorMap().get(eventType).getColor();//grab the appropiate color
+        PolylineOptions line = new PolylineOptions().add(pos, pos2).width(lineWidth).color(color);
         polylines.add(mMap.addPolyline(line));
-
-
     }
 
 
@@ -322,6 +338,8 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.my_menu, menu);
+        IconDrawable draw =  new IconDrawable(getActivity(), Iconify.IconValue.fa_filter).colorRes(R.color.white).sizeDp(40);
+        menu.getItem(1).setIcon(draw);//sets filter item to have the right icon
     }
 
     @Override
@@ -335,17 +353,13 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
                 intent = new Intent(getActivity(), SettingsActivity.class);
                 startActivity(intent);
                 return true;
-            //TODO filter activity
+            case R.id.filter:
+                intent = new Intent(getActivity(), FilterActivity.class);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-    /**Handles when our Text or Image view has been clicked on
-     * @param view the view we are passed
-     * */
-    public void doOnClick(View view){
-        Intent intent = new Intent(getActivity(),PersonActivity.class);
-        startActivity(intent);
     }
 
     @Override

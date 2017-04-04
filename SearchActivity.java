@@ -3,6 +3,8 @@ package com.tylerbrady34gmail.familyclient.ui;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tylerbrady34gmail.familyclient.R;
+
 /**
  * Created by tyler on 3/23/2017.
  * The Search activity
@@ -15,6 +17,7 @@ public class SearchActivity extends AppCompatActivity{
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
     }
 
     @Override

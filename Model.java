@@ -1,6 +1,10 @@
 package com.tylerbrady34gmail.familyclient.Models;
 
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +15,7 @@ import java.util.TreeSet;
 import infoObjects.EventsResult;
 import infoObjects.PeopleResult;
 import models.Event;
+import models.EventComparator;
 import models.Person;
 
 /**
@@ -32,8 +37,8 @@ public class Model {
     private static Filter filter;
     /**A set of Strings which are are event types*/
     private static Set<String> eventTypes;
-    /**A map with type of map as keys and colors as values*/
-    private static Map<String,MapColor> colorMap;
+    /**A map with type of event as keys and colors as values*/
+    private static Map<String,myColor> colorMap;
     /**Our user's person object*/
     private static Person user;
     /**Our user's paternal Ancestors*/
@@ -55,9 +60,9 @@ public class Model {
         events = new TreeMap<String, Event>();
         persnEvntMap = new TreeMap<String, List<Event>>();
         settings = new Settings();
-        filter = new Filter();
+        filter = Filter.getInstance();
         eventTypes = new TreeSet<>();
-        //colorMap = new MapColor();
+        colorMap = new TreeMap<>();
         paternalAncestors = new TreeSet<>();
         maternalAncestors = new TreeSet<>();
         personChildren = new TreeMap<>();
@@ -101,7 +106,7 @@ public class Model {
         return eventTypes;
     }
 
-    public static Map<String, MapColor> getColorMap() {
+    public static Map<String, myColor> getColorMap() {
         return colorMap;
     }
 
@@ -141,12 +146,14 @@ public class Model {
             events.put(event.getEventID(),event);
         }
         setUpEventVariables();
+
     }
     /**Sets up the variables involving events
      **/
     private static void setUpEventVariables() {
         Set<String> eventIDs = events.keySet();
-        for(String ID : eventIDs){
+        for(String ID : eventIDs){//for every event
+
             String personID = events.get(ID).getPersonID();
             if(persnEvntMap.containsKey(personID)){//if this key is already in here
                 persnEvntMap.get(personID).add(events.get(ID));//add the event
@@ -155,13 +162,37 @@ public class Model {
                 LinkedList<Event> listOfEvents = new LinkedList<>();
                 listOfEvents.add(events.get(ID));
                 //add event Types as well
-                eventTypes.add(events.get(ID).getEventType());
+                eventTypes.add(events.get(ID).getEventType().toLowerCase());
                 //add the new List to the map keyed with its person
                 persnEvntMap.put(personID,listOfEvents);
             }
 
         }
+        setUpLinesColors();
+        setUpPrsnEventMap();
 
+        Log.d("EventSetup", "done");
+    }
+    /**Sets up colors for lines which can be changed in the Filter activity*/
+    private static void setUpLinesColors() {
+        Iterator itr = eventTypes.iterator();
+        for (myColor color : myColor.values()) {
+            if(itr.hasNext()) {//if there are more event types, keep adding colors
+                colorMap.put((String) itr.next(), color);
+            }
+            else{
+                break;
+            }
+        }
+    }
+
+    /**Sets up the person event map variable*/
+    private static void setUpPrsnEventMap() {
+        EventComparator comparator = new EventComparator();
+        Set<String> keys = persnEvntMap.keySet();
+        for(String key : keys){//ordering of the lists of events for each person
+            Collections.sort(persnEvntMap.get(key),comparator);//sort
+        }
     }
 
     /**Sets up the variables involving people
