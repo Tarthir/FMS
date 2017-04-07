@@ -23,4 +23,5 @@ public class FilterRows {
     public boolean isOn() {
         return isOn;
     }
+
 }

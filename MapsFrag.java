@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -102,10 +104,10 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
         final String mothersSide = "Mother's Side";
         mMap = map;
         mMap.setOnMarkerClickListener(this);
-        if (Model.getFilter().getFilterRows().get(fathersSide).isOn()) {
+        if (Model.getFilter().findFilterRow(fathersSide)) {//check if these filters are on or off
             addMapMarker(Model.getPaternalAncestors());
         }
-        if (Model.getFilter().getFilterRows().get(mothersSide).isOn()) {
+        if (Model.getFilter().findFilterRow(mothersSide)) {
             addMapMarker(Model.getMaternalAncestors());
         }
     }
@@ -365,7 +367,6 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
     @Override
     public void onResume() {
         super.onResume();
-        //updateUI();
     }
 
 

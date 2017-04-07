@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 public class Filter {
     /**Map of eventTypes and other filter settings and whether they are on or off*/
-    private Map<String,FilterRows> filterRows;
+    private ArrayList<FilterRows> filterRows;
     /**Our Filter instance*/
     private static Filter filter;
 
@@ -28,18 +28,45 @@ public class Filter {
         }
         return filter;
     }
-    private void setUpEventFilterRows(){
-        filterRows = new TreeMap<>();
+    /**Sets up the Filter Rows associated with events*/
+    void setUpEventFilterRows(){
+        filterRows = new ArrayList<>();
         for(String eventType : Model.getEventTypes()){
-            filterRows.put(eventType,new FilterRows(eventType));
+            filterRows.add(new FilterRows(eventType));
         }
-        filterRows.put("Father's Side", new FilterRows("Father's Side"));
-        filterRows.put("Mother's Side", new FilterRows("Mother's Side"));
-        filterRows.put("Show Males", new FilterRows("Show Males"));
-        filterRows.put("Show Females", new FilterRows("Show Females"));
+        filterRows.add( new FilterRows("Father's Side"));
+        filterRows.add( new FilterRows("Mother's Side"));
+        filterRows.add( new FilterRows("Show Males"));
+        filterRows.add( new FilterRows("Show Females"));
     }
 
-    public Map<String, FilterRows> getFilterRows() {
+    /**Used to find the FilterRow needed and return whether it is on or off
+     * @param filterName  the name of the filter
+     * @return boolean
+     * */
+    public boolean findFilterRow(String filterName){
+        for(FilterRows filter : filterRows){
+            if(filter.getmType().equals(filterName)){
+                return filter.isOn();
+            }
+        }
+        return false;
+    }
+
+    /**Used to toggle the FilterRow specified to on or off
+     * @param filterName  the name of the filter
+     * @return void
+     * */
+    public void toggleFilterRow(String filterName){
+        for(FilterRows filter : filterRows){
+            if(filter.getmType().equals(filterName)){
+                filter.toggleFilter();
+                break;
+            }
+        }
+    }
+
+    public ArrayList<FilterRows> getFilterRows() {
         return filterRows;
     }
 }

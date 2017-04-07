@@ -146,6 +146,7 @@ public class Model {
             events.put(event.getEventID(),event);
         }
         setUpEventVariables();
+        Filter.getInstance().setUpEventFilterRows();
 
     }
     /**Sets up the variables involving events
