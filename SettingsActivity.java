@@ -96,27 +96,12 @@ public class SettingsActivity extends AppCompatActivity {
         addItemsOnSpinners(mSpouseSpinner);
         addItemsOnSpinners(mFamilySpinner);
         addItemsOnSpinners(mLifeSpinner);
-        mSpouseSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Model.getSettings().setSpouseColor(MyColor.unToString((String)parent.getItemAtPosition(position)));
-            }
-        });
-        mFamilySpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Model.getSettings().setFamilyColor(MyColor.unToString((String)parent.getItemAtPosition(position)));
-            }
-        });
-        mLifeSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Model.getSettings().setLifeColor(MyColor.unToString((String)parent.getItemAtPosition(position)));
-            }
-        });
-        //TODO map spinner
+        setupOnItemSelectedListeners();
+
 
     }
+
+
 
     /**add items into spinner dynamically
      * @param spinner  the given spinner object
@@ -282,5 +267,42 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(mContext, success_toast, Toast.LENGTH_SHORT).show();
         }
 
+    }
+    /**Sets up the on click listeners for the spinners*/
+    private void setupOnItemSelectedListeners() {
+        mSpouseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Model.getSettings().setSpouseColor(MyColor.unToString((String)parent.getItemAtPosition(position)));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        mFamilySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Model.getSettings().setFamilyColor(MyColor.unToString((String)parent.getItemAtPosition(position)));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        mLifeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Model.getSettings().setLifeColor(MyColor.unToString((String)parent.getItemAtPosition(position)));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        //TODO map spinner
     }
 }
