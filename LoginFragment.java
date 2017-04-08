@@ -3,7 +3,6 @@ package com.tylerbrady34gmail.familyclient.ui;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -300,6 +299,8 @@ public class LoginFragment extends Fragment {
         }
         /**Function which goes to the MapFragment after successfully grabbing the User's data*/
         private void goToMap() {
+            Model.setIPAdress(mHost_input.getText().toString());
+            Model.setPortNum(mPort_input.getText().toString());
             Log.d(GET_DATA,"Going into map Fragment");
             // Create new fragment and transaction
             Fragment newFragment = new MapsFrag();

@@ -37,7 +37,7 @@ public class Event{
         this.country = location.getCountry();
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
-        this.eventType = eventType;
+        this.eventType = eventType.toLowerCase();//make it lower case
         this.year = year;
     }
 

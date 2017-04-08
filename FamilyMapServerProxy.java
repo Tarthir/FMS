@@ -36,7 +36,7 @@ public class FamilyMapServerProxy {
 
     private String serverHost; //= FamilyMapServerProxy.SINGLETON.getServerHost();//"128.187.83.252";//need to connect in a different way
     private String serverPort; //= FamilyMapServerProxy.SINGLETON.getServerPort();//"8080";
-    private String authToken;
+    private static String authToken;
 
     public FamilyMapServerProxy() {
         //FamilyMapServerProxy.SINGLETON.setServerHost("localhost");
@@ -193,7 +193,7 @@ public class FamilyMapServerProxy {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setDoOutput(true);    // There is a request body, do for all except clear
             http.setRequestMethod("GET");
-            if (authToken == null) {
+            if (!request.getAuthToken().equals("")) {//if we have an authtoken
                 http.addRequestProperty("Authorization", request.getAuthToken()); //NEED TO SEND authorization
             }
             else{
@@ -272,7 +272,7 @@ public class FamilyMapServerProxy {
             http.setDoOutput(true);    // There is a request body, dofor all except clear
             http.setRequestMethod("GET");
 
-            if (authToken == null) {
+            if (!request.getAuthToken().equals("")) {
                 http.addRequestProperty("Authorization", request.getAuthToken()); //NEED TO SEND authorization
             }
             else{

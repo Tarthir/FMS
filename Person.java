@@ -133,19 +133,8 @@ public class Person {
         this.gender = gender;
     }
 
-    public void setDescendant(String descendant) {
-        this.descendant = descendant;
-    }
-
     public void setPersonID(String personID) {
         this.personID = personID;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 }

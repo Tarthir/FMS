@@ -14,7 +14,6 @@ import com.tylerbrady34gmail.familyclient.ExpandFamilyView.FamilyAdapter;
 import com.tylerbrady34gmail.familyclient.Models.Model;
 import com.tylerbrady34gmail.familyclient.R;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -94,7 +93,20 @@ public class PersonActivity extends AppCompatActivity {
     private LinkedList<Family> setupFamily() {
         Person father = Model.getPeople().get(clickedOn.getFather());
         Person mother = Model.getPeople().get(clickedOn.getMother());
-        List<Person> people = Arrays.asList(father,mother);//grab the family
+        List<Person> people = new LinkedList<>();
+        if(father != null) {
+            people.add(father);
+        }
+        if(mother != null){
+            people.add(mother);
+        }
+        Person spouse = Model.getPeople().get(clickedOn.getSpouse());
+        if(spouse != null) {
+            people.add(spouse);
+        }
+        for(Person person : Model.getPersonChildren().get(clickedOn.getPersonID())){
+            people.add(person);
+        }
         return new LinkedList<>(Collections.singletonList(new Family("FAMILY",people)));//return the family with a title for the Widget
     }
     /**

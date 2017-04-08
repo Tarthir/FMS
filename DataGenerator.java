@@ -2,7 +2,11 @@ package service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import dataAccess.EventDao;
@@ -14,6 +18,7 @@ import models.Event;
 import models.Location;
 import models.Person;
 import models.User;
+import sun.rmi.runtime.Log;
 
 /**
  * Created by tyler on 2/20/2017.
@@ -29,6 +34,10 @@ public class DataGenerator {
      * The people we are generating
      */
     private ArrayList<Person> people;
+    /*
+    *To ensure one event per city
+    */
+    private Map<String,Location> eventLocMap = new TreeMap<>();
 
     public DataGenerator() {
         events = new ArrayList<>();
@@ -105,11 +114,10 @@ public class DataGenerator {
                     people.get(i - 1).setSpouse(people.get(i).getPersonID());
                     people.get(i).setSpouse(people.get(i - 1).getPersonID());
                 }
-
-                createMarriage(currGeneration, people.get(i - 1), people.get(i), request.getLocations(),request.getUserName());//marry this couple
+                createMarriage(currGeneration, people.get(people.size()-2), people.get(people.size()-1), request.getLocations(),request.getUserName());//marry this couple
 
                 if (currGeneration < TOTAL_GENERATIONS) {//once we are past the oldest generation
-                    setMothersAndFathers(adderIndex);
+                    adderIndex = setMothersAndFathers(adderIndex);
                 }
             }//else
         }//for
@@ -147,7 +155,7 @@ public class DataGenerator {
         Random lNameRand = new Random();
         Random fNameRand = new Random();
         return new Person(uuid.toString(),userName, fNames[fNameRand.nextInt(fNames.length)],
-                lNames[lNameRand.nextInt(lNames.length)], "m", "", "", "");
+                lNames[lNameRand.nextInt(lNames.length)], "f", "", "", "");
     }
 
     /**
@@ -163,7 +171,7 @@ public class DataGenerator {
         Random lNameRand = new Random();
         UUID uuid = UUID.randomUUID();
         return new Person(uuid.toString(),userName, mNames[mNameRand.nextInt(mNames.length)],
-                lNames[lNameRand.nextInt(lNames.length)], "f", "", "", "");
+                lNames[lNameRand.nextInt(lNames.length)], "m", "", "", "");
     }
 
     /**
@@ -182,8 +190,12 @@ public class DataGenerator {
             UUID uuid = UUID.randomUUID();
             int location = locRand.nextInt(locations.length);
             int year = getYear(eventT, startYear);
-            //NEED TO HAVE MARRIAGES AT SAME LOCATION/YEAR
-            events.add(new Event(uuid.toString(), userName, person.getPersonID(), locations[location], Integer.toString(year), eventT));
+            Location loc = locations[location];
+
+           // if(eventLocMap){
+                events.add(new Event(uuid.toString(), userName, person.getPersonID(), loc, Integer.toString(year), eventT));
+           // }
+           // eventLocMap.put(loc,locd);
         }
     }
 
@@ -232,7 +244,7 @@ public class DataGenerator {
         Random yearRand = new Random();
         return (yearRand.nextInt((startYear + 10) - (startYear + 5)) + (startYear + 5));//baptized btwn 5-10
     }
-
+    //private Set<String> stuff = new TreeSet<>();
     /**
      * Gets the dates for marriages
      *
@@ -248,10 +260,17 @@ public class DataGenerator {
         int loc = locRand.nextInt(location.length);
         int startYear = 2017 - (currGeneration * 50);
         Random yearRand = new Random();
-
+        /*//System.out.println(father.getPersonID() + "\n" + mother.getPersonID());
+        if(stuff.contains(father.getPersonID()) || stuff.contains(mother.getPersonID())){
+            events = events;//TODO we are going back to the begininng somehow of the gen when doing these marraiges
+        }
+        else{
+            stuff.add(father.getPersonID());
+            stuff.add(mother.getPersonID());
+        }*/
         int marriageYear = (yearRand.nextInt((startYear + 35) - (startYear + 18)) + (startYear + 18));//getting married between 18-35
         events.add(new Event(uuid.toString(), userName, father.getPersonID(), location[loc], Integer.toString(marriageYear), "Marriage"));
-        events.add(new Event(uuid2.toString(), userName, father.getPersonID(), location[loc], Integer.toString(marriageYear), "Marriage"));
+        events.add(new Event(uuid2.toString(), userName, mother.getPersonID(), location[loc], Integer.toString(marriageYear), "Marriage"));
     }
 
     /**

@@ -2,11 +2,8 @@ package com.tylerbrady34gmail.familyclient.ui;
 
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -28,6 +23,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 import com.tylerbrady34gmail.familyclient.Models.Filter;
 import com.tylerbrady34gmail.familyclient.Models.Model;
 import com.tylerbrady34gmail.familyclient.Models.Utils;
@@ -35,9 +32,7 @@ import com.tylerbrady34gmail.familyclient.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import models.Event;
 import models.Person;
@@ -56,17 +51,31 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
     /**
      * Our tetxview
      */
-    private TextView currTextView;
+    private TextView mCurrTextView;
     /**
-     * Our map allowing us to easily access events from map markers
+     * A list of our mPolylines on the screen
      */
-    private Map<String, Event> eventMap = new TreeMap<>();
+    List<Polyline> mPolylines = new ArrayList<>();
     /**
-     * A list of our polylines on the screen
+     * Our gender image view
      */
-    List<Polyline> polylines = new ArrayList<>();
-    /**Our gender image view*/
-    private ImageView genderImage;
+    private ImageView mGenderImage;
+    /**
+     * The person clicked
+     */
+    private String mPersonClicked;
+    /**
+     * The current marker
+     */
+    private Marker mCurrMarker;
+    /**
+     * Key for getting the fathers side filter
+     */
+    private final String mFathersSide = "Father's Side";
+    /**
+     * Key for getting the mothers side filter
+     */
+    private final String mMothersSide = "Mother's Side";
 
     public MapsFrag() {
         // Required empty public constructor
@@ -86,9 +95,9 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapsfrag);
-        currTextView = (TextView) view.findViewById(R.id.person_info);
-        currTextView.setText(R.string.show_begining_text);
-        genderImage = (ImageView) view.findViewById(R.id.imageView);
+        mCurrTextView = (TextView) view.findViewById(R.id.person_info);
+        mCurrTextView.setText(R.string.show_begining_text);
+        mGenderImage = (ImageView) view.findViewById(R.id.imageView);
         mapFragment.getMapAsync(this);
 
 
@@ -100,14 +109,12 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      */
     @Override
     public void onMapReady(GoogleMap map) {
-        final String fathersSide = "Father's Side";
-        final String mothersSide = "Mother's Side";
         mMap = map;
         mMap.setOnMarkerClickListener(this);
-        if (Model.getFilter().findFilterRow(fathersSide)) {//check if these filters are on or off
+        if (Model.getFilter().isFilterShowing(mFathersSide)) {//check if these filters are on or off
             addMapMarker(Model.getPaternalAncestors());
         }
-        if (Model.getFilter().findFilterRow(mothersSide)) {
+        if (Model.getFilter().isFilterShowing(mMothersSide)) {
             addMapMarker(Model.getMaternalAncestors());
         }
     }
@@ -120,19 +127,23 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      */
     private void addMapMarker(Set<String> people) {
         //for every person, grab their lat and long of each of their events and add it to the map
-        //TODO Check to see if we are too add males or females, or both
         for (String person : people) {
-            List<Event> eventList = Model.getPersnEvntMap().get(person);
-            for (int i = 0; i < eventList.size(); i++) {//for each event
-                Event event = eventList.get(i);
-                double latitude = parseDouble(event.getLatitude());
-                double longitude = parseDouble(event.getLongitude());
-                String city = event.getCity();
-                MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title(city);
-                eventMap.put(marker.getTitle(), event);
-                mMap.addMarker(marker);
-            }
-        }
+            if (Filter.getInstance().isGenderShowing(person)) {
+
+                List<Event> eventList = Model.getPersnEvntMap().get(person);
+                for (int i = 0; i < eventList.size(); i++) {//for each event
+                    Event event = eventList.get(i);
+                    if (Filter.getInstance().isEventShowing(event)) {//if its nota filtered event
+                        double lat = parseDouble(event.getLatitude());
+                        double lng = parseDouble(event.getLongitude());
+                        String city = event.getCity();
+                        //add the marker
+                        Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(city));
+                        marker.setTag(event);
+                    }
+                }//for
+            }//if
+        }//for
     }
 
 
@@ -140,24 +151,27 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
     public boolean onMarkerClick(Marker marker) {
         Log.d("MapFrag", "Entering onMarkerClick");
         clearLines();
-        final Event event = eventMap.get(marker.getTitle());//TODO handle markers at the same spot
+        final Event event = (Event)marker.getTag();//get the associated event
         Person personClicked = Model.getPeople().get(event.getPersonID());
+        mPersonClicked = personClicked.getPersonID();//set these variables , used in OnResume()
+        mCurrMarker = marker;
         String fName = personClicked.getfName();
         String lName = personClicked.getlName();
 
-        currTextView.setText(fName + " " + lName + "\n" + event.toString());
-        genderImage.setImageDrawable(Utils.getGenderIcon(this.getContext(),personClicked.getGender()));
+        mCurrTextView.setText(fName + " " + lName + "\n" + event.toString());
+        mGenderImage.setImageDrawable(Utils.getGenderIcon(this.getContext(), personClicked.getGender()));
 
-        doLines(event.getPersonID(), marker);
+        doLines();
         //For when the textview associated with this marker is clicked
-        currTextView.setOnClickListener(new View.OnClickListener() {//set the click listener
+        mCurrTextView.setOnClickListener(new View.OnClickListener() {//set the click listener
             private Event currEvent = event;//grab the current event
+
             @Override
             public void onClick(View v) {
-                Log.d("MapsActvity","TextField has been clicked");
-                Intent intent = new Intent(getActivity(),PersonActivity.class);
+                Log.d("MapsActvity", "TextField has been clicked");
+                Intent intent = new Intent(getActivity(), PersonActivity.class);
                 Bundle b = new Bundle();
-                b.putString("person_key",currEvent.getPersonID()); //Your id
+                b.putString("person_key", currEvent.getPersonID()); //Your id
                 intent.putExtras(b); //Put your id to your next Intent
                 getActivity().startActivity(intent);
             }
@@ -167,77 +181,72 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
         // marker is centered and for the marker's info window to open, if it has one).
         return false;
     }
-    /**A function which hands out the duties of updating the UI with lines
-     * @param personClicked the person clicked on
-     * @param marker  the marker clicked on
-     * */
-    private void doLines(String personClicked, Marker marker) {
+
+    /**
+     * A function which hands out the duties of updating the UI with lines
+     */
+    private void doLines() {
         if (Model.getSettings().isShowFamilyLines()) {
-            doFamilyLines(personClicked, marker);
+            doFamilyLines();
         }
         if (Model.getSettings().isShowLifeLines()) {
-            doLifeLines(personClicked);
+            doLifeLines();
         }
         if (Model.getSettings().isShowSpouseLines()) {
-            doSpouseLines(personClicked, marker);
+            doSpouseLines();
         }
     }
 
     /**
      * Draws the lines from the clicked to his parents to their parents and so on
-     * @param personClicked , the person who was clicked
-     * @param marker the marker that was clicked on
      */
-    private void doFamilyLines(String personClicked, Marker marker) {
+    private void doFamilyLines() {
 
         int lineWidth = 12;
-        List<Event> events = Model.getPersnEvntMap().get(personClicked);
-        Event clickedOnEvent = null;
-        for (Event event : events) {//find which event we clicked on
-            if (event.getCity().equals(marker.getTitle())) {
-                LatLng latLng = new LatLng(Double.parseDouble(event.getLatitude()), Double.parseDouble(event.getLongitude()));
-                if ( (latLng.latitude == marker.getPosition().latitude) && (latLng.longitude == marker.getPosition().longitude) ) {
-                    clickedOnEvent = event;
-                }
-            }
-        }
-        String father = Model.getPeople().get(personClicked).getFather();//the clicked persons dad
-        linesHelperPerson(personClicked, father, lineWidth,clickedOnEvent);
+        Event clickedOnEvent = (Event)mCurrMarker.getTag();
 
-        String mother = Model.getPeople().get(personClicked).getMother();
-        linesHelperPerson(personClicked, mother, lineWidth,clickedOnEvent);
+        if (Filter.getInstance().isShowingMales()) {
+            String father = Model.getPeople().get(mPersonClicked).getFather();//the clicked persons dad
+            linesHelperPerson(mPersonClicked, father, lineWidth, clickedOnEvent);
+        }
+        if (Filter.getInstance().isShowingFemales()){
+            String mother = Model.getPeople().get(mPersonClicked).getMother();
+            linesHelperPerson(mPersonClicked, mother, lineWidth, clickedOnEvent);
+        }
     }
 
     /**
      * A recursive function to draw family lines
      *
-     * @param person        , The person of the current generation
-     * @param nextGenPerson the mother/father of 'person'
-     * @param lineWidth     the desired linewidth
+     * @param person         , The person of the current generation
+     * @param nextGenPerson  the mother/father of 'person'
+     * @param lineWidth      the desired linewidth
      * @param clickedOnEvent if this is our first pass through this function, this param will hold the described event,else null
      */
-    private void linesHelperPerson(String person, String nextGenPerson, int lineWidth,Event clickedOnEvent) {
-        Event currEvent = clickedOnEvent, nextGenBirth = null;
+    private void linesHelperPerson(String person, String nextGenPerson, int lineWidth, Event clickedOnEvent) {
+        Event currEvent = clickedOnEvent, nextGenEvent = null;
         try {
-            if(currEvent == null) {//checking to see if this value has already been fiiled by the clicked on event
-                currEvent = Model.getPersnEvntMap().get(person).get(0);
+            if (currEvent == null) {//checking to see if this value has already been fiiled by the clicked on event
+                currEvent = nonFiltered(Model.getPersnEvntMap().get(person));
             }
         } catch (Exception e) {
             Log.d("LineDrawing", "No events for ID: \'" + person + "\'");
             Log.d("LineDrawing", e.getMessage());
         }
         try {
-            nextGenBirth = Model.getPersnEvntMap().get(nextGenPerson).get(0);
+            //This will grab all the no
+            nextGenEvent = nonFiltered(Model.getPersnEvntMap().get(nextGenPerson));
         } catch (Exception e) {
             Log.d("LineDrawing", "No events for ID:\'" + nextGenPerson + "\'");
             Log.d("LineDrawing", e.getMessage());
         }
 
-        if (currEvent != null && nextGenBirth != null) {
-            Log.d("LineDrawing", "Got events to draw!");
+        if (currEvent != null && nextGenEvent != null) {
+            Log.d("LineDrawing", "Drawing a " + currEvent.getEventType() + " to a " + nextGenEvent.getEventType());
             LatLng pos = new LatLng(parseDouble(currEvent.getLatitude()), parseDouble(currEvent.getLongitude()));
-            LatLng pos2 = new LatLng(parseDouble(nextGenBirth.getLatitude()), parseDouble(nextGenBirth.getLongitude()));
-            drawLines(pos, pos2, lineWidth,nextGenBirth.getEventType());
+            LatLng pos2 = new LatLng(parseDouble(nextGenEvent.getLatitude()), parseDouble(nextGenEvent.getLongitude()));
+            //draw the line
+            drawLines(pos, pos2, lineWidth, Model.getSettings().getFamilyColor().getColor());
         }
         //Get the next generation
         if (!nextGenPerson.equals("")) {
@@ -260,52 +269,85 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
         //Use of this function in the recursion is to help make the above function not too big
         Log.d("GetNextGen", "Recursing");
         String newPerson = Model.getPeople().get(nextGenPerson).getPersonID();
-        String newNextGenF = Model.getPeople().get(nextGenPerson).getFather();//the next gen father
-        String newNextGenM = Model.getPeople().get(nextGenPerson).getMother();//the next gen mother
-        if (!newNextGenF.equals("")) {//if we have not hit the end of our recursion
-            linesHelperPerson(newPerson, newNextGenF, lineWidth, null);
+        String newNextGenDad = Model.getPeople().get(nextGenPerson).getFather();//the next gen mother
+        String newNextGenMom = Model.getPeople().get(nextGenPerson).getMother();//the next gen father
+        if (Filter.getInstance().isShowingFemales() && !newNextGenMom.equals("")) {//if we have not hit the end of our recursion
+            linesHelperPerson(newPerson, newNextGenMom, lineWidth, null);
         }
-        if (!newNextGenM.equals("")) {
-            linesHelperPerson(newPerson, newNextGenM, lineWidth, null);
+        if (Filter.getInstance().isShowingMales() && !newNextGenDad.equals("")) {
+            linesHelperPerson(newPerson, newNextGenDad, lineWidth, null);
         }
     }
 
     /**
      * Holds the logic for drawing life lines. Meaning the events of a persons life
-     *
-     * @param personClicked, the personID of the event clicked
      */
-    private void doLifeLines(String personClicked) {
+    private void doLifeLines() {
         int lineWidth = 6;
-        List<Event> events = Model.getPersnEvntMap().get(personClicked);
-        for (int i = 0; i < events.size() - 1; i++) {//go through all the events chronologically
-            Event event = events.get(i);
-            Event event2 = events.get(i + 1);
+        List<Event> events = Model.getPersnEvntMap().get(mPersonClicked);
+
+        ArrayList<Integer> positions = nonFiltered(events, 0);
+        for (int i = 0; i < positions.size() - 1; i++) {//go through all the non Filtered events and draw lines btwn them
+            Event event = events.get(positions.get(i)), event2 = events.get(positions.get(i + 1));
             LatLng pos = new LatLng(parseDouble(event.getLatitude()), parseDouble(event.getLongitude()));
             LatLng pos2 = new LatLng(parseDouble(event2.getLatitude()), parseDouble(event2.getLongitude()));
-            drawLines(pos, pos2, lineWidth,event2.getEventType());
+            drawLines(pos, pos2, lineWidth, Model.getSettings().getLifeColor().getColor());
         }
     }
 
     /**
-     * Holds all the logic for doing Spouse lines, meaning a line i drawn from the clicked on to the spouses birth palce
+     * Grabs the index of the first non filtered event it sees based on the intial index given
      *
-     * @param personClicked, the personID of the event clicked
-     * @param marker         The marker object that was clicked on
+     * @param events the list of events to search through
+     * @param index  the given index to start the search at
+     * @return int
      */
-    private void doSpouseLines(String personClicked, Marker marker) {
-        int lineWidth = 6;
-        String spouse = Model.getPeople().get(personClicked).getSpouse();
-        if (spouse.equals("")) {
-            return;
-        }//if there is no spouse
-        List<Event> events = Model.getPersnEvntMap().get(spouse);
-        Event firstEvent = null;
+    private ArrayList<Integer> nonFiltered(List<Event> events, int index) {
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = index; i < events.size(); i++) {
+            if (Filter.getInstance().isEventShowing(events.get(i))) {
+                list.add(i);
+            }
+        }
+        return list;
+    }
 
-        if (events.size() != 0) {//grab the first event
-            firstEvent = events.get(0);
-            LatLng pos = new LatLng(parseDouble(firstEvent.getLatitude()), parseDouble(firstEvent.getLongitude()));
-            drawLines(marker.getPosition(),pos, lineWidth,firstEvent.getEventType());
+    /**
+     * Grabs the index of the first non filtered event it sees
+     *
+     * @param events the list of events to search through
+     * @return int
+     */
+    private Event nonFiltered(List<Event> events) {
+        for (int i = 0; i < events.size(); i++) {
+            if (Filter.getInstance().isEventShowing(events.get(i))) {
+                return events.get(i);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Holds all the logic for doing Spouse lines, meaning a line i drawn from the clicked on to the spouses birth palce
+     */
+    private void doSpouseLines() {
+        if(Filter.getInstance().isShowingMales() && Filter.getInstance().isShowingFemales()) {//only if possible to draw lines to spouses
+
+            int lineWidth = 6;
+            String spouse = Model.getPeople().get(mPersonClicked).getSpouse();
+            if (spouse.equals("")) {
+                return;
+            }//if there is no spouse
+            List<Event> events = Model.getPersnEvntMap().get(spouse);//get the events of the spouse
+            for (Event event : events) {
+                //if this event type is not filtered and check edge case of spouses being mother/father of user when one side of fam is not showing
+                if (Filter.getInstance().isEventShowing(event) && !Filter.getInstance().isUserParentsEdgeCase(event)) {
+
+                    LatLng pos = new LatLng(parseDouble(event.getLatitude()), parseDouble(event.getLongitude()));
+                    drawLines(mCurrMarker.getPosition(), pos, lineWidth, Model.getSettings().getSpouseColor().getColor());
+                    break;//we only want their first event
+                }
+            }
         }
     }
 
@@ -314,8 +356,8 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      */
 
     private void clearLines() {
-        if (polylines.size() > 0) {
-            for (Polyline line : polylines) {
+        if (mPolylines.size() > 0) {
+            for (Polyline line : mPolylines) {
                 line.remove();
             }
         }
@@ -326,13 +368,12 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      *
      * @param pos,      a Latlng Position
      * @param pos2      a Latlng position
-     * @param lineWidth
-     * @param eventType the type of event being drawn
+     * @param lineWidth the width of the line being drawn
+     * @param color     the color of line being drawn
      */
-    private void drawLines(LatLng pos, LatLng pos2, int lineWidth,String eventType) {
-        int color = Model.getColorMap().get(eventType).getColor();//grab the appropiate color
+    private void drawLines(LatLng pos, LatLng pos2, int lineWidth, int color) {
         PolylineOptions line = new PolylineOptions().add(pos, pos2).width(lineWidth).color(color);
-        polylines.add(mMap.addPolyline(line));
+        mPolylines.add(mMap.addPolyline(line));
     }
 
 
@@ -340,7 +381,7 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.my_menu, menu);
-        IconDrawable draw =  new IconDrawable(getActivity(), Iconify.IconValue.fa_filter).colorRes(R.color.white).sizeDp(40);
+        IconDrawable draw = new IconDrawable(getActivity(), Iconify.IconValue.fa_filter).colorRes(R.color.white).sizeDp(40);
         menu.getItem(1).setIcon(draw);//sets filter item to have the right icon
     }
 
@@ -366,7 +407,32 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
 
     @Override
     public void onResume() {
+        Log.d("MapsFrags", "Starting");
         super.onResume();
+        if (mMap != null) {//if we are resuming after having already been to this fragment before
+            Log.d("MapsFrags", "Checking settings and filters");
+            checkSettingsAndFilters();
+        }
+    }
+
+    /**
+     * Clears the maps so that we can check the settings and filters again
+     */
+    private void checkSettingsAndFilters() {
+        //clears the map and resets all views
+        mMap.clear();
+        mPolylines.clear();
+        mCurrTextView.setText(R.string.show_begining_text);
+        mGenderImage.setImageDrawable(Utils.getGenderIcon(getContext(), ""));
+
+        onMapReady(mMap);
+
+    }
+
+    @Override
+    public void onStart() {
+        Log.d("MapsFrags", "Starting");
+        super.onStart();
     }
 
 

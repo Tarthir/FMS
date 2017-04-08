@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -37,16 +36,36 @@ public class Model {
     private static Filter filter;
     /**A set of Strings which are are event types*/
     private static Set<String> eventTypes;
-    /**A map with type of event as keys and colors as values*/
-    private static Map<String,myColor> colorMap;
     /**Our user's person object*/
     private static Person user;
     /**Our user's paternal Ancestors*/
     private static Set<String> paternalAncestors;
     /**OOur user's maternal Ancestors*/
     private static Set<String> maternalAncestors;
-    /**A map with A personID as a key and a Lsit of their children as the value*/
+    /**A map with A personID as a key and a List of their children as the value*/
     private static Map<String,List<Person>> personChildren;
+
+    public static void setPortNum(String portNum) {
+        Model.portNum = portNum;
+    }
+
+    public static void setIPAdress(String IPAdress) {
+        Model.IPAdress = IPAdress;
+    }
+
+    /**Curr port*/
+    private static String portNum;
+
+    public static String getIPAdress() {
+        return IPAdress;
+    }
+
+    public static String getPortNum() {
+        return portNum;
+    }
+
+    /**Curr host*/
+    private static String IPAdress;
     static{
         initialize();
     }
@@ -62,7 +81,6 @@ public class Model {
         settings = new Settings();
         filter = Filter.getInstance();
         eventTypes = new TreeSet<>();
-        colorMap = new TreeMap<>();
         paternalAncestors = new TreeSet<>();
         maternalAncestors = new TreeSet<>();
         personChildren = new TreeMap<>();
@@ -104,10 +122,6 @@ public class Model {
 
     public static Set<String> getEventTypes() {
         return eventTypes;
-    }
-
-    public static Map<String, myColor> getColorMap() {
-        return colorMap;
     }
 
     public static Person getUser() {
@@ -169,22 +183,9 @@ public class Model {
             }
 
         }
-        setUpLinesColors();
         setUpPrsnEventMap();
 
         Log.d("EventSetup", "done");
-    }
-    /**Sets up colors for lines which can be changed in the Filter activity*/
-    private static void setUpLinesColors() {
-        Iterator itr = eventTypes.iterator();
-        for (myColor color : myColor.values()) {
-            if(itr.hasNext()) {//if there are more event types, keep adding colors
-                colorMap.put((String) itr.next(), color);
-            }
-            else{
-                break;
-            }
-        }
     }
 
     /**Sets up the person event map variable*/
@@ -240,10 +241,12 @@ public class Model {
      * */
     private static void grabKids(String parent,String kid) {
         if(parent.equals("")){return;}
-        if(personChildren.containsKey(parent)){
-            personChildren.get(parent).add(people.get(kid));
+        if(personChildren.containsKey(parent)){//if this parent is already in the list
+            if(!personChildren.get(parent).contains(people.get(kid))) {//if this kid is not already in the list
+                personChildren.get(parent).add(people.get(kid));
+            }
         }
-        else{
+        else{//make a new list to put the parent/children in
             LinkedList<Person> list = new LinkedList<>();
             list.add(people.get(kid));
             personChildren.put(parent, list);
