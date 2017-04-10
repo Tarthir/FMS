@@ -62,8 +62,6 @@ public class SettingsActivity extends AppCompatActivity {
      * Context
      */
     Context mContext = this;
-
-    //TODO get this all working
     public SettingsActivity() {
     }
 
@@ -340,6 +338,5 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-        //TODO map spinner
     }
 }

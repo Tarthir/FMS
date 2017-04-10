@@ -1,10 +1,13 @@
 package com.tylerbrady34gmail.familyclient.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.tylerbrady34gmail.familyclient.ExpandEventView.LifeEvents;
@@ -91,6 +94,7 @@ public class PersonActivity extends AppCompatActivity {
      * @return LinkedList<Family> object
      * */
     private LinkedList<Family> setupFamily() {
+        //first grab the parents
         Person father = Model.getPeople().get(clickedOn.getFather());
         Person mother = Model.getPeople().get(clickedOn.getMother());
         List<Person> people = new LinkedList<>();
@@ -104,6 +108,7 @@ public class PersonActivity extends AppCompatActivity {
         if(spouse != null) {
             people.add(spouse);
         }
+        //add the rest of the family
         for(Person person : Model.getPersonChildren().get(clickedOn.getPersonID())){
             people.add(person);
         }
@@ -135,9 +140,23 @@ public class PersonActivity extends AppCompatActivity {
         Log.d(TAG,"Destroying");
         super.onDestroy();
     }
-    /*@Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.my_menu, menu);
-    }*/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean bool = super.onCreateOptionsMenu(menu);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        return bool;
+    }
 }

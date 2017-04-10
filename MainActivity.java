@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.tylerbrady34gmail.familyclient.R;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static boolean isLoggedIn = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,10 +18,14 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = fm.findFragmentById(R.id.fragment_login);
         // “Create a new fragment transaction, include one add operation in it, and then commit it.”
         if(fragment == null){
-            fragment = new LoginFragment();
+            if(isLoggedIn) {
+                fragment = new MapsFrag();
+            }
+            else {
+                fragment = new LoginFragment();
+            }
             fm.beginTransaction().add(R.id.fragment_spot,fragment).commit();
         }
-
-
     }
+
 }

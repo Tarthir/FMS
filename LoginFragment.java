@@ -299,6 +299,7 @@ public class LoginFragment extends Fragment {
         }
         /**Function which goes to the MapFragment after successfully grabbing the User's data*/
         private void goToMap() {
+            MainActivity.isLoggedIn = true;
             Model.setIPAdress(mHost_input.getText().toString());
             Model.setPortNum(mPort_input.getText().toString());
             Log.d(GET_DATA,"Going into map Fragment");

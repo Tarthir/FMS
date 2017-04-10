@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -76,6 +77,8 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      * Key for getting the mothers side filter
      */
     private final String mMothersSide = "Mother's Side";
+    /**The event Passed in to this fragment by the personActivity*/
+    private Event mEventParam;
 
     public MapsFrag() {
         // Required empty public constructor
@@ -86,8 +89,15 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
         super.onCreate(savedInstanceState);
         Log.d("MapsFrags", "Entering onCreate");
         setHasOptionsMenu(true);
-    }
+        Bundle bundle = getActivity().getIntent().getExtras();
+        if(bundle != null) {//check to see if we are coming here from another activity o from login screen
+            String eventID = (String) bundle.get("event_key");
+            if(eventID != null) {
+                mEventParam = Model.getEvents().get(eventID);
+            }
+        }
 
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -130,26 +140,30 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
 
                 List<Event> eventList = Model.getPersnEvntMap().get(person);
                 for (int i = 0; i < eventList.size(); i++) {//for each event
+
                     Event event = eventList.get(i);
                     if (Filter.getInstance().isEventShowing(event)) {//if its nota filtered event
-                        double lat = parseDouble(event.getLatitude());
-                        double lng = parseDouble(event.getLongitude());
+
+                        double lat = parseDouble(event.getLatitude()), lng = parseDouble(event.getLongitude());
                         String city = event.getCity();
                         //add the marker
                         Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(city));
                         marker.setTag(event);
+                        //if we are in the mapactivity and have been passed in an event to center on
+                        if(mEventParam != null && event.equals(mEventParam)){
+                            onMarkerClick(marker);
+                            //updateViews(marker,event);//update our textviews
+                        }
                     }
                 }//for
             }//if
         }//for
     }
-
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        Log.d("MapFrag", "Entering onMarkerClick");
-        clearLines();
-        final Event event = (Event)marker.getTag();//get the associated event
+    /**Helper function which updates the textview/ImageView for the fragment
+     * @param marker the current marker clicked on
+     * @param event the current event associated with the marker
+     * */
+    void updateViews(Marker marker, Event event){
         Person personClicked = Model.getPeople().get(event.getPersonID());
         mPersonClicked = personClicked.getPersonID();//set these variables , used in OnResume()
         mCurrMarker = marker;
@@ -158,8 +172,16 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
 
         mCurrTextView.setText(fName + " " + lName + "\n" + event.toString());
         mGenderImage.setImageDrawable(Utils.getGenderIcon(this.getContext(), personClicked.getGender()));
+        doLines();//draws all the lines
+    }
 
-        doLines();
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Log.d("MapFrag", "Entering onMarkerClick");
+        clearLines();
+        final Event event = (Event)marker.getTag();//get the associated event
+        updateViews(marker,event);//updates the textviews
         //For when the textview associated with this marker is clicked
         mCurrTextView.setOnClickListener(new View.OnClickListener() {//set the click listener
             private Event currEvent = event;//grab the current event
@@ -177,6 +199,11 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
+        //But return true if we being passed in an event from the person activity
+        if(mEventParam != null){
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), 250, null);
+            return true;
+        }
         return false;
     }
 
@@ -378,9 +405,16 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.my_menu, menu);
-        IconDrawable draw = new IconDrawable(getActivity(), Iconify.IconValue.fa_filter).colorRes(R.color.white).sizeDp(40);
-        menu.getItem(1).setIcon(draw);//sets filter item to have the right icon
+        if(getActivity() instanceof MainActivity) {
+            inflater.inflate(R.menu.my_menu, menu);
+            IconDrawable draw = new IconDrawable(getActivity(), Iconify.IconValue.fa_filter).colorRes(R.color.white).sizeDp(40);
+            menu.getItem(1).setIcon(draw);//sets filter item to have the right icon
+        }
+        else{
+            inflater.inflate(R.menu.my_mapsmenu, menu);
+            IconDrawable draw = new IconDrawable(getActivity(), Iconify.IconValue.fa_angle_double_up).colorRes(R.color.white).sizeDp(40);
+            menu.getItem(0).setIcon(draw);//sets filter item to have the right icon
+        }
     }
 
     @Override
@@ -398,6 +432,10 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
                 intent = new Intent(getActivity(), FilterActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.toTopButton:
+                intent = new Intent(getActivity(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             default:
                 return super.onOptionsItemSelected(item);
         }
