@@ -45,24 +45,10 @@ public class Model {
     /**A map with A personID as a key and a List of their children as the value*/
     private static Map<String,List<Person>> personChildren;
 
-    public static void setPortNum(String portNum) {
-        Model.portNum = portNum;
-    }
-
-    public static void setIPAdress(String IPAdress) {
-        Model.IPAdress = IPAdress;
-    }
-
+    /**Current map type*/
+    private static MapType currMapType;
     /**Curr port*/
     private static String portNum;
-
-    public static String getIPAdress() {
-        return IPAdress;
-    }
-
-    public static String getPortNum() {
-        return portNum;
-    }
 
     /**Curr host*/
     private static String IPAdress;
@@ -84,6 +70,7 @@ public class Model {
         paternalAncestors = new TreeSet<>();
         maternalAncestors = new TreeSet<>();
         personChildren = new TreeMap<>();
+        currMapType = MapType.Normal;
 
     }
 
@@ -94,6 +81,18 @@ public class Model {
             return ourInstance;
         }
         return ourInstance;
+    }
+
+    public static MapType getMapType(){return currMapType; }
+
+    public static void setMapType(MapType mapType){currMapType = mapType;}
+
+    public static String getIPAdress() {
+        return IPAdress;
+    }
+
+    public static String getPortNum() {
+        return portNum;
     }
 
     public static Map<String, List<Person>> getPersonChildren() {
@@ -254,6 +253,15 @@ public class Model {
     }
 
 
+    public static void setOurInstance(Model ourInstance) {
+        Model.ourInstance = ourInstance;
+    }
 
+    public static void setPortNum(String portNum) {
+        Model.portNum = portNum;
+    }
 
+    public static void setIPAdress(String IPAdress) {
+        Model.IPAdress = IPAdress;
+    }
 }

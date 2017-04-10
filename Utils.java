@@ -14,6 +14,10 @@ import com.tylerbrady34gmail.familyclient.R;
 
 public class Utils {
 
+    /**Gets the right gender icon for the person activity and the map fragment for the imageViews
+     * @param context  the current context
+     * @param gender  the person's gender(Wouldn't want to assume it)
+     * @return Drawable*/
     public static Drawable getGenderIcon(Context context,String gender) {
         if(gender.toLowerCase().contains("m")){
             return new IconDrawable(context, Iconify.IconValue.fa_male).colorRes(R.color.male_icon).sizeDp(40);
@@ -26,8 +30,17 @@ public class Utils {
         }
     }
 
+    /**Used to get the location icon
+     * @param context the current context
+     * @return Drawable*/
     public static Drawable getLocIcon(Context context){
         return new IconDrawable(context,Iconify.IconValue.fa_map_marker).colorRes(R.color.gray).sizeDp(40);
 
+    }
+    /**Used to get the go to the top button icon
+     * @param context, the current context
+     * @return  Drawable*/
+    public static Drawable getToTopIcon(Context context){
+        return new IconDrawable(context,Iconify.IconValue.fa_angle_double_up).colorRes(R.color.gray).sizeDp(30);
     }
 }

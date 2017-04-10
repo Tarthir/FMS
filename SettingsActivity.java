@@ -1,6 +1,7 @@
 package com.tylerbrady34gmail.familyclient.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tylerbrady34gmail.familyclient.FamilyMapServerProxy;
+import com.tylerbrady34gmail.familyclient.Models.MapType;
 import com.tylerbrady34gmail.familyclient.Models.Model;
 import com.tylerbrady34gmail.familyclient.Models.MyColor;
 import com.tylerbrady34gmail.familyclient.R;
@@ -24,6 +27,7 @@ import com.tylerbrady34gmail.familyclient.R;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import infoObjects.EventsRequest;
@@ -52,6 +56,8 @@ public class SettingsActivity extends AppCompatActivity {
     private Switch mLifeSwitch;
     private Switch mFamilySwitch;
     private Switch mSpouseSwitch;
+    /**The list of currently used Colors*/
+    private ArrayList<MyColor> myColors = new ArrayList<>();
     /**
      * Context
      */
@@ -75,7 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
         mSpouseTextView = (TextView) findViewById(R.id.spouse_textView);
         mMapTypeTextView = (TextView) findViewById(R.id.mapType_textView);
         mResynctextView = (TextView) findViewById(R.id.resync_textView);
-        mLogoutTextView = (TextView) findViewById(R.id.logout_textView);
+        mLogoutTextView = (TextView) findViewById(R.id.logout_textview);
         mLifeSpinner = (Spinner) findViewById(R.id.lifestory_spinner);
         mFamilySpinner = (Spinner) findViewById(R.id.familyTree_spinner);
         mSpouseSpinner = (Spinner) findViewById(R.id.spouse_spinner);
@@ -96,9 +102,18 @@ public class SettingsActivity extends AppCompatActivity {
         addItemsOnSpinners(mSpouseSpinner);
         addItemsOnSpinners(mFamilySpinner);
         addItemsOnSpinners(mLifeSpinner);
+        List<String> list = new ArrayList<>();
+        list.add(Model.getMapType().toString());//the current type is the first
+
+        for(MapType mapType : MapType.values()){
+            if(!mapType.equals(Model.getMapType())){
+                list.add(mapType.toString());
+            }
+        }
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mMapSpinner.setAdapter(dataAdapter);
         setupOnItemSelectedListeners();
-
-
     }
 
 
@@ -113,14 +128,22 @@ public class SettingsActivity extends AppCompatActivity {
         if(spinner.equals(mFamilySpinner)){list.add(currentColor = Model.getSettings().getFamilyColor().toString());}
         else if(spinner.equals(mSpouseSpinner)){list.add(currentColor = Model.getSettings().getSpouseColor().toString());}
         else{list.add(currentColor = Model.getSettings().getLifeColor().toString());}
-        for(MyColor color : MyColor.values()){
-            if(!color.toString().equals(currentColor)) {
+        myColors.add(MyColor.unToString(currentColor));//these are the currently used Colors
+        for(MyColor color : MyColor.values()){//TODO disallow already used colors from being selected in the other spinners
+            if(colorIsNotUsed(color)){
                 list.add(color.toString());
             }
         }
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
+    }
+    /**Checks to see if a color is not already selected by the user for another line
+     * @param color  the color in question
+     * @return boolean
+     * */
+    public boolean colorIsNotUsed(MyColor color){
+        return (!color.equals(Model.getSettings().getLifeColor())) && (!myColors.contains(color));
     }
 
     /**
@@ -149,19 +172,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        mLogoutTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO
-            }
-        });
-        mResynctextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new httpTaskGetData().start();
-            }
-        });
-
     }
 
     /**
@@ -174,6 +184,23 @@ public class SettingsActivity extends AppCompatActivity {
         mMapTypeTextView.setText(R.string.maptypeText);
         mResynctextView.setText(R.string.rsycnText);
         mLogoutTextView.setText(R.string.logout);
+        //setup resync
+        mResynctextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new httpTaskGetData().start();
+            }
+        });
+        //Setup going back to the login screen
+        mLogoutTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),"Logged Out!",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
 
 
     }
@@ -209,7 +236,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //TODO do up button for when we are in map activity
         boolean bool = super.onCreateOptionsMenu(menu);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -270,6 +296,17 @@ public class SettingsActivity extends AppCompatActivity {
     }
     /**Sets up the on click listeners for the spinners*/
     private void setupOnItemSelectedListeners() {
+        mMapSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Model.setMapType(MapType.unToString((String)parent.getItemAtPosition(position)));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         mSpouseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

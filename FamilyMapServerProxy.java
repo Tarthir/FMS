@@ -124,17 +124,19 @@ public class FamilyMapServerProxy {
             encode.encode(request, http.getOutputStream());
             http.connect();
 
+            InputStream resBody = null;
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
-                InputStream respBody = http.getInputStream();
-                return encode.decodeLoginResult(respBody);
+                resBody = http.getInputStream();
+
             } else {
 
-                InputStream resBody = http.getErrorStream();
-                LoginResult result = encode.decodeLoginResult(resBody);
-                authToken = result.getAuthToken();
-                return result;
+                resBody = http.getErrorStream();
+
             }
+            LoginResult result = encode.decodeLoginResult(resBody);
+            authToken = result.getAuthToken();
+            return result;
         } catch (IOException e) {
             e.printStackTrace();
         }

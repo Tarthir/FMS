@@ -99,8 +99,6 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
         mCurrTextView.setText(R.string.show_begining_text);
         mGenderImage = (ImageView) view.findViewById(R.id.imageView);
         mapFragment.getMapAsync(this);
-
-
         return view;
     }
 
@@ -420,6 +418,7 @@ public class MapsFrag extends Fragment implements OnMapReadyCallback, OnMarkerCl
      */
     private void checkSettingsAndFilters() {
         //clears the map and resets all views
+        mMap.setMapType(Model.getMapType().getMapType());//sets the mapType to the right one
         mMap.clear();
         mPolylines.clear();
         mCurrTextView.setText(R.string.show_begining_text);
