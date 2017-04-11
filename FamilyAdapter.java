@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.bignerdranch.expandablerecyclerview.ExpandableRecyclerAdapter;
 import com.tylerbrady34gmail.familyclient.R;
+import com.tylerbrady34gmail.familyclient.ui.SearchActivity;
 
 import java.util.List;
 
@@ -18,11 +19,15 @@ import models.Person;
  * Our adapter for the famil class
  */
 public class FamilyAdapter extends ExpandableRecyclerAdapter<Family, Person, FamilyViewHolder, PersonViewHolder> {
-
+    /**Our inflater variable*/
     private LayoutInflater mInflater;
+    /**a check to let us know if we are coming from the person activity or search*/
+    public static boolean isFromSearch = false;
 
     public FamilyAdapter(Context context, List<Family> familyList) {
         super(familyList);
+        //Are we coming from SearchActivity?
+        isFromSearch = context.getClass().equals(SearchActivity.class);
         mInflater = LayoutInflater.from(context);
     }
 

@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 import com.tylerbrady34gmail.familyclient.ExpandEventView.LifeEvents;
 import com.tylerbrady34gmail.familyclient.ExpandEventView.LifeEventsAdapter;
 import com.tylerbrady34gmail.familyclient.ExpandFamilyView.Family;
@@ -60,10 +62,12 @@ public class PersonActivity extends AppCompatActivity {
 
         //Get the RecyclerViews and Adapters ready
         LifeEventsAdapter lifeEventsAdapter = new LifeEventsAdapter(this,lifeEvents);
+        lifeEventsAdapter.expandAllParents();
         mEventRecycleView.setLayoutManager(new LinearLayoutManager(this));
         mEventRecycleView.setAdapter(lifeEventsAdapter);
 
         FamilyAdapter familyAdapter = new FamilyAdapter(this, family);
+        familyAdapter.expandAllParents();
         mFamilyRecycleView.setLayoutManager(new LinearLayoutManager(this));
         mFamilyRecycleView.setAdapter(familyAdapter);
     }
@@ -147,6 +151,10 @@ public class PersonActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.toTopButton:
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -155,8 +163,11 @@ public class PersonActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         boolean bool = super.onCreateOptionsMenu(menu);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        getMenuInflater().inflate(R.menu.my_mapsmenu,menu);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        IconDrawable draw = new IconDrawable(this, Iconify.IconValue.fa_angle_double_up).colorRes(R.color.white).sizeDp(40);
+        menu.getItem(0).setIcon(draw);//sets filter item to have the right icon
         return bool;
     }
 }

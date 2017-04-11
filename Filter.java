@@ -46,11 +46,22 @@ public class Filter {
         filterRows.add(new FilterRows("Show Males"));
         filterRows.add(new FilterRows("Show Females"));
     }
+    /**Checks if the fathers Side of the family is showing
+     * @return boolean*/
+    public boolean checkFatherSide(){
+        return filterRows.get(filterRows.size() - 4).isOn();
+    }
+    /**Checks if the mothers side of the family is showing
+     * @return boolean*/
+    public boolean checkMotherSide(){
+        return filterRows.get(filterRows.size() - 3).isOn();
+    }
     /**checks edge case of the spouse line where the Mother or Father's side are off
-     * @param event  the given event in question*/
+     * @param event  the given event in question
+     * @return boolean*/
     public boolean isUserParentsEdgeCase(Event event){
         return  Model.getPersonChildren().get(event.getPersonID()).contains(Model.getUser())
-                && (!isFilterShowing("Father's Side") || !isFilterShowing("Mother's Side"));
+                && (checkFatherSide() || checkMotherSide());
     }
 
     /**

@@ -27,7 +27,6 @@ public class LifeEventsAdapter extends ExpandableRecyclerAdapter<LifeEvents, Eve
         mInflater = LayoutInflater.from(context);
     }
 
-
     @NonNull
     @Override
     public LifeEventsViewHolder onCreateParentViewHolder(@NonNull ViewGroup parentViewGroup, int viewType) {

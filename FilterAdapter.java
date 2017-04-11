@@ -5,11 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.tylerbrady34gmail.familyclient.Models.Filter;
-
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by tyler on 4/3/2017.

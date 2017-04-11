@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bignerdranch.expandablerecyclerview.ParentViewHolder;
-import com.tylerbrady34gmail.familyclient.ExpandFamilyView.Family;
 import com.tylerbrady34gmail.familyclient.R;
 
 /**
@@ -15,8 +14,11 @@ import com.tylerbrady34gmail.familyclient.R;
  */
 
 class LifeEventsViewHolder extends ParentViewHolder{
+    /**A Tag for logs*/
     private final String TAG = "LifeEventsViewHolder";
+    /**My arrow image*/
     private ImageView mArrowExpandImageView;
+    /**Curr event*/
 
     private TextView mMyView;
     LifeEventsViewHolder(View itemView) {
